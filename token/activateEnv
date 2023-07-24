@@ -1,0 +1,2 @@
+#! /bin/bash
+source ~/Documents/envs/dload_env/bin/activate
