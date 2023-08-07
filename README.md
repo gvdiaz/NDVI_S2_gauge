@@ -12,9 +12,13 @@ Generar un script python/bash que sea capaz de seleccionar escenas Sentinel-2, r
 
 ### Trabajos realizados
 
+**al 06/08/2023**
+
+Terminé de obtener los objetivos planteados el día 29/07/2023 en el notebook "Test_gedal.ipynb". Pude visualizar las ROIs de búsqueda y las pude superponer con los footprints de las escenas encontradas. Resta, sobre la búsqueda, poder medir el porcentaje que tiene de superposición la ROI de búsqueda respecto de las escenas. Una idea que se me ocurre es agrandar la escena de los boudaries de manera que algunas escenas no tengan el 100 de superposición y testear el funcionamiento de cálculos de porcentage de área.
+
 **al 29/07/2023**
 
-Me encuentro generado un notebook en la carpeta scripts para generar una muestra del trabajo a realizar y relevar requerimientos, por ejemplo:
+Me encuentro desarrollando un notebook en la carpeta scripts para generar una muestra del trabajo a realizar y relevar requerimientos, por ejemplo:
 
 * Mostrar footprint de escena superpuesta con la ROI de interés de manera de verificar que la ROI se encuentre dentro del producto a bajar.
 
