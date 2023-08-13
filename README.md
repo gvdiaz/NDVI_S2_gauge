@@ -12,6 +12,33 @@ Generar un script python/bash que sea capaz de seleccionar escenas Sentinel-2, r
 
 ### Trabajos realizados
 
+**al 13/08/2023**
+
+Encaro el trabajo de bajar de a una las escenas y realizar el procesamiento para:
+
+1. Averiguar si tiene cobertura de nubes sobre la ROI utilizando la máscara "cloud cover". Si se encuentra cubierta debería deshecharla.
+2. Una vez que detecto que se encuentra limpia debería:
+    1. Recortarla sobre la ROI de estudio
+    2. Seleccionar las bandas que necesito
+    3. Computar NDVI
+
+15:47
+
+Envío el producto Sentinel-2 que bajé para analizar si se encuentra la información de máscara de cloud cover dentro del producto bajado. También analizo la posiblidad de instalar esa-snappy para poder procesarla con la ayuda de SNAP engine.
+
+
+**al 12/08/2023**
+
+Logré agrandar el área de búsqueda y encontrar el procentaje de solapamiento con las escenas disponibles (listado de escenas encontradas).
+Debo decidir si bajo las bandas que requiero solamente de las escenas (para cómputo de NDVI) o me contento con bajarlas totalmente y realizar la clasificación si posee nubes sobre el área de interés. Dejé asentado en notebook "Test_gdal.ipynb" los próximos trabajos a realizar. Vuelvo a citar aquí mismo,
+
+1. Decidir entre bajar toda la escena o solo las bandas que necesite
+2. Procesamiento de escenas que se bajen tal cómo,
+    1. Recorte de escena
+    2. Selección de bandas
+    3. Cómputo de NDVI
+3. Detectar si tiene o no cobertura de nubes
+
 **al 06/08/2023**
 
 Terminé de obtener los objetivos planteados el día 29/07/2023 en el notebook "Test_gedal.ipynb". Pude visualizar las ROIs de búsqueda y las pude superponer con los footprints de las escenas encontradas. Resta, sobre la búsqueda, poder medir el porcentaje que tiene de superposición la ROI de búsqueda respecto de las escenas. Una idea que se me ocurre es agrandar la escena de los boudaries de manera que algunas escenas no tengan el 100 de superposición y testear el funcionamiento de cálculos de porcentage de área.
