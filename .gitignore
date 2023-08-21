@@ -1,5 +1,4 @@
 # Ignorar carpetas
 token/output/
-Scripts/aux_files/search_s2.pkl
 utils/__pycache__/mod_searcher.cpython-310.pyc
 .gitignore
