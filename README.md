@@ -12,6 +12,19 @@ Generar un script python/bash que sea capaz de seleccionar escenas Sentinel-2, r
 
 ### Trabajos realizados
 
+**al 21/08/2023**
+
+Generé entorno de python en pc de casa para poder trabajar desde allí y acceder mediante ssh a la pc de casa desde la pc de trabajo. Tuve que realizar varias acciones para poder ejecutar los notebooks, paso a describir:
+
+1. Instalación de gdal en sistema base. Tuve que instalar la versión 3.4.3.
+2. Instalación de entorno virtual python para proyecto, utilicé virsualwrapper
+
+La acción 1 generó la necesidad de cambiar el archivo requerimientos dado que utilizaba GDAL 3.4.1. Para ello cree un nuevo archivo de requerimientos llamado requirements_casa.txt el cual cambia la versión de GDAL que necesita instalarse.
+
+** Conclusión de jornada de trabajo **
+
+Genera contenedor para evitar el problema recién descripto.
+
 **al 13/08/2023**
 
 Encaro el trabajo de bajar de a una las escenas y realizar el procesamiento para:
