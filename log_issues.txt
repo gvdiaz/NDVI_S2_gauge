@@ -1,0 +1,15 @@
+Archivo para registrar problemas en uso de repositorios
+
+Problema 1 22/08/2023
+
+El día de ayer terminé la jornada generando modificaciones en los notebooks para que funcionen correctamente en pc de casa a través de ssh en la misma pc.
+
+Luego agregué modificaciones en el archivo README.md en el cual registraba dichos cambios.
+
+El día de hoy modifiqué a través de la pc de casa el archivo .gitignore sin haber hecho un pull antes.
+
+Conclusión, hay conflicto entre el repo local de la pc de casa y el repo remoto. Este archivo intentará dejar registro de dicho conflicto.
+
+Solución:
+
+Crear nueva rama iss1 y luego "mergear" ambas ramas con sus archivos modificados.
