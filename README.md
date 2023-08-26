@@ -12,6 +12,18 @@ Generar un script python/bash que sea capaz de seleccionar escenas Sentinel-2, r
 
 ### Trabajos realizados
 
+**al 26/08/2023**
+
+Creo en pc de casa usuario "black_dock" en SO Ubuntu nativo para poder ejecutar con privilegios los comandos de docker.
+
+También creé archivos de configuración inicial en repositorio de manera de comenzar a desarrollar contenedor que sirva para ejecución de procesamiento o desarrollo. Esto último se puede llegar a elegir en el run que ejecute un script o lance un notebook.
+
+PENDIENTE:
+
+* Definir distribución de linux a utilizar (ubuntu, debian o alguna otra, tal vez alpine para probar)
+* Definir paquetes de python a incluir
+* Elección de snappy (¿10?) a utilizar
+
 **al 21/08/2023**
 
 Generé entorno de python en pc de casa para poder trabajar desde allí y acceder mediante ssh a la pc de casa desde la pc de trabajo. Tuve que realizar varias acciones para poder ejecutar los notebooks, paso a describir:
