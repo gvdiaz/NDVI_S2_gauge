@@ -1,12 +1,13 @@
 FROM ubuntu:20.04
 
-LABEL maintainer "arubattino@conae.gov.ar"
+LABEL maintainer "gus838@gmail.com"
 
 # Install some packages
 RUN apt-get update && \
       DEBIAN_FRONTEND=noninteractive apt-get install -y \ 
       python3.9 \ 
-      python3.9-dev \ 
+      python3.9-dev \
+      python3-pip \
       net-tools \
       ffmpeg \
       libsm6 \
@@ -19,20 +20,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Download the MCR from MathWorks site an install with -mode silent
-RUN mkdir /mcr-install && \
-    mkdir /opt/mcr && \
-    cd /mcr-install && \
-    wget --no-check-certificate -q https://ssd.mathworks.com/supportfiles/downloads/R2018b/deployment_files/R2018b/installers/glnxa64/MCR_R2018b_glnxa64_installer.zip && \
-    unzip -q MCR_R2018b_glnxa64_installer.zip && \
-    rm -f MCR_R2018b_glnxa64_installer.zip && \
-    ./install -destinationFolder /opt/mcr -agreeToLicense yes -mode silent && \
-    cd / && \
-    rm -rf mcr-install
-
-# Configure environment variables for MCR
-ENV LD_LIBRARY_PATH /opt/mcr/v95/runtime/glnxa64:/opt/mcr/v95/bin/glnxa64:/opt/mcr/v95/sys/os/glnxa64:/opt/mcr/v95/extern/bin/glnxa64
-ENV XAPPLRESDIR /etc/X11/app-defaults
 
 # SNAP
 RUN mkdir /snap-install && \
@@ -44,5 +31,20 @@ RUN mkdir /snap-install && \
     cd / && \
     rm -rf snap-install
 
+# Install GDAL
+RUN add-apt-repository ppa:ubuntugis/ppa
+RUN apt-get update && \
+      apt-get install gdal-bin \
+      apt-get install libgdal-dev
+ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
+ENV C_INCLUDE_PATH=/usr/include/gdal
+RUN pip3 install GDAL
+
+ARG source_req=./aux_files/requirements_casa.txt
+ARG dest_req=/tmp_gdal/requirements.txt
+RUN mkdir /tmp_gdal
+
+COPY ${source_req} ${dest_req}
+RUN pip3 install -r ${dest_req}
 
 WORKDIR /src
