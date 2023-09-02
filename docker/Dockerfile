@@ -1,12 +1,12 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 LABEL maintainer "gus838@gmail.com"
 
 # Install some packages
 RUN apt-get update && \
       DEBIAN_FRONTEND=noninteractive apt-get install -y \ 
-      python3.9 \ 
-      python3.9-dev \
+      python3.10 \ 
+      libpython3.10-dev \
       python3-pip \
       net-tools \
       ffmpeg \
