@@ -16,7 +16,8 @@ RUN apt-get update && \
       xorg \
       unzip \
       wget \
-      curl && \
+      curl \
+      software-properties-common && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -34,8 +35,11 @@ RUN mkdir /snap-install && \
 # Install GDAL
 RUN add-apt-repository ppa:ubuntugis/ppa
 RUN apt-get update && \
-      apt-get install gdal-bin \
-      apt-get install libgdal-dev
+      apt-get install -y \
+      gdal-bin \
+      libgdal-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
 ENV C_INCLUDE_PATH=/usr/include/gdal
 RUN pip3 install GDAL
@@ -45,6 +49,7 @@ ARG dest_req=/tmp_gdal/requirements.txt
 RUN mkdir /tmp_gdal
 
 COPY ${source_req} ${dest_req}
+RUN cat ${dest_req}
 RUN pip3 install -r ${dest_req}
 
 WORKDIR /src
