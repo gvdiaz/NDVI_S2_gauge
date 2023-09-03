@@ -12,19 +12,19 @@ Generar un script python/bash que sea capaz de seleccionar escenas Sentinel-2, r
 
 ### Trabajos realizados
 
-**al 03/09/2023***
+**al 03/09/2023**
 
 Recopilación de acciones al día de hoy y sus racionales,
 
-* Agrego en dockerfile paquete software-properties-common para poder utilizar el add-apt-repository que necesita la instalción de GDAL para agregar el repositorio ubuntugis:ppa.
+* Agrego en dockerfile paquete software-properties-common para poder utilizar el add-apt-repository que necesita la instalción de GDAL para agregar el repositorio ubuntugis:ppa. [link de ayuda](https://itsfoss.com/add-apt-repository-command-not-found/)
 
-* Surtió efecto agregar el paquete pero al mantener la versión 3.9 de python, pip no encuentra ciertos paquetes que utilicé en el desarrollo de las herramientas utilizadas para el buscador de escenas. Por lo cual a medida que va fallando la instalación de paquetes voy quitando la especificación de versión de los paquetes que no los encuentra.
+* Surtió efecto agregar el paquete pero al mantener la versión 3.9 de python, pip no encuentra ciertos paquetes que utilicé en el desarrollo de las herramientas utilizadas para el buscador de escenas. Por lo cual a medida que va fallando la instalación de paquetes voy quitando la especificación de versión de los paquetes que no los encuentra. [link paquetes disponibles en distros de Ubuntu](https://packages.ubuntu.com/)
 
-* Son cuatro los paquetes que no puedo instalar. En este punto decido dos cosas,
+* Son cuatro los paquetes que no puedo instalar. En este punto decido modificar tres aspectos de compilación,
 
     1. Cambiar versión de python a 3.10 para mantener las versiones originales de requirements_casa.txt.
     2. Volver a indicar las versiones de los paquetes, ahora que los va a poder encontrar.
-    3. Cambiar la versión de ubuntu porque Ubuntu focal (20.04) no cuenta con el paquete python3.10-dev. Por lo cual tuve que volver a compilar todo con Ubuntu jammy (22.04LTS)
+    3. Cambiar la versión de ubuntu porque Ubuntu focal (20.04) no cuenta con el paquete python3.10-dev. Por lo cual tuve que volver a compilar todo con Ubuntu jammy (22.04LTS) 
 
 **Resultado:**
 
