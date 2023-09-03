@@ -12,6 +12,27 @@ Generar un script python/bash que sea capaz de seleccionar escenas Sentinel-2, r
 
 ### Trabajos realizados
 
+**al 03/09/2023***
+
+Recopilación de acciones al día de hoy y sus racionales,
+
+* Agrego en dockerfile paquete software-properties-common para poder utilizar el add-apt-repository que necesita la instalción de GDAL para agregar el repositorio ubuntugis:ppa.
+
+* Surtió efecto agregar el paquete pero al mantener la versión 3.9 de python, pip no encuentra ciertos paquetes que utilicé en el desarrollo de las herramientas utilizadas para el buscador de escenas. Por lo cual a medida que va fallando la instalación de paquetes voy quitando la especificación de versión de los paquetes que no los encuentra.
+
+* Son cuatro los paquetes que no puedo instalar. En este punto decido dos cosas,
+
+    1. Cambiar versión de python a 3.10 para mantener las versiones originales de requirements_casa.txt.
+    2. Volver a indicar las versiones de los paquetes, ahora que los va a poder encontrar.
+    3. Cambiar la versión de ubuntu porque Ubuntu focal (20.04) no cuenta con el paquete python3.10-dev. Por lo cual tuve que volver a compilar todo con Ubuntu jammy (22.04LTS)
+
+**Resultado:**
+
+Logré compilar primer versión de docker. Los pasos a seguir son desarrollar los scripts para lanzar el contendedor ya sea en,
+
+* Desarrollo: Lanzar notebook jupyter con acceso a todos los paquetes de python instalados, sobretodo el de snappy
+* Ejecución: Ejecutar script con y dejar registro de de acciones realizadas durante ejecución.
+
 **al 26/08/2023**
 
 Creo en pc de casa usuario "black_dock" en SO Ubuntu nativo para poder ejecutar con privilegios los comandos de docker.
