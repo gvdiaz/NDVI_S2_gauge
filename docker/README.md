@@ -8,7 +8,7 @@ Version: 0.1
 Description: Seleccionador + "Bajador" + Procesador de imagenes Sentinel-2
 
 ## Container Description: 
-Ubuntu 22.04LTS + SNAP 9.0 + Python 3.10 
+Ubuntu 22.04LTS + SNAP 9.0 + Python 3.10
 
 ## Use
 (por ahora sigo utilizando el original de donde saqué información)
