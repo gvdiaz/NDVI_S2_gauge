@@ -9,8 +9,70 @@ Según lo hablado con el Licenciado Andrés Ezequiel Dolinko acerca de investiga
 ### Propuesta
 
 Generar un script python/bash que sea capaz de seleccionar escenas Sentinel-2, recortar los productos seleccionados sobre la zona de interés y computar NDVI sobre dichas áreas. La intención es tener una primera aproximación para poder evaluar las estrategias utilizadas desde el 2021 (disponibilidad de datos del satélite).
-
+|
 ### Trabajos realizados
+
+**al 10/09/2023**
+
+17:02
+
+También debí encontrar la ruta donde se encontraba el archivo 'snap-conf'. Para ello utilicé la siguiente función,
+
+```
+# find / -name snappy-conf
+```
+
+Que me entregó la ruta '/opt/snap/bin/snappy-conf'.
+
+Por último, creo, debo decidir donde agregar el módulo snappy de python para que lo encuentre. Para ello me valgo de ejecutar una instancia de python e importar el módulo sys para ver donde búsca los módulos. Esta ejecución me devuelve las siguientes rutas,
+
+```
+['', '/usr/lib/python310.zip', '/usr/lib/python3.10', '/usr/lib/python3.10/lib-dynload', '/usr/local/lib/python3.10/dist-packages', '/usr/lib/python3/dist-packages']
+```
+
+Por lo cual la línea a agregar para la compilación sería la siguiente,
+
+```
+RUN ./snappy-conf /usr/bin/python3 /usr/local/lib/python3.10/dist-packages
+```
+
+Pruebo a ver que me da...
+
+16:40
+
+Para hacer funcionar el módulo snappy la documentación me indica que debo ejecutar el siguiente comando,
+
+```
+./snappy-conf <python-exe> <snappy-dir>
+```
+
+donde python-exe sería la ubicación del ejecutable de python. Para ello debí desarrollar otro script que me permita entrar al bash del contenedor y ejecutar el siguiente comando,
+
+```
+$ which python3
+```
+
+de modo de conocer la ubicación del ejecutable. Cómo resultado dió la ubicación '/usr/bin/python3'. La cual utilizaré para ejecutar esa línea en el build y recompilar el contenedor.
+
+16:28
+
+Encuentro la referencia de snappy y como configurarlo luego de la instalación en el siguiente [link](https://senbox.atlassian.net/wiki/spaces/SNAP/pages/50855941/Configure+Python+to+use+the+SNAP-Python+snappy+interface+SNAP+versions+9). Voy a implementarla.
+
+Agrego que también encontré la página de referencia que enseña a utilizar el módulo snappy en el siguiente [link](https://senbox.atlassian.net/wiki/spaces/SNAP/pages/19300362/How+to+use+the+SNAP+API+from+Python)
+
+16:22
+
+Logré hacer funcionar el contenedor con el servidor jupyter y ver las carpetas necesarias para desarrollo. Continúo por hacer funcionar los ejemplos de snappy dentro del contenedor.
+
+**al 09/09/2023**
+
+Trabajé a distancia con la pc del laburo. Dado que no tengo instalado docker ni compilado el docker que desarrollé la semana pasada encaré el trabajo en la pc del laburo realicé las siguientes acciones para poder hacerlo,
+
+* Bajé una escena sentinel-2 a la pc para poder procesarla con snappy
+* Instalé el módulo snappy 9 en la pc del laburo pero queda pendiente terminar la instalación confiugrando el snap-config. Dejo la página de referencia [instalación snappy](https://senbox.atlassian.net/wiki/spaces/SNAP/pages/50855941/Configure+Python+to+use+the+SNAP-Python+snappy+interface+SNAP+versions+9)
+* Lectura de implementación de snappy. [foro snappy](https://senbox.atlassian.net/wiki/spaces/SNAP/pages/8847381/Developer+Guide)
+
+OBJETIVO: En los próximos días debería poner en funcionamiento el módulo snappy y luego probar el funcionamiento dentro de la instalación de docker.
 
 **al 03/09/2023**
 
