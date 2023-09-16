@@ -45,13 +45,11 @@ $ docker build -t gis_gvd .
 
 ## 2. Run 
 (Comandos aún del docker original que debo cambiar en este proyecto)
-docker run -d --rm --name ssm_mine_gold_veng_california --net host -it \
-    -v $(pwd):/src \
-    -v '/mnt/c/Users/DiazGustavoV/.snap/auxdata/dem/SRTM 1Sec HGT/':'/root/.snap/auxdata/dem/SRTM 1Sec HGT' \
-    --workdir /src \
-    ssm_mine_veng
+ejecutar el script dev_jup.sh en bash de terminal estando dentro esta misma carpeta
 
-
+```
+$ sudo ./dev_jup.sh
+```
 
 ## Enter to container
 (Comandos aún del docker original que debo cambiar en este proyecto)
