@@ -28,7 +28,10 @@ RUN mkdir /snap-install && \
     cd /snap-install && \
     wget --no-check-certificate -q https://download.esa.int/step/snap/9.0/installers/esa-snap_all_unix_9_0_0.sh && \
     chmod 777 -R esa-snap_all_unix_9_0_0.sh && \
-    ./esa-snap_all_unix_9_0_0.sh -q && \
+    ./esa-snap_all_unix_9_0_0.sh -q
+
+RUN cd /opt/snap/bin && \
+    ./snappy-conf /usr/bin/python3 /usr/local/lib/python3.10/dist-packages && \
     cd / && \
     rm -rf snap-install
 
