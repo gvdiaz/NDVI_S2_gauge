@@ -12,6 +12,207 @@ Generar un script python/bash que sea capaz de seleccionar escenas Sentinel-2, r
 |
 ### Trabajos realizados
 
+**al 17/09/2023**
+
+19:18
+
+Por la mañana no logré compilar snappy porque el wheel generado de jpy (que si logré compilar) tenía que ubicarse en un lugar en especial dentro de las carpetas de snap. También logré instalarlo en python 3.10 con ayuda de pip3. Aún cuando copié el wheel en la carpeta de snappy que correspondía ejecuté la línea,
+
+```
+# /snappy-conf /usr/bin/python3 /usr/local/lib/python3.10/dist-packages
+```
+
+Ahora devuelve el error 30 al intentar compilar. El log de error da lo siguiente,
+
+```
+INFO: Installing from Java module '/opt/snap/snap/modules/org-esa-snap-snap-python.jar'
+WARNING: Architecture requirement possibly not met: Python is x86_64 but JVM requires amd64
+INFO: Installing jpy...
+INFO: Unzipping '/usr/local/lib/python3.10/dist-packages/snappy/jpy-0.15.0.dev0-cp310-cp310-linux_x86_64.whl'
+INFO: Configuring jpy...
+INFO: jpy Python API configuration written to '/usr/local/lib/python3.10/dist-packages/snappy/jpyconfig.py'
+INFO: jpy Java API configuration written to '/usr/local/lib/python3.10/dist-packages/snappy/jpyconfig.properties'
+INFO: Configuring snappy...
+INFO: snappy configuration written to '/usr/local/lib/python3.10/dist-packages/snappy/snappy.ini'
+INFO: Importing snappy for final test...
+ERROR: Configuration failed with exit code 30
+```
+
+Hago pruebas intentando encontrar si se instaló o no el módulo pero cuando invoco snappy en python me da el siguiente mensaje,
+
+```python
+>>> import snappy
+RuntimeError: jpy: internal error: static method not found: unwrapProxy(Ljava/lang/Object;)Lorg/jpy/PyObject;
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/local/lib/python3.10/dist-packages/snappy/__init__.py", line 236, in <module>
+    jpy.create_jvm(options=_get_snap_jvm_options())
+SystemError: <built-in function create_jvm> returned a result with an exception set
+```
+
+No encuentro la manera de que funcione. Empiezo a evaluar utilizar el plug-in de esa-snappy. Lo dejo por el día de hoy...
+
+10:43
+
+Logré instalar el jdk y posteriormente compilar el jpy. Pero enseguida el contendor se bloqueó y debí generar todo el proceso de compilación nuevamente.
+
+Cuando intenté compilar el módulo jpy me saltó que no tenía instalado el paquete maven que olvidé registrar el día de hoy y el día de ayer.
+
+Instalción de paquete maven [referencia](https://linuxhint.com/install_apache_maven_ubuntu/)
+
+1. Arranco el contenedor con el script 'bash_container.sh'
+2. Una vez dentro actualizo con el siguiente comando,
+```
+# apt update
+```
+3. Luego actualizo los paquetes que correspondan con el siguiente comando,
+```
+# apt upgrade
+```
+4. Instalo el paquete maven
+```
+# apt install maven -y
+```
+5. Pruebo nuevamente de compilar jpy
+
+09:21
+Me doy cuenta de que la instalación de java no es la que correspondía. Instalé el jre cuando debía instalar jdk (java development kit). Eso voy a hacer...
+
+Vuelvo a encarar la instalación de jdk.
+
+Utilizo nuevamente la guía descripta en la documentación del jpy-consortium [link](https://github.com/jpy-consortium/jpy/tree/master)
+
+Pasos realizados,
+1. Creo una nueva carpeta (/src/utils/jdk_source_true) en el contenedor para bajar los fuentes correctos.
+
+2. Encuentro, ahora sí, el módulo de java necesario jdk 8 publicado por oracle [jdk](https://www.oracle.com/ar/java/technologies/javase/javase8u211-later-archive-downloads.html) y lo bajo mediante wget con el siguiente comando,
+
+```
+# wget -O jdk8_oracle_linux_x64.tar.gz https://www.oracle.com/ar/java/technologies/javase/javase8u211-later-archive-downloads.html#license-lightbox
+```
+
+No sirve porque oracle me obligó a generar una cuenta para bajar la versión jdk 8 de linux x64. Por lo cual tuve que hacer la cuenta bajar por mi cuenta el tar y guardarlo en la carpeta utils del contenedor (está compartida con el SO nativo).
+
+Una vez hecho todo eso descomprimo el tar de nuevo en la carpeta /usr/java/ (dentro del contenedor) con el siguiente comando,
+
+```
+# tar zxvf jdk-8u371-linux-x64.tar.gz -C /usr/java
+```
+
+Lo hizo bien.
+
+3. Redefino las variables de entorno,
+
+```
+# export JDK_HOME=/usr/java/jdk1.8.0_371
+# export JAVA_HOME=$JDK_HOME
+```
+
+Lo verifico con el comando printenv y lo modificó correctamente.
+
+4. Ejecuto el comando de compilación de jpy dentro de la carpeta donde bajé el proyecto jpy (se encuentra en /src/utils/jpy/jpy-master),
+
+```
+# python3 setup.py build maven bdist_wheel
+```
+
+Y lo hizo finalmente. Ya tengo compilado el jpy!!!! Continúo con la instalación de snappy en el sistema.
+
+**al 16/09/2023**
+18:00
+
+Pude instalar el entorno de programación jre1.8.0_381 pero no pude terminar de compilar el módulo jpy. Ingresaba el siguiente comando para compilar dicho módulo,
+
+```
+# python3 setup.py build maven bdist_wheel
+```
+
+pero el contenedor me devuelve lo siguiente,
+
+```
+/src/utils/jpy/jpy-master/setup.py:25: DeprecationWarning: The distutils package is deprecated and slated for removal in Python 3.12. Use setuptools or check PEP 632 for potential alternatives
+  from distutils import log
+Error: environment variable "JAVA_HOME" must be set to a JDK (>= v1.7) installation directory
+```
+
+Es decir que no encuentra la instalación de java que necesita.
+
+16:34
+
+Leo la documentación referida en [instalación snappy 9](https://senbox.atlassian.net/wiki/spaces/SNAP/pages/50855941/Configure+Python+to+use+the+SNAP-Python+snappy+interface+SNAP+versions+9) y me indica que debo compilar manualmente el módulo jpy (traductor de clases de java a python y viceversa).
+
+Cuando me encuentro leyendo la documentación me doy cuenta de que el log que necesitaba revisar no se encuentra en la instancia del contenedor porque esa instancia no fue la que se había compilado sino una nueva. Por lo cual decido correr el comando de instalación de snappy en el contenedor instanciado por el ejecutable 'bash_container.sh'.
+
+Una vez que realicé la acción encontré el log que estaba buscando y lo copio a la carpeta de Scripts del proyecto y luego la muevo a la carpeta 'docker' y lo dejo en la subcarpeta 'aux_files'.
+
+En el archivo snappyutil.log me indica como realizar la compilación del jpy que no fue encontrado en el sistema. La tarea que hay que realizar es,
+
+* compilar el jpy por mí mismo
+* Luego copiarlo en la siguiente carpeta dentro del contenedor
+* Path: "/usr/local/lib/python3.10/dist-packages/snappy"
+
+Para compilar dicho módulo iba a seguir los pasos pero decido primero revisar los archivos de compilación de jpy. En el [link](https://github.com/bcdev/jpy), allí me indica que el proyecto cambió de lugar [link nuevo jpy](https://github.com/jpy-consortium/jpy). En el mismo me indica cómo compilar dicho paquete,
+
+
+Los pasos son los siguientes,
+
+1. Instalar JDK 8, todavía no lo tengo así que lo instalo con los siguientes pasos indicados en el siguiente link [instalación de JDK](https://linux.how2shout.com/how-to-install-oracle-java-8-64-bit-ubuntu-22-04-20-04-lts/)
+    1. Bajé el paquete java del repositorio de oracle [url_java](https://javadl.oracle.com/webapps/download/AutoDL?BundleId=248763_8c876547113c4e4aab3c868e9e0ec572) usando wget
+    2. renombro el nombre del archivo con mv, pasé del nombre a jdk8_oracle_linux_x64.tar.gz pero esto debería implementarlo directamente con el wget opción -O ([Fuente de info](https://www.quora.com/How-do-you-rename-a-downloaded-file-with-Wget-in-Linux))sería algo así
+    ```
+    # wget -O jdk8_oracle_linux_x64.tar.gz https://javadl.oracle.com/webapps/download/AutoDL?BundleId=248763_8c876547113c4e4aab3c868e9e0ec572
+    ```
+    3. Creo el directorio donde voy a dejar la extracción
+    ```
+    # mkdir /usr/java
+    ```
+    4. Extraigo el tar en el directorio creado,
+    ```
+    # tar -xf jdk8_oracle_linux_x64.tar.gz -C /usr/java
+    ```
+    5. Agrego la ruta del ejecutable java, en esta instancia hecha se encuentra en el siguiente directorio,
+    ```
+    # /usr/java/jre1.8.0_381/bin/java
+    ```
+    Por lo cual el comando sería el siguiente,
+    ```
+    # echo 'export PATH="$PATH:/usr/java/jre1.8.0_381/bin"' >> ~/.bashrc
+    ```
+    6. Probar la instalación con el siguiente comando,
+    ```
+    # java -version
+    ```
+    Que debería devolver la versión de java utilizada
+2. 
+
+
+
+16:26
+
+Registro lo último que sucedió el día 10/09/2023. Intenté compilar el contendor habiendo encontrado las rutas y ejecutables necesarios, pero no me permitió compilar.
+
+El error que tira se da en el momento de ejecutar el siguiente comando,
+
+```
+# /snappy-conf /usr/bin/python3 /usr/local/lib/python3.10/dist-packages
+```
+
+Cuando lo ejecuta me devuelve lo siguiente,
+
+```
+19.61 Configuring SNAP-Python interface...                                      
+20.22 java.io.IOException: Python configuration failed.
+20.22 Command [/usr/bin/python3 ./snappyutil.py --snap_home /opt/snap --java_module /opt/snap/snap/modules/org-esa-snap-snap-python.jar --force --log_file ./snappyutil.log --jvm_max_mem 5G --java_home /opt/snap/jre/jre --req_arch amd64]
+20.22 failed with return code 10.
+20.22 Please check the log file '/usr/local/lib/python3.10/dist-packages/snappy/snappyutil.log'.
+```
+
+Por lo cual intento entrar en snappyuil.log pero el mismo no existe. Decido compilar el módulo snappy para python 3.10 y luego volver a ejecutar el comando 'snappy-conf...' bajo las indicaciones que me da el link de [instalación snappy 9](https://senbox.atlassian.net/wiki/spaces/SNAP/pages/50855941/Configure+Python+to+use+the+SNAP-Python+snappy+interface+SNAP+versions+9)
+
+
 **al 10/09/2023**
 
 17:02
