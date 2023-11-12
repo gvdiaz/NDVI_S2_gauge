@@ -12,6 +12,13 @@ Generar un script python/bash que sea capaz de seleccionar escenas Sentinel-2, r
 |
 ### Trabajos realizados
 
+**al 12/11/2023**
+16:28
+
+Subí modificaciones de proyecto. No pude compilar en un mismo contenedor herramientas para python 3.6 y 3.10. Me superó la situación. Ante eso comencé a implementar la idea de tener un conetendor con herramientas GIS utilizando python 3.10 y otro contenedor con snappy funcionando con python 3.6. Logré el primer objetivo con relativa facilidad.
+
+En cuanto a la instalación de snappy está a punto de poder ser completada. En este caso lo que sucede es que comencé a utilizar todos los componentes que RV utiliza para poder compilar snappy pero al momento de crear el módulo snappy lo crea y termina la compilación pero no vuelve al símbolo del sistema. Se queda esperando algo que nunca sucede. Lamentablemente por el momento debo dejarlo allí pero está pronto a poder resolverse.
+
 **al 17/09/2023**
 
 19:18
