@@ -1,0 +1,306 @@
+FROM tensorflow/tensorflow:2.7.0-jupyter
+#TODO fix on 2.7.0-jupyter
+
+##Python3.6
+RUN apt update
+RUN apt install software-properties-common -y
+RUN add-apt-repository ppa:deadsnakes/ppa -y
+RUN add-apt-repository ppa:ubuntugis/ppa -y
+RUN apt install python3.6 python3.6-dev -y
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 2
+
+##Wget
+RUN apt update
+RUN apt install wget -y
+RUN apt install dos2unix -y
+
+##JAVA
+RUN apt update
+RUN apt install openjdk-8-jre -y
+RUN apt install openjdk-8-jdk -y
+ENV JDK_HOME /usr/lib/jvm/java-8-openjdk-amd64/
+ENV JAVA_HOME $JDK_HOME
+
+##pybridge
+RUN apt install python3.6-distutils -y
+RUN pip install pybridge
+RUN git clone https://github.com/bcdev/jpy
+#TODO fix on forman committed on May 18 1 parent ff48ea0 commit 76548cb6f3b9ba795ed6b3a42327607234eaba3c
+
+##maven
+RUN wget https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
+RUN tar xzvf apache-maven-3.8.6-bin.tar.gz
+ENV PATH $PATH:/tf/apache-maven-3.8.6/bin
+RUN cd /tf/jpy/ && python setup.py build maven bdist_wheel
+
+##snap
+RUN wget https://download.esa.int/step/snap/8.0/installers/esa-snap_all_unix_8_0.sh
+RUN chmod +x esa-snap_all_unix_8_0.sh
+RUN sh ./esa-snap_all_unix_8_0.sh -q -splash
+
+##snapy
+RUN /usr/local/snap/bin/snappy-conf /usr/bin/python3 /tf
+
+##numpy
+RUN pip install numpy
+
+##gdal
+#RUN NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+#RUN apt install gdal-bin -y
+#RUN apt install libgdal-dev -y
+#ENV CPLUS_INCLUDE_PATH $CPLUS_INCLUDE_PATH:/usr/include/gdal
+#ENV C_INCLUDE_PATH $C_INCLUDE_PATH:/usr/include/gdal
+#ENV PATH $PATH:/usr/include/gdal
+#RUN pip install GDAL
+RUN wget https://download.osgeo.org/gdal/2.2.4/gdal-2.2.4.tar.gz
+RUN tar xzf gdal-2.2.4.tar.gz
+RUN cd gdal-2.2.4 && ./configure --with-python && make -j8 && make install
+RUN pip install setuptools==57.0.0
+RUN pip install gdal==2.2.4
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/local/lib/
+
+
+#TODO Fix versions
+RUN pip install jupyter==1.0.0
+RUN pip install matplotlib==3.3.4
+RUN pip install pandas==1.1.5
+RUN pip install openpyxl==3.0.9
+RUN pip install torch==1.10.2
+RUN pip install pytorch_lightning==1.5.10
+RUN pip install segmentation_models_pytorch==0.2.1
+RUN pip install opencv-python-headless==4.5.5.64
+RUN pip install opencv-python==4.5.5.64
+RUN pip install albumentations==1.1.0
+RUN pip install tqdm
+RUN pip install h5py
+RUN pip install opencv-python
+RUN pip install earthengine_api
+RUN pip install geotiff
+RUN pip install rasterio
+RUN pip install sklearn
+RUN pip install fiona
+RUN pip install geopandas
+RUN pip install geojson
+RUN pip install tables
+RUN pip install xmltodict
+RUN pip install tensorflow
+RUN pip install seaborn
+RUN pip install numpy -U
+
+
+
+#utils scripts
+# COPY utils /tf/utils
+# COPY notebooks /tf/notebooks
+# RUN chmod +x /tf/utils/*
+# RUN dos2unix /tf/utils/*
+# RUN chmod +x /tf/notebooks/*
+# RUN dos2unix /tf/notebooks/*
+
+
+ENV DOCKER True
+
+# docker run -p 8888:8888 -v /mnt/c/Users/VerrastroRamiro/Desktop/Desarrollo/Compactacion/Codigo/Compactacion/notebooks_d:/tf/notebooks_d -v /mnt/c/Users/VerrastroRamiro/Desktop/Desarrollo/Compactacion:/tf/Compactacion -v /mnt/c/Users/VerrastroRamiro/Desktop/Desarrollo/DataLake:/tf/DataLake -v '/mnt/c/Users/VerrastroRamiro/VENG SA':'/tf/VENG SA' -t compa
+
+##updater script
+#TODO dejar que el usuario decida si hacer el update o no.
+#o ver si se puede updatear a una version fija de snap
+#RUN bash /tf/utils/update.sh
+
+
+####################################################################
+# sudo service docker start
+# docker build -t compa Compactacion/
+# docker run -p 8888:8888 -v /mnt/c/Users/VerrastroRamiro/Desktop/Desarrollo/Compactacion/Codigo/Compactacion/notebooks_d:/tf/notebooks_d -v /mnt/c/Users/VerrastroRamiro/Desktop/Desarrollo/Compactacion:/tf/Compactacion -v /mnt/e/Compactacion2022-08-31:/tf/DataLake -v '/mnt/e/OneDrive/VENG SA':'/tf/VENG SA' -t compa
+
+
+# cd /mnt/c/Users/VerrastroRamiro/Desktop/Desarrollo/Despeckle/Code/
+# docker build -t maqueta_py_36_dpkg maqueta_py_36_dpkg/
+# docker run -p 8888:8888 -t maqueta_py_36_dpkg
+# docker run -t maqueta_py_36_dpkg /tf/utils/help.sh
+
+# docker run -v /mnt/c/Users/VerrastroRamiro/Desktop/Desarrollo/Despeckle/Marketing:/tf/in/ -v /mnt/c/Users/VerrastroRamiro/Desktop/Desarrollo/Despeckle/Marketing:/tf/out/ -p 8888:8888 -t maqueta_py_36_dpkg
+
+
+# Debug
+# docker run -it maqueta_py_36_dpkg bash
+
+# docker run -it -v /mnt/c/Users/VerrastroRamiro/Desktop/Desarrollo/Despeckle/Marketing:/tf/in/ -v /mnt/c/Users/VerrastroRamiro/Desktop/Desarrollo/Despeckle/Marketing:/tf/out/ maqueta_py_36_dpkg bash
+# docker run -it -v /mnt/d/TEST:/tf/in/ -v /mnt/d/TEST:/tf/out/ -v /mnt/d/AGUA:/tf/AGUA/ -v /mnt/c/Users/VerrastroRamiro/.snap/auxdata/dem:/home/.snap/auxdata/dem maqueta_py_36_dpkg bash
+# https://www.revisitclass.com/devops/how-to-copy-docker-image-from-one-machine-to-another/#:~:text=%20How%20to%20copy%20Docker%20image%20from%20one,use%20cp%2C%20scp%20or%20rsync%20command...%20More%20
+
+# python utils/predict_despeckling.py /tf/in/S1A_OPER_SAR_EOSSP__CORE_L1A_OLVF_20220127T190024_Cal_TC.tif /tf/out/S1A_OPER_SAR_EOSSP__CORE_L1A_OLVF_20220127T190024_Cal_TC_dpkg.tif False
+
+# python utils/check_input_list.py
+
+# Versiones estables
+# Package                     Version
+# --------------------------- --------------------
+# absl-py                     1.0.0
+# affine                      2.3.1
+# aiohttp                     3.8.1
+# aiosignal                   1.2.0
+# albumentations              1.1.0
+# argon2-cffi                 21.3.0
+# argon2-cffi-bindings        21.2.0
+# asciitree                   0.3.3
+# async-generator             1.10
+# async-timeout               4.0.2
+# asynctest                   0.13.0
+# attrs                       21.4.0
+# backcall                    0.2.0
+# bleach                      4.1.0
+# cached-property             1.5.2
+# cachetools                  4.2.4
+# certifi                     2019.11.28
+# cffi                        1.15.0
+# chardet                     3.0.4
+# charset-normalizer          2.0.12
+# click                       8.0.4
+# click-plugins               1.1.1
+# cligj                       0.7.2
+# cycler                      0.11.0
+# dataclasses                 0.8
+# dbus-python                 1.2.16
+# decorator                   4.4.2
+# defusedxml                  0.7.1
+# distro-info                 0.23ubuntu1
+# earthengine-api             0.1.306
+# efficientnet-pytorch        0.6.3
+# entrypoints                 0.4
+# et-xmlfile                  1.1.0
+# fasteners                   0.17.3
+# Fiona                       1.8.21
+# frozenlist                  1.2.0
+# fsspec                      2022.1.0
+# future                      0.18.2
+# GDAL                        2.2.4
+# geopandas                   0.9.0
+# geotiff                     0.1.1
+# google-api-core             2.7.2
+# google-api-python-client    1.12.11
+# google-auth                 2.6.5
+# google-auth-httplib2        0.1.0
+# google-auth-oauthlib        0.4.6
+# google-cloud-core           2.3.0
+# google-cloud-storage        2.0.0
+# google-crc32c               1.3.0
+# google-resumable-media      2.3.2
+# googleapis-common-protos    1.56.0
+# grpcio                      1.44.0
+# h5py                        3.1.0
+# httplib2                    0.20.4
+# httplib2shim                0.0.3
+# idna                        2.8
+# idna-ssl                    1.1.0
+# imageio                     2.16.0
+# importlib-metadata          4.8.3
+# importlib-resources         5.4.0
+# ipykernel                   5.5.6
+# ipython                     7.16.3
+# ipython-genutils            0.2.0
+# ipywidgets                  7.7.0
+# jedi                        0.17.2
+# Jinja2                      3.0.3
+# joblib                      1.1.0
+# jsonschema                  3.2.0
+# jupyter                     1.0.0
+# jupyter-client              7.1.2
+# jupyter-console             6.4.3
+# jupyter-core                4.9.2
+# jupyterlab-pygments         0.1.2
+# jupyterlab-widgets          1.1.0
+# kiwisolver                  1.3.1
+# Markdown                    3.3.6
+# MarkupSafe                  2.0.1
+# matplotlib                  3.3.4
+# mistune                     0.8.4
+# multidict                   5.2.0
+# munch                       2.5.0
+# nbclient                    0.5.9
+# nbconvert                   6.0.7
+# nbformat                    5.1.3
+# nest-asyncio                1.5.5
+# networkx                    2.5.1
+# notebook                    6.4.10
+# numcodecs                   0.9.1
+# numpy                       1.19.5
+# oauthlib                    3.2.0
+# opencv-python               4.5.5.64
+# opencv-python-headless      4.5.5.64
+# openpyxl                    3.0.9
+# packaging                   21.3
+# pandas                      1.1.5
+# pandocfilters               1.5.0
+# parso                       0.7.1
+# pexpect                     4.8.0
+# pickleshare                 0.7.5
+# Pillow                      8.4.0
+# pip                         20.0.2
+# pretrainedmodels            0.7.4
+# prometheus-client           0.14.1
+# prompt-toolkit              3.0.29
+# protobuf                    3.19.4
+# ptyprocess                  0.7.0
+# pyasn1                      0.4.8
+# pyasn1-modules              0.2.8
+# pybridge                    1.0.1
+# pycparser                   2.21
+# pyDeprecate                 0.3.1
+# Pygments                    2.11.2
+# PyGObject                   3.36.0
+# pyparsing                   3.0.8
+# pyproj                      3.0.1
+# pyrsistent                  0.18.0
+# python-apt                  2.0.0+ubuntu0.20.4.6
+# python-dateutil             2.8.2
+# pytorch-lightning           1.5.10
+# pytz                        2022.1
+# PyWavelets                  1.1.1
+# PyYAML                      6.0
+# pyzmq                       22.3.0
+# qtconsole                   5.2.2
+# QtPy                        2.0.1
+# qudida                      0.0.4
+# rasterio                    1.2.10
+# requests                    2.22.0
+# requests-oauthlib           1.3.1
+# requests-unixsocket         0.2.0
+# rsa                         4.8
+# scikit-image                0.17.2
+# scikit-learn                0.24.2
+# scipy                       1.5.4
+# segmentation-models-pytorch 0.2.1
+# Send2Trash                  1.8.0
+# setuptools                  59.5.0
+# Shapely                     1.8.1.post1
+# six                         1.14.0
+# sklearn                     0.0
+# snuggs                      1.4.7
+# tensorboard                 2.8.0
+# tensorboard-data-server     0.6.1
+# tensorboard-plugin-wit      1.8.1
+# terminado                   0.12.1
+# testpath                    0.6.0
+# threadpoolctl               3.1.0
+# tifffile                    2020.9.3
+# timm                        0.4.12
+# torch                       1.10.2
+# torchmetrics                0.8.0
+# torchvision                 0.11.2
+# tornado                     6.1
+# tqdm                        4.64.0
+# traitlets                   4.3.3
+# typing-extensions           4.1.1
+# unattended-upgrades         0.1
+# uritemplate                 3.0.1
+# urllib3                     1.25.8
+# wcwidth                     0.2.5
+# webencodings                0.5.1
+# Werkzeug                    2.0.3
+# wheel                       0.34.2
+# widgetsnbextension          3.6.0
+# yarl                        1.7.2
+# zarr                        2.8.3
+# zipp                        3.6.0
