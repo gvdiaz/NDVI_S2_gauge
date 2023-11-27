@@ -1,7 +1,7 @@
 #! /bin/bash
-
-PATH_2="/home/negrete/test_gee/token/"
-PATH_3="/mnt/c/Users/DiazGustavoV/Documents/Pers_Proj/Sentinel_2_getter/Output/"
+PATH_1=""
+PATH_2="./"
+PATH_3="../Output/"
 file="get_token.sh"
 out_file="token_dict.txt"
 out_file_2="keycloak.txt"
