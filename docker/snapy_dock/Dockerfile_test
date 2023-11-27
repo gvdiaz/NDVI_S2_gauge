@@ -89,10 +89,19 @@ RUN mkdir ${SNAP_INST} && \
 ##snapy
 # RUN /usr/local/snap/bin/snappy-conf /usr/bin/python3 $SOURCE_PATH
 # RUN /opt/snap/bin/snappy-conf /usr/bin/python3 ${SOURCE_PATH}
+RUN apt-get install psmisc
 
 ARG SNAPPY_CONF=$SNAP_INST/bin
 WORKDIR ${SNAPPY_CONF}
-RUN ./snappy-conf /usr/bin/python3 /usr/local/lib/python3.6/dist-packages && rm -rf SNAP
+# RUN ./snappy-conf /usr/bin/python3 /usr/local/lib/python3.6/dist-packages && rm -rf SNAP
+# RUN ["/bin/sh", "-c", "/opt/snap/bin/snappy-conf", "/usr/bin/python3", "/usr/local/lib/python3.6/dist-packages", "&", "&&", "sleep", "30"]
+RUN nohup bash -c ' /opt/snap/bin/snappy-conf /usr/bin/python3 /usr/local/lib/python3.6/dist-packages &' && \
+    ps && \
+    sleep 30
+# RUN ps && sleep 30
+# RUN ps && sleep 10
+# RUN sleep 30 && killall snappy-conf
+
 
 # # Install GDAL
 # RUN add-apt-repository ppa:ubuntugis/ppa
