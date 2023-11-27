@@ -12,7 +12,8 @@
 #   --workdir string: Working directory inside the container
 
 # echo $PWD
-PATH_REPO="$(cd ../ && pwd)"
+PATH_REPO="$(cd ../ && cd ../ && pwd)"
+# PATH_REPO="$(cd ../ && pwd)"
 # PATH_REPO="$(pwd)"
 PATH_SCRIPTS="${PATH_REPO}/Scripts"
 PATH_VECTORES="${PATH_REPO}/Vectores"

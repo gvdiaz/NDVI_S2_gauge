@@ -1,7 +1,7 @@
 #! /bin/bash
 # Script en bash para levantar arrancar bash de docker de desarrollo en imagen gis_gvd
 
-PATH_REPO="$(cd ../ && pwd)"
+PATH_REPO="$(cd ../ && cd ../ && pwd)"
 # PATH_REPO="$(pwd)"
 PATH_SCRIPTS="${PATH_REPO}/Scripts"
 PATH_VECTORES="${PATH_REPO}/Vectores"
