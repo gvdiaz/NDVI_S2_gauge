@@ -12,7 +12,7 @@
 #   --workdir string: Working directory inside the container
 
 # echo $PWD
-PATH_REPO="$(cd ../ && pwd)"
+PATH_REPO="$(cd ../ && cd ../ && pwd)"
 # PATH_REPO="$(pwd)"
 PATH_SCRIPTS="${PATH_REPO}/Scripts"
 PATH_VECTORES="${PATH_REPO}/Vectores"
@@ -20,7 +20,7 @@ PATH_UTILS="${PATH_REPO}/utils"
 PATH_TOKEN="${PATH_REPO}/token"
 
 # echo $PATH_REPO $PATH_SCRIPTS
-docker run --rm --name gis_gvd_develop \
+docker run --rm --name snappy_jup_develop \
     -it \
     -v $PATH_SCRIPTS:/src/Scripts \
     -v $PATH_VECTORES:/src/Vectores \
@@ -28,7 +28,7 @@ docker run --rm --name gis_gvd_develop \
     -v $PATH_TOKEN:/src/token \
     --workdir /src \
     -p 8888:8888 \
-    gis_gvd \
+    snappy_9_gvd \
     "jupyter" "notebook" "--port=8888" "--no-browser" "--ip=0.0.0.0" "--allow-root"
     # "jupyter" "notebook" "--allow-root"
     #'jupyter notebook'
