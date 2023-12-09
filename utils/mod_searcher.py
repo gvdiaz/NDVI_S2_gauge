@@ -10,7 +10,12 @@ def write_list(a_list,path_file):
 
 # Read list to memory
 def read_list(path_file):
-    # for reading also binary mode is important
+    # Para leer dataframe de interés
     with open(path_file, 'rb') as fp:
         n_list = pickle.load(fp)
         return n_list
+
+def read2list(path_file):
+    df_list = read_list(path_file)
+#     display('Tipo de variable', type(aux), 'Lectura de variable auxiliar', aux)
+    return df_list[0]['Id'].to_list()
