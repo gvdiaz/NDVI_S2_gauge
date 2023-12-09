@@ -16,6 +16,6 @@ def read_list(path_file):
         return n_list
 
 def read2list(path_file):
+    # Función especial para tomas listas de dataframes con distintas búsquedas y devolución de la columna a lista de la primera búsqueda
     df_list = read_list(path_file)
-#     display('Tipo de variable', type(aux), 'Lectura de variable auxiliar', aux)
     return df_list[0]['Id'].to_list()
