@@ -12,6 +12,14 @@ Generar un script python/bash que sea capaz de seleccionar escenas Sentinel-2, r
 |
 ### Trabajos realizados
 
+**al 08/12/2023**
+17:24
+
+Logré compilar los contenedores de herramientas GIS y el otro que contiene el módulo de SNAPPY. Ahora debería probar el módulo bajando alguna imagen que encuentre bajo algún criterio.
+
+*Pendiente*
+Modificar "token_decoder.py" para que pueda recibir listas de productos en df para bajar esas escenas.
+
 **al 12/11/2023**
 16:28
 
