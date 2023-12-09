@@ -97,7 +97,7 @@ WORKDIR ${SNAPPY_CONF}
 # RUN ["/bin/sh", "-c", "/opt/snap/bin/snappy-conf", "/usr/bin/python3", "/usr/local/lib/python3.6/dist-packages", "&", "&&", "sleep", "30"]
 RUN nohup bash -c ' /opt/snap/bin/snappy-conf /usr/bin/python3 /usr/local/lib/python3.6/dist-packages &' && \
     ps && \
-    sleep 30
+    sleep 55
 # RUN ps && sleep 30
 # RUN ps && sleep 10
 # RUN sleep 30 && killall snappy-conf
