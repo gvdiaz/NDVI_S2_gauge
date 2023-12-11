@@ -1,6 +1,7 @@
 import sys
 import os,stat
-import utils.mod_dloader as mdl
+sys.path.append(r'../utils')
+import mod_dloader as mdl
 
 # Argumento 1: user_s2
 # Argumento 2: pass_s2
@@ -10,8 +11,8 @@ import utils.mod_dloader as mdl
 mdl.show_sname(sys.argv[0])
 
 # Archivos para pedido de token modelo y de salida
-curl_model_path = '/home/negrete/test_gee/token/get_token_model.sh'
-curl_output = '/home/negrete/test_gee/token/get_token.sh'
+curl_model_path = './get_token_model.sh'
+curl_output = './get_token.sh'
 
 # Muestro si existe la ruta del archivo modelo
 print(os.path.isfile(curl_model_path), curl_model_path)
