@@ -32,6 +32,7 @@ RUN add-apt-repository ppa:ubuntugis/ppa -y
 RUN apt install python3.6 python3.6-dev -y
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 2
+RUN apt install -y curl
 
 ##Wget
 RUN apt update
