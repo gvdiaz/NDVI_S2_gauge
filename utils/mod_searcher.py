@@ -1,4 +1,5 @@
 import pickle
+import pandas
 
 # Funciones para escribir lista de búsqueda y poder leerla
 # write list to binary file
