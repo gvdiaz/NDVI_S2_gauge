@@ -6,4 +6,5 @@ Scripts/.ipynb_checkpoints/
 
 # Ignorar archivos
 utils/__pycache__/mod_searcher.cpython-310.pyc
-
+utils/__pycache__/mod_dloader.cpython-36.pyc
+output/producto.zip
