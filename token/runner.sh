@@ -1,11 +1,11 @@
 #! /bin/bash
 PATH_1=""
 PATH_2="./"
-PATH_3="../Output/"
+PATH_3="../output/"
 file="get_token.sh"
 out_file="token_dict.txt"
 out_file_2="keycloak.txt"
-out_file_3="prod_id_selected.txt"
+out_file_3="prod_id_selected.pkl"
 program=python3
 file_py="token_decoder.py"
 file_2_py="token_getter.py"
