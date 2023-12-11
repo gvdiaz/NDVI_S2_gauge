@@ -7,6 +7,7 @@ import requests
 import sys
 sys.path.append(r'../utils')
 import mod_dloader as mdl
+import mod_searcher as ms
 
 # Argumento 1: Ruta que contiene diccionario token
 # Argumento 2: Ruta que contiene string keycloak
@@ -28,10 +29,10 @@ except:
 try:
     pth_prod_id = sys.argv[3]
 except:
-    path_prod_id = r'../output/prod_list/'
-    prod_id_file = r'prod_id_selected.txt'
+    path_prod_id = r'../output/'
+    prod_id_file = r'prod_id_selected.pkl'
     pth_prod_id = os.path.join(path_prod_id, prod_id_file)
-    print(os.path.exists(pth_prod_id), pth_prod_id)
+    print(os.path.isfile(pth_prod_id), pth_prod_id)
     
 # Relevo escritura de archivo de token
 with open(pth_comp, mode="r") as file:
@@ -42,9 +43,10 @@ dict_def = json.loads(lines[0])
 dict_def['review_time'] = dt.datetime.now()
 
 # Muestro diccionario a través de sus claves
-# mdl.show_dict(dict_def)
+mdl.show_dict(dict_def)
 aux_key = 'access_token'
 kc_token = 'KEYCLOAK_TOKEN'
+os.environ[kc_token] = dict_def[aux_key]
 print(f'Muestra de keycloak token {kc_token}',os.environ[kc_token],sep='\n')
 print('Muestro token de access token: ',dict_def[aux_key], sep='\n')
 
@@ -54,7 +56,7 @@ print('Muestro token de access token: ',dict_def[aux_key], sep='\n')
 #     prod_id = prod_id_file.read()
 # print('Muestra de id de producto:',prod_id, sep='\n')
 
-prod_id = ms.read_list(out_list)[0]
+prod_id = ms.read_list(pth_prod_id)[0]
 print(prod_id)
 
 # Directorio de producto de salida
