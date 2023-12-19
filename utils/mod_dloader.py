@@ -35,7 +35,7 @@ def show_dict(dict_def):
         print()
     return None
 
-def prod_downloader(prod_id, keycloak_token,output_path):
+def prod_downloader(prod_id, keycloak_token,output_path,file_name):
     session = requests.Session()
     session.headers.update({'Authorization': 'Bearer ' + keycloak_token})
     url = f"http://catalogue.dataspace.copernicus.eu/odata/v1/Products({prod_id})/$value"
@@ -46,7 +46,7 @@ def prod_downloader(prod_id, keycloak_token,output_path):
         response = session.get(url, allow_redirects=False)
 
     file = session.get(url, verify=False, allow_redirects=True)
-    file_name="producto.zip"
+    file_name=file_name + ".zip"
     product_file = os.path.join(output_path,file_name)
 
     with open(product_file, 'wb') as p:
