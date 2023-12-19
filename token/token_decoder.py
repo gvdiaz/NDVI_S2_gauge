@@ -5,6 +5,7 @@ import datetime as dt
 import json
 import requests
 import sys
+import pandas
 sys.path.append(r'../utils')
 import mod_dloader as mdl
 import mod_searcher as ms
@@ -56,11 +57,20 @@ print('Muestro token de access token: ',dict_def[aux_key], sep='\n')
 #     prod_id = prod_id_file.read()
 # print('Muestra de id de producto:',prod_id, sep='\n')
 
-prod_id = ms.read_list(pth_prod_id)[0]
-print(prod_id)
+# prod_id = ms.read_list(pth_prod_id)[0]
+# print(prod_id)
 
 # Directorio de producto de salida
 output_path = r'../output/'
 
-mdl.prod_downloader(prod_id, os.environ[kc_token],output_path)
-# mdl.prod_downloader(prod_id, dict_def[aux_key], output_path)
+# Prueba de lectura de dataframe de búsqueda
+df_search = ms.read_df_search(pth_prod_id)
+print(df_search[['Id','Name']])
+for row in df_search.iterrows():
+    prod_id = row[1]['Id']
+    prod_name = row[1]['Name']
+    mdl.prod_downloader(prod_id, os.environ[kc_token],output_path, prod_name)
+
+    # print('Product id',row[1]['Id'])
+    # print('File Name',row[1]['Name'])
+    # print()
