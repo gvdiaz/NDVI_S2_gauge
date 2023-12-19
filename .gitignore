@@ -3,6 +3,7 @@ token/output/
 Scripts/.ipynb_checkpoints/
 .gitignore
 .ipynb_checkpoints/
+output/
 
 # Ignorar archivos
 utils/__pycache__/mod_searcher.cpython-310.pyc
