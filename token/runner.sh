@@ -9,6 +9,7 @@ out_file_3="search_s2_df.pkl"
 program=python3
 file_py="token_decoder.py"
 file_2_py="token_getter.py"
+file_3_py="downloader_prods.py"
 user="gus838@gmail.com"
 pass="Ul!RsPWTPuw3"
 
@@ -18,6 +19,7 @@ pass="Ul!RsPWTPuw3"
 file_p="${PATH_2}${file}"
 file_p_py="${PATH_2}${file_py}"
 file_p_2_py="${PATH_2}${file_2_py}"
+file_p_3_py="${PATH_1}${file_3_py}"
 token_p="${PATH_2}${out_file}"
 keycloak_p="${PATH_2}${out_file_2}"
 prod_id_p="${PATH_3}${out_file_3}"
@@ -51,7 +53,8 @@ if test -f "${token_p}" ; then
     # /bin/bash python3 -c "import sys; print(sys.path)"
     # /usr/bin/python3 -c "import sys; print(sys.path)"
     # type -a ${program}
-    python3 ${file_p_py} ${token_p} ${keycloak_p} ${prod_id_p}
+    # python3 ${file_p_py} ${token_p} ${keycloak_p} ${prod_id_p}
+    python3 ${file_p_3_py} ${token_p} ${keycloak_p} ${prod_id_p} ${user} ${pass}
 fi
 
 # echo ${KEYCLOAK_TOKEN}
