@@ -12,6 +12,22 @@ Generar un script python/bash que sea capaz de seleccionar escenas Sentinel-2, r
 |
 ### Trabajos realizados
 
+**al 30/12/2023**
+19:00
+
+Modifiqué el código para token_decoder.py de manera que pueda recibir listas de productos a bajar. Las listas están escritas en dataframes de pandas y son listadas como son escritas por el servidor de la ESA.
+
+Por otro lado implementé un nuevo script "downloader_prods.py" en reemplazo de "token_decoder.py". La razón de esta decisión es que token decoder recibía un token que duraba para todos los productos a bajar. El mismo se vencía mientras bajaba el primer producto, por lo cual para los siguientes no servía y no bajaba los productos.
+
+Ahora en "downloader_prod.py" cada vez que baja un producto pide un código token con el usuario y contraseña. Y finalmente no hace falta utilizar el curl para bajar el token. Con la función "get_keycloak" de "mod_dloader.py" obtengo el token que necesita para bajar.
+
+*PENDIENTES para lo que sigue*
+
+1. modificar "runner.sh" de manera que no solicite el token mediante curl. Solo sería necesario ejecutar "downloader_prods.py"
+2. Agregar barra de progresión cada vez que baja algún producto. EL mismo se va a impolementar utilizando lo explicado en los siguientes links:
+    * [Uso de paquete requests](https://realpython.com/python-download-file-from-url/)
+    * [Implementación barra progresión](https://www.alpharithms.com/progress-bars-for-python-downloads-580122/)
+
 **al 08/12/2023**
 17:24
 
