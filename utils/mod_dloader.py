@@ -101,3 +101,26 @@ def prod_downloader(prod_id, keycloak_token,output_path,file_name):
     # with open(product_file, 'wb') as p:
     #     p.write(file.content)
     return None
+
+def prod_downloader_2(prod_id, keycloak_token,output_path,file_name):
+    
+    # url = f"https://zipper.dataspace.copernicus.eu/odata/v1/Products(a5ab498a-7b2f-4043-ae2a-f95f457e7b3b)/$value"
+    url = f"http://catalogue.dataspace.copernicus.eu/odata/v1/Products({prod_id})/$value"
+
+    headers = {"Authorization": f"Bearer {keycloak_token}"}
+
+    session = requests.Session()
+    session.headers.update(headers)
+    response = session.get(url, headers=headers, stream=True)
+
+    show_dict(response.headers)
+    
+    file_name=file_name + ".zip"
+    product_file = os.path.join(output_path,file_name)
+
+    with open(product_file, "wb") as file:
+        for chunk in response.iter_content(chunk_size=8192):
+            if chunk:
+                file.write(chunk)
+    
+    return None

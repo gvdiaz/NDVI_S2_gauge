@@ -87,7 +87,7 @@ for row in df_search.iterrows():
     str_token = mdl.get_keycloak(user, passw)
     print(str_token)
     os.environ[kc_token] = str_token
-    mdl.prod_downloader(prod_id, os.environ[kc_token], output_path, prod_name)
+    mdl.prod_downloader_2(prod_id, os.environ[kc_token], output_path, prod_name)
 
     # print('Product id',row[1]['Id'])
     # print('File Name',row[1]['Name'])
