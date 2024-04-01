@@ -27,6 +27,10 @@ prod_id_p="${PATH_3}${out_file_3}"
 echo ${file_p_2_py}
 # [ test -f "${file_p_2_py}" ] && echo "true" || echo "false"
 
+echo "Tiempo de inicio de script " ${file_2_py}
+echo $(date)
+echo
+
 # Modificación de script creador de get_token.sh (Agrego user y pass a requisidor)
 if test -f "${file_p_2_py}" ; then
     echo "${file_p_2_py} exists."
@@ -37,13 +41,30 @@ if test -f "${file_p_2_py}" ; then
     chmod 777 ${file_p}
 fi
 
+echo "Visualización de keycloak"
+cat $keycloak_p
+echo
+echo "Fecha de última modificaión"
+date -r $keycloak_p
+echo
 export KEYCLOAK_TOKEN=$(cat ${keycloak_p})
 # echo "Variable KEYCLOAK_TOKEN"
 # echo $KEYCLOAK_TOKEN
 
+echo "Tiempo de inicio de script " ${file}
+echo $(date)
+echo
+
 # Pedido de token y guardado en archivo out_file_p
 # python3 "${file_p_2_py} ${user} ${pass}"
 ${file_p} > ${token_p}
+
+echo "Visualización de keycloak (con curl)"
+cat $token_p
+echo
+echo "Fecha de última modificaión"
+date -r $token_p
+echo
 
 # ls -aol
 

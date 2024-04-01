@@ -8,11 +8,11 @@ def get_keycloak(username: str, password: str) -> str:
         "client_id": "cdse-public",
         "username": username,
         "password": password,
-        "grant_type": "password",
+        "grant_type": "password"
         }
     try:
         r = requests.post("https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token",
-        data=data,
+        data=data
         )
         r.raise_for_status()
     except Exception as e:
@@ -102,10 +102,10 @@ def prod_downloader(prod_id, keycloak_token,output_path,file_name):
     #     p.write(file.content)
     return None
 
-def prod_downloader_2(prod_id, keycloak_token,output_path,file_name):
+def prod_downloader_2(prod_id, keycloak_token, output_path, file_name):
     
-    # url = f"https://zipper.dataspace.copernicus.eu/odata/v1/Products(a5ab498a-7b2f-4043-ae2a-f95f457e7b3b)/$value"
-    url = f"http://catalogue.dataspace.copernicus.eu/odata/v1/Products({prod_id})/$value"
+    url = f"https://zipper.dataspace.copernicus.eu/odata/v1/Products({prod_id})/$value"
+    # url = f"http://catalogue.dataspace.copernicus.eu/odata/v1/Products({prod_id})/$value"
 
     headers = {"Authorization": f"Bearer {keycloak_token}"}
 
@@ -119,7 +119,7 @@ def prod_downloader_2(prod_id, keycloak_token,output_path,file_name):
     product_file = os.path.join(output_path,file_name)
 
     with open(product_file, "wb") as file:
-        for chunk in response.iter_content(chunk_size=8192):
+        for chunk in tqdm(response.iter_content(chunk_size=8192)):
             if chunk:
                 file.write(chunk)
     
