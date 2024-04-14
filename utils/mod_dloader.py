@@ -3,7 +3,7 @@ import os
 import requests
 import shutil
 from tqdm.auto import tqdm
-def get_keycloak(username: str, password: str) -> str:
+def get_keycloak(username: str, password: str, verbose) -> str:
     data = {
         "client_id": "cdse-public",
         "username": username,
@@ -19,6 +19,9 @@ def get_keycloak(username: str, password: str) -> str:
         raise Exception(
             f"Keycloak token creation failed. Reponse from the server was: {r.json()}"
             )
+    if verbose:
+        print('Visualización de variables en get_keycloak en módulo mod_dloader.py')
+        print(data)
     return r.json()["access_token"]
 
 # keycloak_token = get_keycloak("USERNAME", "PASSWORD")
@@ -102,7 +105,7 @@ def prod_downloader(prod_id, keycloak_token,output_path,file_name):
     #     p.write(file.content)
     return None
 
-def prod_downloader_2(prod_id, keycloak_token, output_path, file_name):
+def prod_downloader_2(prod_id, keycloak_token, output_path, file_name, verbose):
     
     url = f"https://zipper.dataspace.copernicus.eu/odata/v1/Products({prod_id})/$value"
     # url = f"http://catalogue.dataspace.copernicus.eu/odata/v1/Products({prod_id})/$value"
@@ -112,14 +115,32 @@ def prod_downloader_2(prod_id, keycloak_token, output_path, file_name):
     session = requests.Session()
     session.headers.update(headers)
     response = session.get(url, headers=headers, stream=True)
-
-    show_dict(response.headers)
     
     file_name=file_name + ".zip"
     product_file = os.path.join(output_path,file_name)
 
+    file_size = int(response.headers["Content-Length"])
+    chunk_req = 8192
+    iters = int(file_size/chunk_req)
+    unit_div = 1024
+
+    if verbose:
+        print('Muestro diccionario de headers a request: \n')
+        show_dict(response.headers)
+        print('Cantidad de bytes a bajar')
+        print('Cantidad de bytes a bajar: ', file_size)
+        print('Varibales relativas a requests chunks')
+        print('chunk:',chunk_req)
+        print('Variable cantidad de iteraciones')
+        print('iters', iters)
+
     with open(product_file, "wb") as file:
-        for chunk in tqdm(response.iter_content(chunk_size=8192)):
+        for chunk in tqdm(response.iter_content(chunk_size=chunk_req), \
+                        #   unit="B", \
+                          unit_scale=True,  \
+                        #   unit_divisor=(unit_div*chunk_req), \
+                          total=iters, \
+                          desc=file_name):
             if chunk:
                 file.write(chunk)
     
