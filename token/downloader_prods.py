@@ -14,9 +14,7 @@ import mod_searcher as ms
 # Argumento 3: Ruta que contiene string prod_id
 # Argumento 4: user
 # Argumento 5: pass
-
-# Muestro qué script se encuentra trabajando
-mdl.show_sname(sys.argv[0])
+# Argumento 6: Condición de verbose sobre el funcionamiento de este script
 
 # Verifico si se ingresó el archivo de token
 try:
@@ -27,9 +25,6 @@ except:
     pth_comp = os.path.join(path_token,text_file)
     print(os.path.exists(pth_comp), pth_comp)
 
-print(f"Lectura variable pth_comp: {pth_comp}")
-print("en módulo downloader_prods.py")
-
 # Verifico archivo de product id
 try:
     pth_prod_id = sys.argv[3]
@@ -39,9 +34,6 @@ except:
     pth_prod_id = os.path.join(path_prod_id, prod_id_file)
     print(os.path.isfile(pth_prod_id), pth_prod_id)
 
-print(f"Lectura variable pth_prod_id: {pth_prod_id}")
-print("en módulo downloader_prods.py")
-
 # Verifico usuario
 try:
     user = sys.argv[4]
@@ -50,17 +42,18 @@ except:
     # pth_prod_id = os.path.join(path_prod_id, prod_id_file)
     # print(os.path.isfile(pth_prod_id), pth_prod_id)
 
-print(f"Lectura variable user: {user}")
-print("en módulo downloader_prods.py")
-
 # Verifico pass
 try:
     passw = sys.argv[5]
 except:
     passw = r''
 
-print(f"Lectura variable passw: {passw}")
-print("en módulo downloader_prods.py")
+try:
+    verbose = eval(sys.argv[6])
+    print(sys.argv[6])
+    print(verbose)
+except:
+    verbose = False
     
 # # Relevo escritura de archivo de token
 # with open(pth_comp, mode="r") as file:
@@ -93,15 +86,28 @@ output_path = r'../output/'
 # Prueba de lectura de dataframe de búsqueda
 df_search = ms.read_df_search(pth_prod_id)
 # print(df_search[['Id','Name']])
-print("Id a pasar", df_search[['Id']], sep='\n')
+if verbose:
+    # Muestro qué script se encuentra trabajando
+    mdl.show_sname(sys.argv[0])
+    print(f"Lectura variable pth_comp: {pth_comp}")
+    print("en módulo downloader_prods.py")
+    print(f"Lectura variable pth_prod_id: {pth_prod_id}")
+    print("en módulo downloader_prods.py")
+    print(f"Lectura variable user: {user}")
+    print("en módulo downloader_prods.py")
+    print(f"Lectura variable passw: {passw}")
+    print("en módulo downloader_prods.py")
+    print("Id a pasar", df_search[['Id']], sep='\n')
+
 for row in df_search.iterrows():
     prod_id = row[1]['Id']
     prod_name = row[1]['Name']
-    str_token = mdl.get_keycloak(user, passw)
-    print("Token de variable 'str_token'", str_token, sep='\n')
-    print('Variable de producto a ingresar a función "Bajadora"', prod_name, prod_id, sep='\n')
+    str_token = mdl.get_keycloak(user, passw, verbose)
     os.environ[kc_token] = str_token
-    mdl.prod_downloader_2(prod_id, os.environ[kc_token], output_path, prod_name)
+    mdl.prod_downloader_2(prod_id, os.environ[kc_token], output_path, prod_name, verbose)
+    if verbose:
+        print("Token de variable 'str_token'", str_token, sep='\n')
+        print('Variable de producto a ingresar a función "Bajadora"', prod_name, prod_id, sep='\n')
 
     # print('Product id',row[1]['Id'])
     # print('File Name',row[1]['Name'])
