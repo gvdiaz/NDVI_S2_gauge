@@ -12,6 +12,7 @@ file_2_py="token_getter.py"
 file_3_py="downloader_prods.py"
 user="gus838@gmail.com"
 pass="Ul!RsPWTPuw3"
+verbose="True"
 
 # Activo entorno virtual de python (realizado a través del alias de "mi" sesión)
 # dload_s2 #-> no funciona
@@ -27,9 +28,9 @@ prod_id_p="${PATH_3}${out_file_3}"
 echo ${file_p_2_py}
 # [ test -f "${file_p_2_py}" ] && echo "true" || echo "false"
 
-echo "Tiempo de inicio de script " ${file_2_py}
-echo $(date)
-echo
+# echo "Tiempo de inicio de script " ${file_2_py}
+# echo $(date)
+# echo
 
 # Modificación de script creador de get_token.sh (Agrego user y pass a requisidor)
 if test -f "${file_p_2_py}" ; then
@@ -41,30 +42,30 @@ if test -f "${file_p_2_py}" ; then
     chmod 777 ${file_p}
 fi
 
-echo "Visualización de keycloak"
-cat $keycloak_p
-echo
-echo "Fecha de última modificaión"
-date -r $keycloak_p
-echo
+# echo "Visualización de keycloak"
+# cat $keycloak_p
+# echo
+# echo "Fecha de última modificaión"
+# date -r $keycloak_p
+# echo
 export KEYCLOAK_TOKEN=$(cat ${keycloak_p})
 # echo "Variable KEYCLOAK_TOKEN"
 # echo $KEYCLOAK_TOKEN
 
-echo "Tiempo de inicio de script " ${file}
-echo $(date)
-echo
+# echo "Tiempo de inicio de script " ${file}
+# echo $(date)
+# echo
 
 # Pedido de token y guardado en archivo out_file_p
 # python3 "${file_p_2_py} ${user} ${pass}"
 ${file_p} > ${token_p}
 
-echo "Visualización de keycloak (con curl)"
-cat $token_p
-echo
-echo "Fecha de última modificaión"
-date -r $token_p
-echo
+# echo "Visualización de keycloak (con curl)"
+# cat $token_p
+# echo
+# echo "Fecha de última modificaión"
+# date -r $token_p
+# echo
 
 # ls -aol
 
@@ -75,7 +76,7 @@ if test -f "${token_p}" ; then
     # /usr/bin/python3 -c "import sys; print(sys.path)"
     # type -a ${program}
     # python3 ${file_p_py} ${token_p} ${keycloak_p} ${prod_id_p}
-    python3 ${file_p_3_py} ${token_p} ${keycloak_p} ${prod_id_p} ${user} ${pass}
+    python3 ${file_p_3_py} ${token_p} ${keycloak_p} ${prod_id_p} ${user} ${pass} ${verbose}
 fi
 
 # echo ${KEYCLOAK_TOKEN}
