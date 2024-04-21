@@ -35,7 +35,7 @@ Fiona==1.9.4.post1
 folium==0.14.0
 fonttools==4.41.1
 fqdn==1.5.1
-GDAL==3.4.3
+GDAL
 geographiclib==2.0
 geopandas==0.13.2
 geoplot==0.5.1
