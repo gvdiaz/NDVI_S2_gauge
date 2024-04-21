@@ -48,7 +48,7 @@ key_cloak_str = mdl.get_keycloak(sys.argv[1], sys.argv[2], sys.argv[3])
 with open(sys.argv[3],'w') as out_file:
     out_file.write(key_cloak_str)
 
-if sys.argv[3]:
+if eval(sys.argv[3]):
     # Muestro qué script se encuentra trabajando
     mdl.show_sname(sys.argv[0])
     print(f'Fin de script {sys.argv[0]}')
