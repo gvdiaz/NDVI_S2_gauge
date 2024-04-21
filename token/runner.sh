@@ -12,7 +12,7 @@ file_2_py="token_getter.py"
 file_3_py="downloader_prods.py"
 user="gus838@gmail.com"
 pass="Ul!RsPWTPuw3"
-verbose="True"
+verbose="False"
 
 # Activo entorno virtual de python (realizado a través del alias de "mi" sesión)
 # dload_s2 #-> no funciona
