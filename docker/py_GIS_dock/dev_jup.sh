@@ -19,6 +19,7 @@ PATH_SCRIPTS="${PATH_REPO}/Scripts"
 PATH_VECTORES="${PATH_REPO}/Vectores"
 PATH_UTILS="${PATH_REPO}/utils"
 PATH_TOKEN="${PATH_REPO}/token"
+PATH_OUTPUT="${PATH_REPO}/output"
 
 # echo $PATH_REPO $PATH_SCRIPTS
 docker run --rm --name gis_gvd_develop \
@@ -27,6 +28,7 @@ docker run --rm --name gis_gvd_develop \
     -v $PATH_VECTORES:/src/Vectores \
     -v $PATH_UTILS:/src/utils \
     -v $PATH_TOKEN:/src/token \
+    -v $PATH_OUTPUT:/src/Output \
     --workdir /src \
     -p 8888:8888 \
     gis_gvd \
