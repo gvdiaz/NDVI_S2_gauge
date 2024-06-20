@@ -45,7 +45,11 @@ def read_conf_searcher(path2conf, verbose):
             file_content = file.read()
             # Print the content
             print("File Content:\n", file_content)
-    return None
+    conf2dict = configparser.ConfigParser()
+    with open(path2conf,"r") as file:
+        conf2dict.read_file(file)
+    # conf2dict.read_file(path2conf)
+    return {s:dict(conf2dict.items(s)) for s in conf2dict.sections()}
 
 def conf_reader(path2conf):
     config_object = configparser.ConfigParser()
@@ -56,10 +60,11 @@ def conf_reader(path2conf):
         sections=config_object.sections()
         for section in sections:
             items=config_object.items(section)
-            if items.is
+            # if items.is
             output_dict[section]=dict(items)
         print("The output dictionary is:")
         print(output_dict)
+    return None
     
 
 def create_conf_file(path2conf):
@@ -72,10 +77,12 @@ def create_conf_file(path2conf):
     # Nombre de proyecto relacionado
     dict_gen = {
         'FOLDERS': {
+            ';Prueba de comentarios para FOLDERS':None,
             'ROI': r'/src/Vectores/Campo_Atahona.kml',
             'OUTPUT': '/src/Output/'
         },
         'ATTRIB': {
+            ';Prueba de comentarios para ATTRIB':None,
             'init_date':'01-01-2019',
             'final_date':'31-01-2021',
             'max_cloud':'50',
@@ -83,6 +90,7 @@ def create_conf_file(path2conf):
             'proj_name':'Your name'
         },
         'ESA_SERVER': {
+            ';Prueba de comentarios para ESA_SERVER':None,
             'url':'https://catalogue.dataspace.copernicus.eu/odata/v1/Products',
             'orderby': 'ContentDate/Start',
             'top':'100'
@@ -90,7 +98,7 @@ def create_conf_file(path2conf):
     }
     with open(path2conf,"w") as file:
     # file =open("employee1.ini","w")
-        config_object = configparser.ConfigParser()
+        config_object = configparser.ConfigParser(allow_no_value=True)
     # myDict={'employee': {'name': 'John Doe', 'age': '35'},
     #         'job': {'title': 'Software Engineer', 'department': 'IT', 'years_of_experience': '10'},
     #         'address': {'street': '123 Main St.', 'city': 'San Francisco', 'state': 'CA', 'zip': '94102'}}
