@@ -1,11 +1,19 @@
 import os
 import configparser
 from osgeo import ogr
+import glob
+import sys
 from datetime import datetime
 import pytz
 import requests
+import pandas as pd
 
 # Módulo para transcribir funciones desarrolladas para la búsqueda y filtrado de productos Sentinel-2 en Notebook "Nube_funciones.ipynb"
+
+# Definiciones del código
+
+# Columnas a setear cuando de procesa el nombre del producto Sentinel-2
+naming_list = ['Mission_id', 'Prod_level', 'Sensing_time', 'Baseline', 'Rel_orb_num', 'Tile', 'Prod_time']
 
 # Creación o lectura de archivo de configuración
 def read_conf_searcher(path2conf, verbose):
@@ -34,7 +42,7 @@ def create_conf_file(path2conf):
     dict_gen = {
         'FOLDERS': {
             ';Prueba de comentarios para FOLDERS':None,
-            'ROI': r'/src/Vectores/Campo_Atahona.kml',
+            'ROI': r'/src/Vectores/',
             'OUTPUT': '/src/Output/'
         },
         'ATTRIB': {
@@ -74,6 +82,16 @@ def create_conf_file(path2conf):
         config_object.write(file)
     # file.close()
     return None
+
+# Envio de requests a servidor de la ESA
+
+def send_req(str_req, verbose = False):
+    return requests.get(str_req).json()
+
+# Conversión de búsqueda a dataframe para su posterior procesamiento
+
+def req_to_df(req_from_dict, verbose = False):
+    return pd.DataFrame.from_dict(req_from_dict)
 
 # Configuración de request de búsqueda en servidores de ESA en función de archivo de configuración
 
@@ -127,9 +145,31 @@ def set_date(date, verbose):
     date_dt = datetime.strptime(date, '%d-%m-%Y')
     return date_dt
 
+def ds_finder(folder, verbose):
+    """ Función para buscar archivos terminados en kml o shp (por el momento) """
+    shp_list = glob.glob('*.shp', root_dir = folder, recursive = False)
+    kml_list = glob.glob('*.kml', root_dir = folder, recursive = False)
+    # print(shp_list, kml_list)
+    kml_list = [os.path.join(folder, file) for file in kml_list]
+    shp_list = [os.path.join(folder, file) for file in shp_list]
+
+    return shp_list + kml_list
+
 def set_wkt_V1(fn, verbose):
     # Primer versión de lector de wkt, busca la geometría del primer feature de la capa
-    ds = ogr.Open(fn, 0)
+
+    # Uso de glob
+    ds_path = ds_finder(fn, False)
+    ds_qty = len(ds_path)
+    if ds_qty == 1:
+        fn_path = ds_path[0]
+    elif ds_qty > 1:
+        sys.exit('Hay más de un archivo temporal, borrar hasta que quede uno solo')
+    else:
+        sys.exit(f'No se encuentra datasource en la carpeta "{fn}"')
+    
+
+    ds = ogr.Open(fn_path, 0)
     if ds is None:
         sys.exit(f'No se puede abrir el archivo {fn}')
     lyr = ds.GetLayer(0)
@@ -153,3 +193,46 @@ def set_wkt_V1(fn, verbose):
         print(geometry.ExportToWkt())
     del ds
     return geom_wkt
+
+def df_proc(df, verbose):
+    # Primer paso: descomponer nombre de producto (en columna 'Name') en otras columnas
+    df_name_conv = descom_name(df, verbose)
+    # Segundo paso: Transformo fecha de adquisición a tipo datetime
+    df_name_conv['Sensing_time']= pd.to_datetime(df_name_conv['Sensing_time'])
+    # Tercer paso: Setear multíndice 'Sensing_time', 'Prod_level', 'Baseline', 'Tile'
+    dfWatts_Sidx = dfWatts.set_index(['Sensing_time','Prod_level','Tile', 'Baseline'])
+    # Cuarto paso: Filtro por tipo de proceasmiento, solo se queda con 'MSIL2A'
+    dfWatts_Sidx_Fd = dfWatts_Sidx.loc[:,['MSIL2A'],:]
+    # Quinto paso: Cómputo de cloud cover a partir de columna de df
+    dfWatts_Sidx_Fd['cloudCover'] = read_cloud_cover(dfWatts_Sidx_Fd.Attributes.apply(pd.Series))
+    # Sexto paso: Cambio de orden de columna, mando cloud cover al ppio del df
+    dfWatts_Sidx_Fd = change_col(dfWatts_Sidx_Fd)
+    # Séptimo paso: Cómputo de superposición de ROI con frame Sentinel-2
+    
+    return df
+
+def descom_name(df, verbose = False):
+    df_name = df['Name'].map(lambda x: x.split('_'))
+    # Convierto lista de datos, ahora separados, en columnas
+    dfFname = df_name.apply(pd.Series)
+    # Agrego nombre a columnas
+    dfFname.columns = naming_list
+    # Concateno nuevo dataframe con el df de entrada
+    dfWatts = pd.concat([df, dfFname], axis=1)
+    return dfWatts
+
+def read_cloud_cover(df_cloud_att, verbose):
+    # Tomo los dos tipos de productos (tienen diferentes atributos) y sumo lo que se lee en cloud cover, sino es 0
+    df_cloud_att_2 = (df_cloud_att[2].apply(lambda x: x['Value'] if x['Name'] == 'cloudCover' else 0))
+    df_cloud_att_3 = (df_cloud_att[3].apply(lambda x: x['Value'] if x['Name'] == 'cloudCover' else 0))
+    df_cloud_att_f = df_cloud_att_2 + df_cloud_att_3
+    return df_cloud_att_f
+
+def change_col(df, verbose = False):
+    col_list = (list(df.columns))
+
+    aux_value = col_list[-1]
+    col_list[-1] = col_list[0]
+    col_list[0] = aux_value
+
+    return df[col_list]
