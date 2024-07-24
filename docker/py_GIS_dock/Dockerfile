@@ -54,6 +54,7 @@ RUN mkdir /tmp_gdal
 COPY ${source_req} ${dest_req}
 RUN cat ${dest_req}
 RUN pip3 install -r ${dest_req}
+RUN pip3 install openpyxl
 
 ENV TINI_VERSION v0.6.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
