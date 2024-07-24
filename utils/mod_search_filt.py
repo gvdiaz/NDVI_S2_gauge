@@ -8,6 +8,10 @@ import pytz
 import requests
 import pandas as pd
 
+import geopandas as gpd, geoplot, matplotlib
+from shapely.geometry import shape
+from shapely import wkt
+
 # Módulo para transcribir funciones desarrolladas para la búsqueda y filtrado de productos Sentinel-2 en Notebook "Nube_funciones.ipynb"
 
 # Definiciones del código
@@ -200,16 +204,16 @@ def df_proc(df, verbose):
     # Segundo paso: Transformo fecha de adquisición a tipo datetime
     df_name_conv['Sensing_time']= pd.to_datetime(df_name_conv['Sensing_time'])
     # Tercer paso: Setear multíndice 'Sensing_time', 'Prod_level', 'Baseline', 'Tile'
-    dfWatts_Sidx = dfWatts.set_index(['Sensing_time','Prod_level','Tile', 'Baseline'])
+    dfWatts_Sidx = df_name_conv.set_index(['Sensing_time','Prod_level','Tile', 'Baseline'])
     # Cuarto paso: Filtro por tipo de proceasmiento, solo se queda con 'MSIL2A'
     dfWatts_Sidx_Fd = dfWatts_Sidx.loc[:,['MSIL2A'],:]
     # Quinto paso: Cómputo de cloud cover a partir de columna de df
-    dfWatts_Sidx_Fd['cloudCover'] = read_cloud_cover(dfWatts_Sidx_Fd.Attributes.apply(pd.Series))
+    dfWatts_Sidx_Fd['cloudCover'] = read_cloud_cover(dfWatts_Sidx_Fd.Attributes.apply(pd.Series), verbose = False)
     # Sexto paso: Cambio de orden de columna, mando cloud cover al ppio del df
     dfWatts_Sidx_Fd = change_col(dfWatts_Sidx_Fd)
-    # Séptimo paso: Cómputo de superposición de ROI con frame Sentinel-2
-    
-    return df
+    # Séptimo paso: Obtiene frame de producto S2
+    gdfWatts_Sidx_Fd = get_shape_S2(dfWatts_Sidx_Fd, verbose = False)
+    return gdfWatts_Sidx_Fd
 
 def descom_name(df, verbose = False):
     df_name = df['Name'].map(lambda x: x.split('_'))
@@ -236,3 +240,188 @@ def change_col(df, verbose = False):
     col_list[0] = aux_value
 
     return df[col_list]
+
+def get_shape_S2(df, verbose = False):
+    Fprint_list = list(df['GeoFootprint'])
+    geo_list = []
+    # display(Fprint_list)
+    for geojson_item in Fprint_list:
+        geom_f_gjson = shape(geojson_item)
+        geo_list.append(geom_f_gjson)
+    
+    crs = 'EPSG:' + df.iloc[0][['Footprint']].item().split(';')[0].split('=')[1]
+
+    df['shape'] = geo_list
+
+    return gpd.GeoDataFrame(df, geometry='shape',crs=crs)
+
+def roi2gdf(roi_folder, df, verbose = False):
+    ROI_wkt = set_wkt_V1(roi_folder, False)
+    ROI_shape = wkt.loads(ROI_wkt)
+    # display(ROI_shape)
+    d = {'col1': ['ROI busqueda'], 'geometry': [ROI_shape]}
+    crs = 'EPSG:' + df.iloc[0][['Footprint']].item().split(';')[0].split('=')[1]
+    return gpd.GeoDataFrame(d, crs=crs)
+
+def get_shape(folder, verbose = False):
+    ROI_wkt = set_wkt_V1(folder, False)
+    return wkt.loads(ROI_wkt)
+
+def comp_intersec(gdf, roi_folder, verbose = False):
+    roi_gdf = roi2gdf(roi_folder, gdf, verbose = False)
+    ROI_shape = get_shape(roi_folder, verbose = False)
+    inter_shapes = gdf.overlay(roi_gdf, how='intersection')
+    list2add = list(inter_shapes.area/ROI_shape.area)
+    # Lo agrego en ppio a geodataframe de interesección 'inter_shapes_2'
+    gdf['ROI_intersec'] = list2add
+    if verbose:
+        print(gdf,inter_shapes, sep = '\n')
+
+    return gdf
+
+# Link de recursos para hallar valores únicos de fechas en MultiIndex
+# https://pandas.pydata.org/pandas-docs/stable/user_guide/advanced.html
+def filter_df(df2filter, filter_type =1):
+    """ Filtro el df generado para quedarme con un solo producto por día """
+    if filter_type == 3:
+        list2concat = filter_3(df2filter)
+    else:
+        
+        # Select from all the entries filtered by "sensing day" just one appling differents algorithms
+        idx = df2filter.index
+        # I try to get entries by day, someway...
+        day_list = list(idx.remove_unused_levels().get_level_values(0).unique())
+        
+        ## Código para filtrar productos encontrados un solo día ##
+        list2concat = []
+        for date in day_list:
+            # print(f'Listado de productos de fecha: {str(date)}')
+            # display(df2filter.loc[date])
+            if filter_type == 1:
+                list2concat.append(filter_1(df2filter.loc[date]))
+            elif filter_type == 2:
+                list2concat.append(filter_2(df2filter.loc[date]))
+        ####################################################################
+    
+        print('Cantidad de productos a ingresar:', len(list2concat))
+
+    prod_filtered = pd.DataFrame(list2concat)
+
+    # display(prod_filtered)
+    
+    return prod_filtered
+
+def filter_1(dfbydate):
+    # print('Cantidad de productos por fecha: ', dfbydate['Id'].count())
+    # display(dfbydate.iloc[0])
+    return dfbydate.iloc[0]
+
+def filter_2(dfbydate):
+    # display(dfbydate)
+    qty_entries = dfbydate.Id.count()
+    # print(f'Cantidad de entradas por día {qty_entries}')
+    if  qty_entries == 1:
+        return dfbydate.iloc[0]
+    else:
+        # Filtro en primera instancia por área de intersección con ROI
+        df_filt_1 = dfbydate.nlargest(qty_entries, 'ROI_intersec')
+        qty_entries_2 = df_filt_1.Id.count()
+        # Filtro en segunda instancia por cobertura nubosa
+        df_filt_2 = df_filt_1.nsmallest(qty_entries_2, 'cloudCover')
+        return df_filt_2.iloc[0]
+
+def filter_3(df):
+    """ Filtrado general, analizo primero todo el df y luego filtro, los otros filtran ciertos atributos pero de a un día a la vez """
+    # Línea para filtrar columna por valor determinado (en este caso discriminación de tile)    
+    
+    idx = df.index
+    tile_list = list(idx.remove_unused_levels().get_level_values(2).unique())
+    
+    # Obtengo los tipo de tile en qué se divide el producto disponible y obtengo la cantidad de nubosidad por tile
+    list_cc = []
+    for i,tile in enumerate(tile_list):
+        df2analize = df.loc[:,:,[tile]]
+        cloud_cover_sum = df2analize['cloudCover'].sum()
+        list_cc.append((i, tile, cloud_cover_sum))
+    
+    print(list_cc)
+
+    if len(list_cc) > 1:
+        # Elección de tile según comparación de cobertura nubosa (ellijo la que tiene el menor número)
+        if list_cc[0][2] < list_cc[1][2]:
+            tile_def = list_cc[0][1]
+            tile_wrong = list_cc[1][1]
+        else:
+            tile_def = list_cc[1][1]
+            tile_wrong = list_cc[0][1]
+    else:
+        tile_def = list_cc[0][1]
+
+    # Quedaría seleccionar las entradas por tile y quedarme con una por día (a implementar)
+    
+    # Procesamiento de df elegido para quedarme con la de mayor número de procesamiento
+    df_chos = df.loc[:,:,[tile_def]]
+    idx_chos = df_chos.index
+    basel_series = (idx_chos.get_level_values(3)).to_series() # PENDIENTE DE CONTINUAR: Este procesamiento lo tengo que hacer por día
+
+    # Procesamiento de serie para transformar los caracteres en número
+    # Primero quito la 'N' del código de baseline
+    basel_proc = basel_series.str.replace('N','')
+
+    # Segundo paso la cadena de caracteres a número
+    basel_proc = pd.to_numeric(basel_proc)
+
+    # Guardo la serie procesada como una columna en el dataframe elegido
+    # Vuelo a setear índice original para no tener problema con el seteo de la nueva columna en dataframe elegido
+    # basel_proc.reset_index(inplace = True) -> no funcionó esta solución, debí pasarla a lista y después guardarla como columna
+    basel_nbr_list = list(basel_proc)
+    df_chos['base_nber'] = basel_nbr_list
+
+    # Aplico algoritmo para seleccionar producto por día
+    # Filtro en primera instancia por área de intersección con ROI
+    
+    idx_chos = df_chos.index
+    # I try to get entries by day, someway...
+    day_list_chos = list(idx_chos.remove_unused_levels().get_level_values(0).unique())
+    
+    ## Código para filtrar productos encontrados un solo día ##
+    list2concat = []
+    # display(df_chos)
+    for date in day_list_chos:
+        # print(date)
+        list2concat.append(filter_base_nber(df_chos.loc[date], date, verbose = False))
+    df_final = pd.DataFrame(list2concat)
+    return df_final
+        
+def filter_base_nber(dfbyday, date, verbose = False):
+    qty_entries = dfbyday.Id.count()
+    dfbyday['acq_date'] = date
+    # print(f'Cantidad de entradas por día {qty_entries}')
+    if  qty_entries == 1:
+        return dfbyday.iloc[0]
+    else:
+        # Filtro la opción 9999, será la última opción
+        dfbyday.sort_values(by = 'base_nber', inplace = True, ascending = False)
+        # display(dfbyday.iloc[0])
+        if dfbyday.iloc[0]['base_nber'] == 9999:
+            return dfbyday.iloc[1]
+        else:
+            return dfbyday.iloc[0]
+        # max_value = dfbyday['base_nber'].max()
+        # idx_max = dfbyday.index[dfbyday['base_nber'] == max_value]
+        # print(f'Presentación de máximo valor de número de base: {max_value, idx_max}')
+        # display(dfbyday.loc[idx_max])
+        # display(dfbyday)
+        # PENDIENTE: Elegir productos dejando como última opción 9999 y luego elegir dataset por mayor valor de procesamiento
+def disp_and_type(obj, type_of_show='display'):
+    print('Tipo del objeto presentado', type(obj), sep='\n')
+    print('Objeto a verificar')
+    if (type_of_show == 'print'):
+        print(obj)
+    else:
+        display(obj)
+    return None
+
+def save_df(gdf, output_path):
+    gdf.to_excel(output_path)
+    return None
