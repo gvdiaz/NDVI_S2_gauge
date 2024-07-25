@@ -24,12 +24,21 @@ gdf_final = msf.df_proc(df, False)
 gdf_intersec = msf.comp_intersec(gdf_final, conf_dict['FOLDERS']['roi'], verbose = False)
 # Filtrado de opciones presentadas (hay tres opciones)
 gdf_filtered = msf.filter_df(gdf_intersec, filter_type =3)
+gdf_filtered_name = 'search_page'
+# Genero dataframe resumido para facilitar lectura en excel
+resume_gdf = gdf_filtered.loc[:, ['cloudCover', 'Id', 'Name', 'shape', 'acq_date']]
+resume_gdf_name = 'resume_search'
+# df_new = df.loc[:, ['team', 'rebounds']]
 # Armado de portada de búsqueda (se guardará en excel)
 search_df = msf.comp_search_att(conf_dict, True)
+search_df_name = 'cover_search'
+# Compendio de información a guardar
+df_and_name_tuple = [(search_df, search_df_name),\
+                     (resume_gdf, resume_gdf_name), \
+                     (gdf_filtered, gdf_filtered_name)]
+# Tomo nombre generado en los atributos de búsqueda
 bsname = search_df.loc['Search name'].item()
-# print(bsname)
+# Agrego carpeta a path de archivo de salida
 pre_out_prod = os.path.join(conf_dict['FOLDERS']['output'], bsname)
-# print(pre_out_prod)
-# r'/src/Output/research.xlsx'
-sheet_name = ['set_search', 'search']
-msf.save_df(search_df, gdf_filtered, sheet_name, pre_out_prod)
+# Guardo la información generada en excel
+msf.save_df(df_and_name_tuple, pre_out_prod)
