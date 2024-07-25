@@ -422,10 +422,12 @@ def disp_and_type(obj, type_of_show='display'):
         display(obj)
     return None
 
-def save_df(df_conf, gdf, s_names, output_path):
+def save_df(df_and_name, output_path):
     with pd.ExcelWriter(output_path) as writer:
-        df_conf.to_excel(writer, sheet_name=s_names[0])
-        gdf.to_excel(writer, sheet_name=s_names[1])
+        # df_conf.to_excel(writer, sheet_name=s_names[0])
+        # gdf.to_excel(writer, sheet_name=s_names[1])
+        for df, name in df_and_name:
+            df.to_excel(writer, sheet_name=name)
         # df2.to_excel(writer, sheet_name='Sheet_name_2')
     return None
 
