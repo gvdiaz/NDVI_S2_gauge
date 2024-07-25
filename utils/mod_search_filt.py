@@ -422,6 +422,41 @@ def disp_and_type(obj, type_of_show='display'):
         display(obj)
     return None
 
-def save_df(gdf, output_path):
-    gdf.to_excel(output_path)
+def save_df(df_conf, gdf, s_names, output_path):
+    with pd.ExcelWriter(output_path) as writer:
+        df_conf.to_excel(writer, sheet_name=s_names[0])
+        gdf.to_excel(writer, sheet_name=s_names[1])
+        # df2.to_excel(writer, sheet_name='Sheet_name_2')
     return None
+
+def  comp_search_att(conf_dict, verbose = False):
+    # Primer versión de confección de dataframe con datos de búsqueda
+    data = {}
+    # Guardo nombre de proyecto
+    proj_name = conf_dict['ATTRIB']['proj_name']
+    data['Proj Name'] = proj_name
+    # Guardo el momento de generar la búsqueda
+    x_date = datetime.now()
+    search_date = x_date.strftime("%c")
+    data['Search date'] = search_date
+    # Guardo nombre de datos vectorial
+    ds_path = os.path.basename(ds_finder(conf_dict['FOLDERS']['roi'], False)[0])
+    # Guardo configuración de fechas inicial y final de búsqueda
+    data['ROI name'] = os.path.basename(ds_path)
+    init_date = conf_dict['ATTRIB']['init_date']
+    data['Initial date'] = init_date
+    final_date = conf_dict['ATTRIB']['final_date']
+    data['Final date'] = final_date
+    # Guardo máximo valor de cobertura de nubes
+    data['Cloud cover conf'] = conf_dict['ATTRIB']['max_cloud']
+    # Cantidad máxima de resultados a devolver
+    data['Max result qty'] = conf_dict['ESA_SERVER']['top']
+    # Nombre de archivo de búsqueda
+    search_name = 'research' + '_' + x_date.strftime("%Y%m%dT%H%M%S") + '_' + ds_path.split('.')[0] + '.xlsx'
+    data['Search name'] = search_name
+
+    df = pd.DataFrame.from_dict(data, orient='index', columns = ['Datos'])
+    if verbose:
+        print(data, df, sep='\n')
+
+    return df
