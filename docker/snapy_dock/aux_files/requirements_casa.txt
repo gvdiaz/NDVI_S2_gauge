@@ -1,2 +1,4 @@
 notebook
 pandas
+xlrd
+shapely

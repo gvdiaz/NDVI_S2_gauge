@@ -123,6 +123,15 @@ COPY ${source_req} ${dest_req}
 RUN cat ${dest_req}
 RUN pip3 install -r ${dest_req}
 
+# Agrego módulos requeridos a posteriori de compilación
+RUN pip3 install xlrd
+RUN pip3 install shapely
+
+# Borro carpetas utilizadas para instalación
+RUN rm -rf maven_install pybridge snap2compile
+
+
+
 ENV TINI_VERSION v0.6.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 RUN chmod +x /usr/bin/tini
