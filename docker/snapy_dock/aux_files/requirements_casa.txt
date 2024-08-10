@@ -1,4 +1,7 @@
+GDAL
+Fiona
 notebook
+numpy
 pandas
 xlrd
 shapely
