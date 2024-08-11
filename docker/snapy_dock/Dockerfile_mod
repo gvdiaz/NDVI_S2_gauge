@@ -66,14 +66,14 @@ RUN apt install openjdk-8-jdk -y
 ENV JDK_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 ENV JAVA_HOME $JDK_HOME
 
-# ##pybridge
-# ARG PYBRIDGE_FOL=${SOURCE_PATH}/pybridge
-# WORKDIR $PYBRIDGE_FOL
-# RUN apt install python3.6-distutils -y
+##pybridge
+ARG PYBRIDGE_FOL=${SOURCE_PATH}/pybridge
+WORKDIR $PYBRIDGE_FOL
+RUN apt install python3.6-distutils -y
 # RUN apt install python3-venv python3-pip -y
-# RUN pip install pybridge
-# RUN git clone https://github.com/bcdev/jpy
-# ARG JPY=$PYBRIDGE_FOL/jpy
+RUN pip install pybridge
+RUN git clone https://github.com/bcdev/jpy
+ARG JPY=$PYBRIDGE_FOL/jpy
 # #TODO fix on forman committed on May 18 1 parent ff48ea0 commit 76548cb6f3b9ba795ed6b3a42327607234eaba3c
 
 # ##maven
