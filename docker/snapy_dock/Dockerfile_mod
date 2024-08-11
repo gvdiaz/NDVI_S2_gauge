@@ -34,6 +34,10 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 2
 RUN apt install -y curl
 
+# Agrego paquetes para que funcione correctamente venv en python 3.6
+# Creo que funcionó correctamente. O por lo menos compiló.
+RUN apt install python3.6-venv -y
+
 ##Wget
 RUN apt update
 RUN apt install wget -y
@@ -49,9 +53,11 @@ WORKDIR $SOURCE_PATH
 
 # ARG JAVA_INSTALL=${WORKDIR}
 
-# ENV VIRTUAL_ENV=/opt/venv
-# RUN python3 -m venv $VIRTUAL_ENV
-# ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+# Desarrollo para que funcione python con venv
+
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # ##JAVA
 # RUN apt update
