@@ -59,12 +59,12 @@ ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-# ##JAVA
-# RUN apt update
-# RUN apt install openjdk-8-jre -y
-# RUN apt install openjdk-8-jdk -y
-# ENV JDK_HOME /usr/lib/jvm/java-8-openjdk-amd64/
-# ENV JAVA_HOME $JDK_HOME
+##JAVA
+RUN apt update
+RUN apt install openjdk-8-jre -y
+RUN apt install openjdk-8-jdk -y
+ENV JDK_HOME /usr/lib/jvm/java-8-openjdk-amd64/
+ENV JAVA_HOME $JDK_HOME
 
 # ##pybridge
 # ARG PYBRIDGE_FOL=${SOURCE_PATH}/pybridge
