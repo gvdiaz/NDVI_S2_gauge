@@ -25,22 +25,13 @@ LABEL maintainer "gus838@gmail.com"
 
 ##Python3.6
 RUN apt update
+RUN apt install software-properties-common -y
 RUN apt install git -y
 RUN add-apt-repository ppa:deadsnakes/ppa -y
-RUN apt install python3.6 python3.6-dev -y
-RUN apt install software-properties-common -y
-# RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 2
-
-## Código para arreglar la instalación de numpy en python3.6
-# RUN pip uninstall numpy
-
 RUN add-apt-repository ppa:ubuntugis/ppa -y
-
-# RUN update-alternatives --config python
-# RUN update-alternatives  --set python /usr/bin/python3.6
-
-
+RUN apt install python3.6 python3.6-dev -y
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 2
 RUN apt install -y curl
 
 ##Wget
@@ -114,15 +105,15 @@ RUN nohup bash -c ' /opt/snap/bin/snappy-conf /usr/bin/python3 /usr/local/lib/py
 
 # # Install GDAL
 # RUN add-apt-repository ppa:ubuntugis/ppa
-RUN apt-get update && \
-      apt-get install -y \
-      gdal-bin \
-      libgdal-dev && \
-      apt-get clean && \
-      rm -rf /var/lib/apt/lists/*
-ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
-ENV C_INCLUDE_PATH=/usr/include/gdal
-RUN python3 -m pip3 install GDAL
+# RUN apt-get update && \
+#       apt-get install -y \
+#       gdal-bin \
+#       libgdal-dev && \
+#       apt-get clean && \
+#       rm -rf /var/lib/apt/lists/*
+# ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
+# ENV C_INCLUDE_PATH=/usr/include/gdal
+# RUN pip3 install GDAL
 
 ARG source_req=./aux_files/requirements_casa.txt
 ARG dest_req=/tmp_gdal/requirements.txt
@@ -130,16 +121,7 @@ RUN mkdir /tmp_gdal
 
 COPY ${source_req} ${dest_req}
 RUN cat ${dest_req}
-RUN python3 -m pip3 install -r ${dest_req}
-
-# Agrego módulos requeridos a posteriori de compilación
-RUN python3 -m pip3 install xlrd
-RUN python3 -m pip3 install shapely
-
-# Borro carpetas utilizadas para instalación
-RUN rm -rf maven_install pybridge snap2compile
-
-
+RUN pip3 install -r ${dest_req}
 
 ENV TINI_VERSION v0.6.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
