@@ -55,9 +55,10 @@ WORKDIR $SOURCE_PATH
 
 # Desarrollo para que funcione python con venv
 
-ENV VIRTUAL_ENV=/opt/venv
-RUN python3 -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+# Quito definición de entorno virtual aquí porque me dificulta la instalción de jpy
+# ENV VIRTUAL_ENV=/opt/venv
+# RUN python3 -m venv $VIRTUAL_ENV
+# ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 ##JAVA
 RUN apt update
@@ -70,7 +71,7 @@ ENV JAVA_HOME $JDK_HOME
 ARG PYBRIDGE_FOL=${SOURCE_PATH}/pybridge
 WORKDIR $PYBRIDGE_FOL
 RUN apt install python3.6-distutils -y
-# RUN apt install python3-venv python3-pip -y
+RUN apt install python3-venv python3-pip -y
 RUN pip install pybridge
 RUN git clone https://github.com/bcdev/jpy
 ARG JPY=$PYBRIDGE_FOL/jpy
@@ -82,35 +83,37 @@ WORKDIR $MAVEN_INST
 RUN wget https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
 RUN tar xzvf apache-maven-3.8.6-bin.tar.gz
 ENV PATH $PATH:$MAVEN_INST/apache-maven-3.8.6/bin
+# Línea agregada por Rama para probar si pasa la línea de instalación de jpy
+# RUN pip install wheel
 RUN cd $JPY && python3 setup.py build maven bdist_wheel
 
 
-# # SNAP
-# ARG SNAP=${SOURCE_PATH}/snap2compile
-# ARG SNAP_INST=/opt/snap
-# RUN mkdir $SNAP
-# ENV DISPLAY=""
-# RUN mkdir ${SNAP_INST} && \
-#     cd ${SNAP} && \
-#     wget --no-check-certificate -q https://download.esa.int/step/snap/9.0/installers/esa-snap_all_unix_9_0_0.sh && \
-#     chmod 777 -R esa-snap_all_unix_9_0_0.sh && \
-#     ./esa-snap_all_unix_9_0_0.sh -q
+# SNAP
+ARG SNAP=${SOURCE_PATH}/snap2compile
+ARG SNAP_INST=/opt/snap
+RUN mkdir $SNAP
+ENV DISPLAY=""
+RUN mkdir ${SNAP_INST} && \
+    cd ${SNAP} && \
+    wget --no-check-certificate -q https://download.esa.int/step/snap/9.0/installers/esa-snap_all_unix_9_0_0.sh && \
+    chmod 777 -R esa-snap_all_unix_9_0_0.sh && \
+    ./esa-snap_all_unix_9_0_0.sh -q
 
-# ##snapy
-# # RUN /usr/local/snap/bin/snappy-conf /usr/bin/python3 $SOURCE_PATH
-# # RUN /opt/snap/bin/snappy-conf /usr/bin/python3 ${SOURCE_PATH}
-# RUN apt-get install psmisc
+##snapy
+# RUN /usr/local/snap/bin/snappy-conf /usr/bin/python3 $SOURCE_PATH
+# RUN /opt/snap/bin/snappy-conf /usr/bin/python3 ${SOURCE_PATH}
+RUN apt-get install psmisc
 
-# ARG SNAPPY_CONF=$SNAP_INST/bin
-# WORKDIR ${SNAPPY_CONF}
-# # RUN ./snappy-conf /usr/bin/python3 /usr/local/lib/python3.6/dist-packages && rm -rf SNAP
-# # RUN ["/bin/sh", "-c", "/opt/snap/bin/snappy-conf", "/usr/bin/python3", "/usr/local/lib/python3.6/dist-packages", "&", "&&", "sleep", "30"]
-# RUN nohup bash -c ' /opt/snap/bin/snappy-conf /usr/bin/python3 /usr/local/lib/python3.6/dist-packages &' && \
-#     ps && \
-#     sleep 55
-# # RUN ps && sleep 30
-# # RUN ps && sleep 10
-# # RUN sleep 30 && killall snappy-conf
+ARG SNAPPY_CONF=$SNAP_INST/bin
+WORKDIR ${SNAPPY_CONF}
+# RUN ./snappy-conf /usr/bin/python3 /usr/local/lib/python3.6/dist-packages && rm -rf SNAP
+# RUN ["/bin/sh", "-c", "/opt/snap/bin/snappy-conf", "/usr/bin/python3", "/usr/local/lib/python3.6/dist-packages", "&", "&&", "sleep", "30"]
+RUN nohup bash -c ' /opt/snap/bin/snappy-conf /usr/bin/python3 /usr/local/lib/python3.6/dist-packages &' && \
+    ps && \
+    sleep 55
+# RUN ps && sleep 30
+# RUN ps && sleep 10
+# RUN sleep 30 && killall snappy-conf
 
 # # # Install GDAL
 # # RUN add-apt-repository ppa:ubuntugis/ppa
