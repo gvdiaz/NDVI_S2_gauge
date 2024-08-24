@@ -127,19 +127,25 @@ ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-# ARG source_req=./aux_files/requirements_casa.txt
-# ARG dest_req=/tmp_gdal/requirements.txt
-# RUN mkdir /tmp_gdal
+ARG source_req=./aux_files/requirements_casa.txt
+ARG dest_req=/tmp_gdal/requirements.txt
+RUN mkdir /tmp_gdal
 
-# COPY ${source_req} ${dest_req}
-# RUN cat ${dest_req}
-# RUN pip3 install -r ${dest_req}
+COPY ${source_req} ${dest_req}
+RUN cat ${dest_req}
+RUN pip3 install -r ${dest_req}
 
-# ENV TINI_VERSION v0.6.0
-# ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
-# RUN chmod +x /usr/bin/tini
-# ENTRYPOINT ["/usr/bin/tini", "--"]
+# Instalación de módulo snappy en entorno virtual de python
 
-# # # EXPOSE 8888
-# WORKDIR $SOURCE_PATH
+ARG SNAP_INST=/usr/local/lib/python3.6/dist-packages/snappy/
+WORKDIR ${SNAP_INST}
+RUN python3 setup.py install
+
+ENV TINI_VERSION v0.6.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
+RUN chmod +x /usr/bin/tini
+ENTRYPOINT ["/usr/bin/tini", "--"]
+
+# # EXPOSE 8888
+WORKDIR $SOURCE_PATH
 # # CMD ["jupyter", "notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root"]
