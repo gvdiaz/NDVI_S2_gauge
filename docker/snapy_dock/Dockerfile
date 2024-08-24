@@ -34,6 +34,10 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 2
 RUN apt install -y curl
 
+# Agrego paquetes para que funcione correctamente venv en python 3.6
+# Creo que funcionó correctamente. O por lo menos compiló.
+RUN apt install python3.6-venv -y
+
 ##Wget
 RUN apt update
 RUN apt install wget -y
@@ -48,7 +52,6 @@ WORKDIR $SOURCE_PATH
 #############################################################
 
 # ARG JAVA_INSTALL=${WORKDIR}
-
 
 ##JAVA
 RUN apt update
@@ -65,7 +68,7 @@ RUN apt install python3-venv python3-pip -y
 RUN pip install pybridge
 RUN git clone https://github.com/bcdev/jpy
 ARG JPY=$PYBRIDGE_FOL/jpy
-#TODO fix on forman committed on May 18 1 parent ff48ea0 commit 76548cb6f3b9ba795ed6b3a42327607234eaba3c
+# #TODO fix on forman committed on May 18 1 parent ff48ea0 commit 76548cb6f3b9ba795ed6b3a42327607234eaba3c
 
 ##maven
 ARG MAVEN_INST=${SOURCE_PATH}/maven_install
@@ -73,6 +76,8 @@ WORKDIR $MAVEN_INST
 RUN wget https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
 RUN tar xzvf apache-maven-3.8.6-bin.tar.gz
 ENV PATH $PATH:$MAVEN_INST/apache-maven-3.8.6/bin
+# Línea agregada por Rama para probar si pasa la línea de instalación de jpy
+# RUN pip install wheel
 RUN cd $JPY && python3 setup.py build maven bdist_wheel
 
 
@@ -105,15 +110,22 @@ RUN nohup bash -c ' /opt/snap/bin/snappy-conf /usr/bin/python3 /usr/local/lib/py
 
 # # Install GDAL
 # RUN add-apt-repository ppa:ubuntugis/ppa
-# RUN apt-get update && \
-#       apt-get install -y \
-#       gdal-bin \
-#       libgdal-dev && \
-#       apt-get clean && \
-#       rm -rf /var/lib/apt/lists/*
-# ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
-# ENV C_INCLUDE_PATH=/usr/include/gdal
-# RUN pip3 install GDAL
+RUN apt-get update && \
+      apt-get install -y \
+      gdal-bin \
+      libgdal-dev && \
+      apt-get clean && \
+      rm -rf /var/lib/apt/lists/*
+ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
+ENV C_INCLUDE_PATH=/usr/include/gdal
+RUN pip3 install GDAL
+
+# Desarrollo para que funcione python con venv
+
+# Quito definición de entorno virtual aquí porque me dificulta la instalción de jpy
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 ARG source_req=./aux_files/requirements_casa.txt
 ARG dest_req=/tmp_gdal/requirements.txt
@@ -123,6 +135,12 @@ COPY ${source_req} ${dest_req}
 RUN cat ${dest_req}
 RUN pip3 install -r ${dest_req}
 
+# Instalación de módulo snappy en entorno virtual de python
+
+ARG SNAP_INST=/usr/local/lib/python3.6/dist-packages/snappy/
+WORKDIR ${SNAP_INST}
+RUN python3 setup.py install
+
 ENV TINI_VERSION v0.6.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 RUN chmod +x /usr/bin/tini
@@ -130,4 +148,4 @@ ENTRYPOINT ["/usr/bin/tini", "--"]
 
 # # EXPOSE 8888
 WORKDIR $SOURCE_PATH
-# CMD ["jupyter", "notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root"]
+# # CMD ["jupyter", "notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root"]
