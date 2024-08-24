@@ -110,15 +110,15 @@ RUN nohup bash -c ' /opt/snap/bin/snappy-conf /usr/bin/python3 /usr/local/lib/py
 
 # # Install GDAL
 # RUN add-apt-repository ppa:ubuntugis/ppa
-# RUN apt-get update && \
-#       apt-get install -y \
-#       gdal-bin \
-#       libgdal-dev && \
-#       apt-get clean && \
-#       rm -rf /var/lib/apt/lists/*
-# ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
-# ENV C_INCLUDE_PATH=/usr/include/gdal
-# RUN pip3 install GDAL
+RUN apt-get update && \
+      apt-get install -y \
+      gdal-bin \
+      libgdal-dev && \
+      apt-get clean && \
+      rm -rf /var/lib/apt/lists/*
+ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
+ENV C_INCLUDE_PATH=/usr/include/gdal
+RUN pip3 install GDAL
 
 # Desarrollo para que funcione python con venv
 
