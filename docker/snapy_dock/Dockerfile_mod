@@ -53,13 +53,6 @@ WORKDIR $SOURCE_PATH
 
 # ARG JAVA_INSTALL=${WORKDIR}
 
-# Desarrollo para que funcione python con venv
-
-# Quito definición de entorno virtual aquí porque me dificulta la instalción de jpy
-# ENV VIRTUAL_ENV=/opt/venv
-# RUN python3 -m venv $VIRTUAL_ENV
-# ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-
 ##JAVA
 RUN apt update
 RUN apt install openjdk-8-jre -y
@@ -115,17 +108,24 @@ RUN nohup bash -c ' /opt/snap/bin/snappy-conf /usr/bin/python3 /usr/local/lib/py
 # RUN ps && sleep 10
 # RUN sleep 30 && killall snappy-conf
 
-# # # Install GDAL
-# # RUN add-apt-repository ppa:ubuntugis/ppa
-# # RUN apt-get update && \
-# #       apt-get install -y \
-# #       gdal-bin \
-# #       libgdal-dev && \
-# #       apt-get clean && \
-# #       rm -rf /var/lib/apt/lists/*
-# # ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
-# # ENV C_INCLUDE_PATH=/usr/include/gdal
-# # RUN pip3 install GDAL
+# # Install GDAL
+# RUN add-apt-repository ppa:ubuntugis/ppa
+# RUN apt-get update && \
+#       apt-get install -y \
+#       gdal-bin \
+#       libgdal-dev && \
+#       apt-get clean && \
+#       rm -rf /var/lib/apt/lists/*
+# ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
+# ENV C_INCLUDE_PATH=/usr/include/gdal
+# RUN pip3 install GDAL
+
+# Desarrollo para que funcione python con venv
+
+# Quito definición de entorno virtual aquí porque me dificulta la instalción de jpy
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # ARG source_req=./aux_files/requirements_casa.txt
 # ARG dest_req=/tmp_gdal/requirements.txt
