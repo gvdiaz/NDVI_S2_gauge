@@ -1,4 +1,3 @@
-Fiona
 notebook
 numpy
 pandas
@@ -6,3 +5,5 @@ xlrd
 shapely
 tqdm
 requests
+GDAL==3.3.2
+Fiona

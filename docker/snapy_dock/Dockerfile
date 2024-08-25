@@ -127,6 +127,12 @@ ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
+# Instalación de módulo snappy en entorno virtual de python
+
+ARG SNAP_INST=/usr/local/lib/python3.6/dist-packages/snappy/
+WORKDIR ${SNAP_INST}
+RUN python3 setup.py install
+
 ARG source_req=./aux_files/requirements_casa.txt
 ARG dest_req=/tmp_gdal/requirements.txt
 RUN mkdir /tmp_gdal
@@ -134,12 +140,6 @@ RUN mkdir /tmp_gdal
 COPY ${source_req} ${dest_req}
 RUN cat ${dest_req}
 RUN pip3 install -r ${dest_req}
-
-# Instalación de módulo snappy en entorno virtual de python
-
-ARG SNAP_INST=/usr/local/lib/python3.6/dist-packages/snappy/
-WORKDIR ${SNAP_INST}
-RUN python3 setup.py install
 
 ENV TINI_VERSION v0.6.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
