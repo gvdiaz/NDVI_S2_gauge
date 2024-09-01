@@ -35,7 +35,7 @@ def get_wkt_V1(file2read, reproj_sr, verbose=False):
     for feature in lyr:
         # For hecho para levantar una sola geomtría del kml, la primera.
         geometry = feature.GetGeometryRef()
-        print('Tipo de geometria: ',geometry.GetGeometryName())
+        # print('Tipo de geometria: ',geometry.GetGeometryName())
         geom_wkt = geometry.ExportToWkt()
         spatial_ref_auth = geometry.GetSpatialReference().GetAttrValue('AUTHORITY')
         spatial_ref_code = geometry.GetSpatialReference().GetAttrValue('AUTHORITY', 1)
@@ -68,4 +68,4 @@ def get_wkt_V1(file2read, reproj_sr, verbose=False):
         
     del ds
     # return geom_wkt, crs
-    return geom_wkt_rp
+    return geom_wkt_rp, geom_wkt
