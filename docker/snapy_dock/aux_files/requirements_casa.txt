@@ -1,6 +1,7 @@
 notebook
 numpy
 pandas
+matplotlib
 xlrd
 shapely
 tqdm
