@@ -12,13 +12,12 @@ import sys
 def test_kml2kmlp(input_path, epsg_c, verbose=False):
     sr = osr.SpatialReference()
     sr.ImportFromEPSG(epsg_c)
-    get_wkt_V1(input_path, sr, verbose)
-    if verbose:
-        print('Presentacion de proyeccion definida:',sr, sep='\n')
-        print()
-        print('Presentacion de codigo EPSG', sr.GetAttrValue('AUTHORITY', 1), sep='\n')
+    # if verbose:
+    #     print('Presentacion de proyeccion definida:',sr, sep='\n')
+    #     print()
+    #     print('Presentacion de codigo EPSG', sr.GetAttrValue('AUTHORITY', 1), sep='\n')
 
-    return None
+    return get_wkt_V1(input_path, sr, verbose)
 
 def get_wkt_V1(file2read, reproj_sr, verbose=False):
     # Por el momento solo devuelve la geometría de la primer feature (suponiendo que es polígono)
@@ -34,6 +33,7 @@ def get_wkt_V1(file2read, reproj_sr, verbose=False):
     lyr = ds.GetLayer(0)
 
     for feature in lyr:
+        # For hecho para levantar una sola geomtría del kml, la primera.
         geometry = feature.GetGeometryRef()
         print('Tipo de geometria: ',geometry.GetGeometryName())
         geom_wkt = geometry.ExportToWkt()
@@ -68,4 +68,4 @@ def get_wkt_V1(file2read, reproj_sr, verbose=False):
         
     del ds
     # return geom_wkt, crs
-    return None
+    return geom_wkt_rp
