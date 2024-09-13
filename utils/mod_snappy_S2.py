@@ -31,7 +31,7 @@ def set_user_pass(verbose=False):
     passw = 'Ul!RsPWTPuw3'
     if verbose:
         print(f'User: {user}')
-        print(f'User: {passw}')
+        print(f'Pass: {passw}')
     return (user, passw)
 
 def lect_vars(serie, verbose=False):
