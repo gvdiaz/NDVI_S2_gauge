@@ -423,12 +423,22 @@ def disp_and_type(obj, type_of_show='display'):
     return None
 
 def save_df(df_and_name, output_path):
+    # Salvo dataframes en excels
     with pd.ExcelWriter(output_path) as writer:
         # df_conf.to_excel(writer, sheet_name=s_names[0])
         # gdf.to_excel(writer, sheet_name=s_names[1])
         for df, name in df_and_name:
             df.to_excel(writer, sheet_name=name)
         # df2.to_excel(writer, sheet_name='Sheet_name_2')
+    # Creo nombres de archivos csv y pkl de salida
+    # print(output_path)
+    output_path_csv = output_path.split('.')[0] + '.csv'
+    output_path_pkl = output_path.split('.')[0] + '.pkl'
+    # Solo voy a guardar el dataframe de resumen en csv y pkl
+    for df, name in df_and_name:
+        if (name == 'resume_search'):
+            df.to_csv(output_path_csv)
+            df.to_pickle(output_path_pkl)    
     return None
 
 def  comp_search_att(conf_dict, verbose = False):
