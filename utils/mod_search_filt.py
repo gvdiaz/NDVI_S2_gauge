@@ -54,7 +54,7 @@ def create_conf_file(path2conf):
             'init_date':'01-01-2019',
             'final_date':'31-01-2021',
             'max_cloud':'50',
-            'Sent_mission':'MSIL2A',
+            'Sent_mission':'SENTINEL-2',
             'proj_name':'Your name'
         },
         'ESA_SERVER': {
@@ -66,6 +66,11 @@ def create_conf_file(path2conf):
         'SCRIPTING':{
             ';Configuración para aplicar en funciones':None,
             'verbose': False
+        },
+        'PROCESSOR': {
+            '; Configuración para procesador posterior a búsqueda/filtrado':None,
+            '; Type: Significa el tipo de procesamiento a aplicar a la colección de productos a bajar, puede ser NDVI, RGB': None,
+            'Type':'RGB'
         }
     }
     with open(path2conf,"w") as file:
