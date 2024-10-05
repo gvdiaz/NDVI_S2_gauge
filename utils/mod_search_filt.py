@@ -70,7 +70,8 @@ def create_conf_file(path2conf):
         'PROCESSOR': {
             '; Configuración para procesador posterior a búsqueda/filtrado':None,
             '; Type: Significa el tipo de procesamiento a aplicar a la colección de productos a bajar, puede ser NDVI, RGB': None,
-            'Type':'RGB'
+            'Type':'RGB',
+            'Conf_proc':'/src/utils/CONF_PROC.INI'
         }
     }
     with open(path2conf,"w") as file:
@@ -90,6 +91,17 @@ def create_conf_file(path2conf):
                 config_object.set(section, field, str(value))
         config_object.write(file)
     # file.close()
+    return None
+
+# Creación de archivo de configuración para procesador
+def save_conf2proc(conf_searcher, output_meta_df, verbose):
+    # Me baso en lo que voy necesitando en 'Note2proc.ipynb'
+    # Necesito, en ppio las siguientes variables
+    # Ruta a listado csv
+    print(conf_searcher)
+    print(output_meta_df)
+    # list_name = output_meta_df
+    # Ruta a kml en el cual se realizó la búsqueda
     return None
 
 # Envio de requests a servidor de la ESA
