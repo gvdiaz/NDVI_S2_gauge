@@ -42,3 +42,5 @@ bsname = search_df.loc['Search name'].item()
 pre_out_prod = os.path.join(conf_dict['FOLDERS']['output'], bsname)
 # Guardo la información generada en excel
 msf.save_df(df_and_name_tuple, pre_out_prod)
+# Guardo configuración para Procesador (paso posterior)
+msf.save_conf2proc(conf_dict, search_df, conf_dict['SCRIPTING']['verbose'])
