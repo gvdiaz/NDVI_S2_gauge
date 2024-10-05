@@ -14,10 +14,6 @@ verbose2conf = False
 conf_dict = msf.read_conf_searcher(config_path, verbose2conf)
 # Armado de request para realizar la búsqueda
 req_str = msf.set_ESA_req(conf_dict, verbose2conf)
-## Líneas de debugging
-print('Request enviado',req_str, sep='\n')
-print()
-print('Answer de request',msf.send_req(req_str), sep='\n')
 # Envío de request
 json = msf.send_req(req_str)
 # Conversión de información recibida a df
