@@ -100,16 +100,66 @@ def create_conf_file(path2conf):
 def save_conf2proc(conf_searcher, output_meta_df, verbose):
     # Me baso en lo que voy necesitando en 'Note2proc.ipynb' y en Note2script_snappy.ipynb
     # Necesito, en ppio las siguientes variables
-    # Ruta a listado csv
-    # Ruta a kml de entrada
-    # Ruta a wkt de kml de entrada
-    # Usuario de portal de la ESA
-    # Pass de usuario
-    # Carpeta de salida única de búsqueda (o sea debo gnerar la carpeta de salida única por búsqueda)
+    # Ruta a listado csv (FOLDERS)
+    # Ruta a kml de entrada (FOLDERS)
+    # Ruta a wkt de kml de entrada (FOLDERS)
+    # Usuario de portal de la ESA (ATTRIB)
+    # Pass de usuario (ATTRIB)
+    # Carpeta de salida única de búsqueda (o sea debo gnerar la carpeta de salida única por búsqueda) (FOLDERS)
+
+    # líneas de debug
+    #################
     print(conf_searcher)
     print(output_meta_df)
-    # list_name = output_meta_df
-    # Ruta a kml en el cual se realizó la búsqueda
+    print(output_meta_df.index)
+    print(output_meta_df.loc['Proj Name']) # Parece correcto, continuar por esta línea
+    print(output_meta_df['Proj Name'])
+    #################
+
+
+    # Definición de carpeta de salida de proyecto para guardar los productos de salida
+    folder_output = output_meta_df['Proj Name'].value() + output_meta_df.loc['Search name'].value().split('_')[1]
+    output_path = os.path.join(conf_searcher['FOLDERS']['output'], folder_output)
+
+
+    # Genero diccionario a guardar como configuración de procesador.
+    dict_gen = {
+        'FOLDERS': {
+            ';Prueba de comentarios para FOLDERS':None,
+            'PRODS_LIST': os.path.join(conf_searcher['FOLDERS']['output'], output_meta_df['Search name'].item()),
+            'KML_INPUT': os.path.join(conf_searcher['FOLDERS']['roi'], output_meta_df['ROI name'].item()),
+            'WKT_ROI': conf_searcher['FOLDERS']['wkt_roi'],
+            'OUTPUT': output_path
+        },
+        'ATTRIB': {
+            ';Prueba de comentarios para ATTRIB':None,
+            'user': conf_searcher['ESA_SERVER']['user'],
+            'pass': conf_searcher['ESA_SERVER']['pass'],
+            'proj_name':conf_searcher['ATTRIB']['proj_name']
+        },
+        'PROCESSOR': {
+            '; Configuración para procesador posterior a búsqueda/filtrado':None,
+            '; Type: Significa el tipo de procesamiento a aplicar a la colección de productos a bajar, puede ser NDVI, RGB': None,
+            'Type':conf_searcher['PROCESSOR']['type']
+        }
+    }
+    with open(conf_searcher['PROCESSOR']['conf_proc'],"w") as file:
+    # file =open("employee1.ini","w")
+        config_object = configparser.ConfigParser(allow_no_value=True)
+    # myDict={'employee': {'name': 'John Doe', 'age': '35'},
+    #         'job': {'title': 'Software Engineer', 'department': 'IT', 'years_of_experience': '10'},
+    #         'address': {'street': '123 Main St.', 'city': 'San Francisco', 'state': 'CA', 'zip': '94102'}}
+        sections=dict_gen.keys()
+        for section in sections:
+            config_object.add_section(section)
+        for section in sections:
+            inner_dict=dict_gen[section]
+            fields=inner_dict.keys()
+            for field in fields:
+                value=inner_dict[field]
+                config_object.set(section, field, str(value))
+        config_object.write(file)
+    # file.close()
     return None
 
 # Envio de requests a servidor de la ESA
