@@ -47,6 +47,7 @@ def create_conf_file(path2conf):
         'FOLDERS': {
             ';Prueba de comentarios para FOLDERS':None,
             'ROI': r'/src/Vectores/',
+            'WKT_ROI': r'/src/Vectores/aux_wkt/wkt_file.txt',
             'OUTPUT': '/src/Output/'
         },
         'ATTRIB': {
@@ -61,7 +62,9 @@ def create_conf_file(path2conf):
             ';Prueba de comentarios para ESA_SERVER':None,
             'url':'https://catalogue.dataspace.copernicus.eu/odata/v1/Products',
             'orderby': 'ContentDate/Start',
-            'top':'100'
+            'top':'100',
+            'user':'gus838@gmail.com',
+            'pass':'Ul!RsPWTPuw3'
     },
         'SCRIPTING':{
             ';Configuración para aplicar en funciones':None,
@@ -95,9 +98,14 @@ def create_conf_file(path2conf):
 
 # Creación de archivo de configuración para procesador
 def save_conf2proc(conf_searcher, output_meta_df, verbose):
-    # Me baso en lo que voy necesitando en 'Note2proc.ipynb'
+    # Me baso en lo que voy necesitando en 'Note2proc.ipynb' y en Note2script_snappy.ipynb
     # Necesito, en ppio las siguientes variables
     # Ruta a listado csv
+    # Ruta a kml de entrada
+    # Ruta a wkt de kml de entrada
+    # Usuario de portal de la ESA
+    # Pass de usuario
+    # Carpeta de salida única de búsqueda (o sea debo gnerar la carpeta de salida única por búsqueda)
     print(conf_searcher)
     print(output_meta_df)
     # list_name = output_meta_df
@@ -185,7 +193,7 @@ def set_wkt_V1(fn, verbose):
     if ds_qty == 1:
         fn_path = ds_path[0]
     elif ds_qty > 1:
-        sys.exit('Hay más de un archivo temporal, borrar hasta que quede uno solo')
+        sys.exit('Hay más de un archivo vectorial en carpeta Vectores, borrar hasta que quede uno solo')
     else:
         sys.exit(f'No se encuentra datasource en la carpeta "{fn}"')
     
@@ -214,6 +222,13 @@ def set_wkt_V1(fn, verbose):
         print(geometry.ExportToWkt())
     del ds
     return geom_wkt
+
+def write_wkt_4326(path2roi, o_path, verbose):
+    # o_path = '/src/Vectores/aux_wkt/wkt_file.txt'
+    wkt = set_wkt_V1(path2roi, verbose)
+    with open(o_path, 'w') as f:
+        f.write(wkt)
+    return None
 
 def df_proc(df, verbose):
     # Primer paso: descomponer nombre de producto (en columna 'Name') en otras columnas
