@@ -127,7 +127,7 @@ def save_conf2proc(conf_searcher, output_meta_df, verbose):
     dict_gen = {
         'FOLDERS': {
             ';Prueba de comentarios para FOLDERS':None,
-            'PRODS_LIST': os.path.join(conf_searcher['FOLDERS']['output'], output_meta_df.at['Search name', 'Datos']),
+            'PRODS_LIST': os.path.join(conf_searcher['FOLDERS']['output'], output_meta_df.at['Search name', 'Datos'].split('.')[0] + '.csv'),
             'KML_INPUT': os.path.join(conf_searcher['FOLDERS']['roi'], output_meta_df.at['ROI name', 'Datos']),
             'WKT_ROI': conf_searcher['FOLDERS']['wkt_roi'],
             'OUTPUT': output_path
@@ -139,8 +139,8 @@ def save_conf2proc(conf_searcher, output_meta_df, verbose):
             'proj_name':conf_searcher['ATTRIB']['proj_name']
         },
         'PROCESSOR': {
-            '; Configuración para procesador posterior a búsqueda/filtrado':None,
-            '; Type: Significa el tipo de procesamiento a aplicar a la colección de productos a bajar, puede ser NDVI, RGB': None,
+            '; Configuracion para procesador posterior a busqueda/filtrado':None,
+            '; Type: Significa el tipo de procesamiento a aplicar a la coleccion de productos a bajar, puede ser NDVI, RGB': None,
             'Type':conf_searcher['PROCESSOR']['type']
         }
     }
