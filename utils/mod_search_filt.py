@@ -109,16 +109,17 @@ def save_conf2proc(conf_searcher, output_meta_df, verbose):
 
     # líneas de debug
     #################
-    print(conf_searcher)
-    print(output_meta_df)
-    print(output_meta_df.index)
-    print(output_meta_df.loc['Proj Name']) # Parece correcto, continuar por esta línea
-    print(output_meta_df['Proj Name'])
+    # print(conf_searcher)
+    # print(output_meta_df)
+    # print(output_meta_df.index)
+    # print('Presentación de datos de serie: ',output_meta_df.at['Proj Name', 'Datos']) # Llamada correcta para obtener el valor de la serie
+    # print('Presentación de datos de serie, método 2: ',output_meta_df.loc['Datos'].get('Proj Name')) # Incorrecto
+    # print(output_meta_df['Proj Name']) # -> de esta manera no parece acceder al dato de la serie 'Proj Name'
     #################
 
 
     # Definición de carpeta de salida de proyecto para guardar los productos de salida
-    folder_output = output_meta_df['Proj Name'].value() + output_meta_df.loc['Search name'].value().split('_')[1]
+    folder_output = output_meta_df.at['Proj Name', 'Datos'] + '_' + output_meta_df.at['Search name', 'Datos'].split('_')[1]
     output_path = os.path.join(conf_searcher['FOLDERS']['output'], folder_output)
 
 
@@ -126,8 +127,8 @@ def save_conf2proc(conf_searcher, output_meta_df, verbose):
     dict_gen = {
         'FOLDERS': {
             ';Prueba de comentarios para FOLDERS':None,
-            'PRODS_LIST': os.path.join(conf_searcher['FOLDERS']['output'], output_meta_df['Search name'].item()),
-            'KML_INPUT': os.path.join(conf_searcher['FOLDERS']['roi'], output_meta_df['ROI name'].item()),
+            'PRODS_LIST': os.path.join(conf_searcher['FOLDERS']['output'], output_meta_df.at['Search name', 'Datos']),
+            'KML_INPUT': os.path.join(conf_searcher['FOLDERS']['roi'], output_meta_df.at['ROI name', 'Datos']),
             'WKT_ROI': conf_searcher['FOLDERS']['wkt_roi'],
             'OUTPUT': output_path
         },
