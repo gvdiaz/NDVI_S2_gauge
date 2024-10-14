@@ -48,7 +48,7 @@ def create_conf_file(path2conf):
             ';Prueba de comentarios para FOLDERS':None,
             'ROI': r'/src/Vectores/',
             'WKT_ROI': r'/src/Vectores/aux_wkt/wkt_file.txt',
-            'OUTPUT': '/src/output/'
+            'OUTPUT': '/src/Output/'
         },
         'ATTRIB': {
             ';Prueba de comentarios para ATTRIB':None,
