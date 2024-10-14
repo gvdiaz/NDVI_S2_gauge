@@ -27,7 +27,7 @@ docker run --rm --name snappy_jup_develop \
     -v $PATH_VECTORES:/src/Vectores \
     -v $PATH_UTILS:/src/utils \
     -v $PATH_TOKEN:/src/token \
-    -v $PATH_OUTPUT:/src/output \
+    -v $PATH_OUTPUT:/src/Output \
     --workdir /src \
     -p 8888:8888 \
     snappy_9_gvd \
