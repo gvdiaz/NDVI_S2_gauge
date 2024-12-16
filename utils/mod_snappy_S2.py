@@ -2,6 +2,14 @@
 import pandas as pd
 import os
 import sys
+import snappy
+from snappy import WKTReader
+from snappy import HashMap
+from snappy import GPF
+from snappy import ProductIO
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
 
 def set_input_vars(verbose=False):
     aux_dict = {}
@@ -44,3 +52,40 @@ def lect_vars(serie, verbose=False):
         print(f'Fecha adquisición producto: {acq_date}')
         print()
     return (prod_id, prod_name, acq_date)
+
+def subset_prod(path2prod, path2wkt, verbose):
+    # Objetivo 2 del día Cortar producto por geometría
+    product = ProductIO.readProduct(path2prod)
+    SubsetOp = snappy.jpy.get_type('org.esa.snap.core.gpf.common.SubsetOp')
+    geometry = WKTReader().read(path2wkt)
+    HashMap = snappy.jpy.get_type('java.util.HashMap')
+    GPF.getDefaultInstance().getOperatorSpiRegistry().loadOperatorSpis()
+    parameters = HashMap()
+    parameters.put('copyMetadata', True)
+    parameters.put('geoRegion', geometry)
+    # product_subset = GPF.createProduct('Subset', parameters, product)
+    return GPF.createProduct('Subset', parameters, product)
+
+def plotRGB_s2(product, title, vmin, vmax):
+    band_list = ['B4','B3','B2']
+    band_stack = []
+    for band in band_list:
+        band=product.getBand(band)
+        w=band.getRasterWidth()
+        h=band.getRasterHeight()
+#         depth = 3
+        print(w,h)
+        band_layer=np.zeros(w*h,np.float32)
+        band.readPixels(0,0,w,h,band_layer)
+        band_layer.shape=h,w
+        band_stack.append(band_layer)
+        
+    width=12
+    height=12
+    rgb = np.dstack(band_stack)  # stacks 3 h x w arrays -> h x w x 3
+    plt.figure(figsize=(width,height))
+    plt.title('Producto de fecha: ' + title, fontweight ="bold") 
+    imgplot=plt.imshow(rgb,cmap=plt.cm.binary,vmin=vmin,vmax=vmax)
+    plt.savefig('./aux_files/muetra.png', bbox_inches='tight')
+
+    return imgplot
