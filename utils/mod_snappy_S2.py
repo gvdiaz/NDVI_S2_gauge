@@ -86,6 +86,6 @@ def plotRGB_s2(product, title, vmin, vmax):
     plt.figure(figsize=(width,height))
     plt.title('Producto de fecha: ' + title, fontweight ="bold") 
     imgplot=plt.imshow(rgb,cmap=plt.cm.binary,vmin=vmin,vmax=vmax)
-    plt.savefig('./aux_files/muetra.png', bbox_inches='tight')
+    # plt.savefig('./aux_files/muetra.png', bbox_inches='tight')
 
-    return imgplot
+    return None
