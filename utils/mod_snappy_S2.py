@@ -15,6 +15,7 @@ from snappy import HashMap
 from snappy import GPF
 from snappy import ProductIO
 from snappy import File
+from snappy import ProgressMonitor
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
@@ -185,9 +186,9 @@ def folder_creator(root_path, folder2create, verbose):
         path2newfol = Path(*folder_list)
         path2newfol.mkdir()
     else:
-        sys.exit(f'Función "{folder_creator.__name__()}" terminada porque no se encontró la ruta a la carpeta "{root_path}" donde debe crearse "{folder2create}"')
+        sys.exit(f'Funcion "{folder_creator.__name__()}" terminada porque no se encontró la ruta a la carpeta "{root_path}" donde debe crearse "{folder2create}"')
     if verbose:
-        print(f'Creación correcta de carpeta "{path2newfol}"')
+        print(f'Creacion correcta de carpeta "{path2newfol}"')
     return path2newfol
 
 # Lectura de dataframes de búsqueda a partir del csv
@@ -195,17 +196,17 @@ def folder_creator(root_path, folder2create, verbose):
 def lectura_csv(path, verbose):
     df = pd.read_csv(path)
     if verbose:
-        print(f'Muestro variable path de función {lectura_csv.__name__}')
+        print(f'Muestro variable path de funcion {lectura_csv.__name__}')
         print()
-        display(df)
+        print(df)
     return df
 
 def lectura_pkl(path, verbose):
     df = pd.read_pickle(path)
     if verbose:
-        print(f'Muestro variable path de función {lectura_csv.__name__}')
+        print(f'Muestro variable path de funcion {lectura_csv.__name__}')
         print()
-        display(df)
+        print(df)
     return df
 
 # Función para mostrar atributos de productos con entrada de ruta a productos
@@ -313,13 +314,13 @@ def masking(product, geometry_name, invert):
 # Creación de nombre de producto
 def path_creator(folder, file_name, verbose):
     if verbose:
-        print(f'Función {path_creator.__name__}')
+        print(f'Funcion {path_creator.__name__}')
     return os.path.join(folder, file_name)
 def out_filename(filename, end, verbose = False):
     name_1 = os.path.basename(filename).split('.')[0] # Quito la cadena final '.SAFE'
     name_2 = name_1 + end # + '.dim' No necesita  la extensión final
     if verbose:
-        print(f'Función {out_filename.__name__}')
+        print(f'Funcion {out_filename.__name__}')
         print(name_1)
         print(name_2)
     return name_2
