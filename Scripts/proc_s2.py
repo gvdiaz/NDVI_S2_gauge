@@ -45,6 +45,13 @@ cutted_masked_path = msnap.folder_creator(root_folder, subfolder_name, False)
 subfolder_name = 'table'
 table_path = msnap.folder_creator(root_folder, subfolder_name, False)
 
+# Función 1E_2
+# Creación de carpeta NDVI (si es necesario)
+flag_proc = conf_dict['PROCESSOR']['type']
+if flag_proc == 'NDVI':
+    subfolder_name = 'NDVI'
+    table_path = msnap.folder_creator(root_folder, subfolder_name, True)
+
 # Función 1F
 # Creación de carpeta temporal (se guardará producto S2 y se procesará, en caso de que necesite guardar algún subproducto)
 subfolder_name = 'tmp'
@@ -114,10 +121,11 @@ for row in df.iterrows():
 
     # Escritura de archivo de salida
     output_path = os.path.join(cutted_masked_path, output_name)
-    msnap.writeProd(prod_s_res_msk_roi_msk, output_path)
+    # msnap.writeProd(prod_s_res_msk_roi_msk, output_path)
+    msnap.plotRGB_s2_2_png(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 0.3)
 
     # Borrado de archivo bajado
-    msnap.erase_tmp(path2prod)
+    msnap.erase_tmp(path2prod, True)
     
     if flag_one_proc == True:
         break
