@@ -115,6 +115,9 @@ for row in df.iterrows():
     # Escritura de archivo de salida
     output_path = os.path.join(cutted_masked_path, output_name)
     msnap.writeProd(prod_s_res_msk_roi_msk, output_path)
+
+    # Borrado de archivo bajado
+    msnap.erase_tmp(path2prod)
     
     if flag_one_proc == True:
         break

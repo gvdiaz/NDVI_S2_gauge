@@ -332,3 +332,12 @@ def writeProd(prod2write_obj, prod_path):
     writeOp = WriteOp(prod2write_obj, File(prod_path), 'BEAM-DIMAP')
     writeOp.writeProduct(ProgressMonitor.NULL)
     return None
+
+# Borro archivo temporal que bajé
+
+def erase_tmp(path2tmp, verbose):
+    if os.path.exists(path2tmp) and os.path.isfile(path2tmp):
+        os.remove(path2tmp)
+    if verbose:
+        print(f'Borrado de archivo {path2tmp}')
+    return
