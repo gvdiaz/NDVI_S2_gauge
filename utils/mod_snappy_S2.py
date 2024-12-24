@@ -326,14 +326,28 @@ def add_geometry2prod_3(prod, shp_path, verbose = False):
     return result
 
 def masking(product, geometry_name, invert):
+    # **Error que da origen a modificación de código**
+    # expression: Undefined symbol 'cirrus_clouds'. due to Undefined symbol 'cirrus_clouds'.
+    # Traceback (most recent call last):
+    # File "proc_s2.py", line 109, in <module>
+    # prod_s_res_msk = msnap.masking(resamp_prod, 'cirrus_clouds', False)
+    # File "../utils/mod_snappy_S2.py", line 335, in masking
+    # return GPF.createProduct('Land-Sea-Mask', parameters, product)
+    # RuntimeError: org.esa.snap.core.gpf.OperatorException: expression: Undefined symbol 'cirrus_clouds'. due to Undefined symbol 'cirrus_clouds'.
     HashMap = snappy.jpy.get_type('java.util.HashMap')
     parameters = HashMap()
-    # parameters.put('geometry', geometry_4326)
     parameters.put('geometry', geometry_name)
     parameters.put('invertGeometry', invert)
     # parameters.put('byPass', True)
-    return GPF.createProduct('Land-Sea-Mask', parameters, product)
-
+    try:
+        prod_masked = GPF.createProduct('Land-Sea-Mask', parameters, product)
+    except RuntimeError:
+        parameters = HashMap()
+        parameters.put('geometry', 'cirrus_clouds_10m')
+        parameters.put('invertGeometry', invert)
+        prod_masked = GPF.createProduct('Land-Sea-Mask', parameters, product)
+    return prod_masked
+    
 # Función 1Na
 # Creación de nombre de producto
 def path_creator(folder, file_name, verbose):
