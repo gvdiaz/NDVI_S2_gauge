@@ -67,7 +67,7 @@ df = msnap.lectura_csv(path2csv, False)
 # Iteración sobre todos los productos
 # Dejo una configuración que me permitirá solo procesar el primer producto,\
 # cuando verifique que funciona dehabilitaré la función para que procese todos los productos de la misma manera que el primero
-flag_one_proc = False
+flag_one_proc = True
 
 # Definición de usuario
 user = conf_dict['ATTRIB']['user']
