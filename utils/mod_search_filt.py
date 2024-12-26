@@ -48,6 +48,7 @@ def create_conf_file(path2conf):
             ';Prueba de comentarios para FOLDERS':None,
             'ROI': r'/src/Vectores/',
             'WKT_ROI': r'/src/Vectores/aux_wkt/wkt_file.txt',
+            'SHP_ROI': r'/src/Vectores/shp/shp_file.shp',
             'OUTPUT': '/src/Output/'
         },
         'ATTRIB': {
@@ -56,7 +57,8 @@ def create_conf_file(path2conf):
             'final_date':'31-01-2021',
             'max_cloud':'50',
             'Sent_mission':'SENTINEL-2',
-            'proj_name':'Your name'
+            ';Atriburo "proj_name" no debe tener espacios':None,
+            'proj_name':'Your_name'
         },
         'ESA_SERVER': {
             ';Prueba de comentarios para ESA_SERVER':None,
@@ -130,6 +132,7 @@ def save_conf2proc(conf_searcher, output_meta_df, verbose):
             'PRODS_LIST': os.path.join(conf_searcher['FOLDERS']['output'], output_meta_df.at['Search name', 'Datos'].split('.')[0] + '.csv'),
             'KML_INPUT': os.path.join(conf_searcher['FOLDERS']['roi'], output_meta_df.at['ROI name', 'Datos']),
             'WKT_ROI': conf_searcher['FOLDERS']['wkt_roi'],
+            'SHP_ROI': conf_searcher['FOLDERS']['shp_roi'],
             'OUTPUT': output_path
         },
         'ATTRIB': {
@@ -279,6 +282,55 @@ def write_wkt_4326(path2roi, o_path, verbose):
     wkt = set_wkt_V1(path2roi, verbose)
     with open(o_path, 'w') as f:
         f.write(wkt)
+    return None
+
+def write_shp_4326(fn, o_path, verbose):
+    # Primer versión de lector de kml, busca la geometría del primer feature de la capa y lo guarda en formato Esri Shapefile
+    # Obtengo nombre de shapefile de salida.
+    out_dir, out_name = os.path.split(o_path)
+
+    # Creación de ds de salida
+
+    shp_driver = ogr.GetDriverByName('Esri Shapefile')
+    shp_ds = shp_driver.CreateDataSource(o_path)
+
+    # Uso de glob
+    ds_path = ds_finder(fn, False)
+    ds_qty = len(ds_path)
+    if ds_qty == 1:
+        fn_path = ds_path[0]
+    elif ds_qty > 1:
+        sys.exit('Hay más de un archivo vectorial en carpeta Vectores, borrar hasta que quede uno solo')
+    else:
+        sys.exit(f'No se encuentra datasource en la carpeta "{fn}"')
+
+    ds = ogr.Open(fn_path, 0)
+    if ds is None:
+        sys.exit(f'No se puede abrir el archivo {fn}')
+
+    in_lyr = ds.GetLayer(0)
+
+    our_lyr = ds.CreateLayer('')
+
+    for feature in in_lyr:
+        geometry = feature.GetGeometryRef()
+        geom_wkt = geometry.ExportToWkt()
+        break
+    if verbose:
+        # Visualización de campos disponibles
+        print('Tipos de campos disponibles')
+        for field in lyr.schema:
+            print(field.name, field.GetTypeName(), sep ='\t'*2)
+        # Visualización de tipo de geometría
+        print()
+        print('Tipo de geometría de capa: ', lyr.GetGeomType())
+        print()
+        print('Visualización de referencia espacial', lyr.GetSpatialRef(), sep = '\n')
+        print()
+        print('Visualización de geometrías')
+        print(geometry.GetGeometryName())
+        print(geometry.ExportToWkt())
+    del ds
     return None
 
 def df_proc(df, verbose):
