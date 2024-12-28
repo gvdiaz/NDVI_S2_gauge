@@ -77,15 +77,9 @@ kc_token = 'KEYCLOAK_TOKEN'
 for row in df.iterrows():
     prod_id = row[1]['Id']
     prod_name = row[1]['Name']
-    # print(row[1]['Id'])
-    # print(row[1]['Name'] + '\n')
     acq_date = row[1]['acq_date']
     str_token = mdl.get_keycloak(user, passw, False)
     os.environ[kc_token] = str_token
-    # print('Variables para generadas en cada iteracion:')
-    # print(f'Id Producto: {prod_id}',f'Nombre producto: {prod_name}',f'user: {user}',f'Key_cloak: {str_token}', sep='\n')
-    # print(f'Id Producto: {prod_id}',f'\nNombre producto: {prod_name}',f'\nuser: {user}')
-    # print()
     file2verif = os.path.join(tmp_path,prod_name + '.zip')
     if os.path.isfile(file2verif):
         print(f'Archivo {file2verif} existente')
@@ -109,7 +103,7 @@ for row in df.iterrows():
     prod_s_res_msk = msnap.masking(resamp_prod, 'cirrus_clouds', False)
 
     # Agrego shape a vectores
-    shp_path = r'/src/Vectores/shp/Tratayen/Tratayen.shp'
+    shp_path = conf_dict['FOLDERS']['wkt_roi']
     added_geom_prod = msnap.add_geometry2prod_3(resamp_prod, shp_path)
 
     # Implementación de Función 1M
