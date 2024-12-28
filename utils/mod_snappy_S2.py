@@ -107,7 +107,32 @@ def plotRGB_s2_2_png(product, title, path, vmin, vmax):
         w=band.getRasterWidth()
         h=band.getRasterHeight()
 #         depth = 3
-        print(w,h)
+        # print(w,h)
+        band_layer=np.zeros(w*h,np.float32)
+        band.readPixels(0,0,w,h,band_layer)
+        band_layer.shape=h,w
+        band_stack.append(band_layer)
+        
+    width=12
+    height=12
+    rgb = np.dstack(band_stack)  # stacks 3 h x w arrays -> h x w x 3
+    plt.figure(figsize=(width,height))
+    plt.title('Producto de fecha: ' + title, fontweight ="bold") 
+    imgplot=plt.imshow(rgb,cmap=plt.cm.binary,vmin=vmin,vmax=vmax)
+    plt.savefig(path + '.png', bbox_inches='tight')
+
+    return None
+
+# Función para guardar y computar estadísticas de producto NDVI del producto
+def plotNDVI_s2_png(product, title, path, vmin, vmax):
+    band_list = ['B4','B8']
+    band_stack = []
+    for band in band_list:
+        band=product.getBand(band)
+        w=band.getRasterWidth()
+        h=band.getRasterHeight()
+#         depth = 3
+        # print(w,h)
         band_layer=np.zeros(w*h,np.float32)
         band.readPixels(0,0,w,h,band_layer)
         band_layer.shape=h,w
