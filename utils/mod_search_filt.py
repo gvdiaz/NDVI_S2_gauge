@@ -287,12 +287,7 @@ def write_wkt_4326(path2roi, o_path, verbose):
 def write_shp_4326(fn, o_path, verbose):
     # Primer versión de lector de kml, busca la geometría del primer feature de la capa y lo guarda en formato Esri Shapefile
     # Obtengo nombre de shapefile de salida.
-    out_dir, out_name = os.path.split(o_path)
-
-    # Creación de ds de salida
-
-    shp_driver = ogr.GetDriverByName('Esri Shapefile')
-    shp_ds = shp_driver.CreateDataSource(o_path)
+    # out_dir, out_name = os.path.split(o_path)
 
     # Uso de glob
     ds_path = ds_finder(fn, False)
@@ -303,35 +298,107 @@ def write_shp_4326(fn, o_path, verbose):
         sys.exit('Hay más de un archivo vectorial en carpeta Vectores, borrar hasta que quede uno solo')
     else:
         sys.exit(f'No se encuentra datasource en la carpeta "{fn}"')
-
-    ds = ogr.Open(fn_path, 0)
-    if ds is None:
+    
+    # Lectura de ds de entrada
+    ds_input = ogr.Open(fn_path, 0)
+    if ds_input is None:
         sys.exit(f'No se puede abrir el archivo {fn}')
+    
+    in_lyr = ds_input.GetLayer(0)
 
-    in_lyr = ds.GetLayer(0)
+    # Creación de ds de salida
+    out_ds_name, out_layer_name = parse_ds_and_name(o_path, verbose)    # Nombres de ds y capa de salida
+    shp_driver = ogr.GetDriverByName('ESRI Shapefile')                  # Creación de driver de salida
+    shp_ds = shp_driver.CreateDataSource(out_ds_name)                   # Creación de ds en base a nombre
 
-    our_lyr = ds.CreateLayer('')
+    # Borro el contenido de la capa previamente guardada (sino tengo problemas cuando vuelvo a escribir la capa)
+    if shp_ds.GetLayer(out_layer_name):
+        shp_ds.DeleteLayer(out_layer_name)
+    
+    print(f'Verifico defnición de geometría para capa de entrada: {in_lyr.GetGeomType()}')
+    print(ogr.wkbPolygon, ogr.wkbMultiPolygon, ogr.wkbUnknown)
+    out_lyr = shp_ds.CreateLayer(out_layer_name, in_lyr.GetSpatialRef(), ogr.wkbUnknown) # Creo capa de salida utilizando el nombre designado
+    out_lyr.CreateFields(in_lyr.schema)                                 # Creo camposs en función de la capa de entrada
 
+    # Creación de característica (feature) en blanco para completarla y guardarla en capa de salida
+    out_defn = out_lyr.GetLayerDefn()   # definición de campos de salida
+    out_feat = ogr.Feature(out_defn)    # Atributo o feature con los mismos campos de la capa de entrada
+
+    # La única manera que encontré para acceder al primer feature fue a través del iterable de in_lyr
     for feature in in_lyr:
-        geometry = feature.GetGeometryRef()
-        geom_wkt = geometry.ExportToWkt()
-        break
+        # Print feature ID
+        print(f"Feature ID: {feature.GetFID()}")
+        geom = feature.geometry()
+        out_feat.SetGeometry(geom)
+        for i in range(feature.GetFieldCount()):
+            value = feature.GetField(i)
+            out_feat.SetField(i, value)
+        out_lyr.CreateFeature(out_feat)
+
+
+    del ds_input
+    del shp_ds
+
     if verbose:
-        # Visualización de campos disponibles
-        print('Tipos de campos disponibles')
-        for field in lyr.schema:
-            print(field.name, field.GetTypeName(), sep ='\t'*2)
-        # Visualización de tipo de geometría
         print()
-        print('Tipo de geometría de capa: ', lyr.GetGeomType())
-        print()
-        print('Visualización de referencia espacial', lyr.GetSpatialRef(), sep = '\n')
-        print()
-        print('Visualización de geometrías')
-        print(geometry.GetGeometryName())
-        print(geometry.ExportToWkt())
-    del ds
+        print(f'Prueba de verbose en función {write_shp_4326.__name__}')
+        print(f'Nombre de ds de entrada {fn}')
+        print(f'Nombre de capa de salida {out_ds_name}')
+
+    # shp_driver = ogr.GetDriverByName('ESRI Shapefile')
+    # shp_ds = shp_driver.CreateDataSource(o_path)
+
+    # # Uso de glob
+    # ds_path = ds_finder(fn, False)
+    # ds_qty = len(ds_path)
+    # if ds_qty == 1:
+    #     fn_path = ds_path[0]
+    # elif ds_qty > 1:
+    #     sys.exit('Hay más de un archivo vectorial en carpeta Vectores, borrar hasta que quede uno solo')
+    # else:
+    #     sys.exit(f'No se encuentra datasource en la carpeta "{fn}"')
+
+    # ds = ogr.Open(fn_path, 0)
+    # if ds is None:
+    #     sys.exit(f'No se puede abrir el archivo {fn}')
+
+    # in_lyr = ds.GetLayer(0)
+
+    # our_lyr = ds.CreateLayer('')
+
+    # for feature in in_lyr:
+    #     geometry = feature.GetGeometryRef()
+    #     geom_wkt = geometry.ExportToWkt()
+    #     break
+    # if verbose:
+    #     # Visualización de campos disponibles
+    #     print('Tipos de campos disponibles')
+    #     for field in lyr.schema:
+    #         print(field.name, field.GetTypeName(), sep ='\t'*2)
+    #     # Visualización de tipo de geometría
+    #     print()
+    #     print('Tipo de geometría de capa: ', lyr.GetGeomType())
+    #     print()
+    #     print('Visualización de referencia espacial', lyr.GetSpatialRef(), sep = '\n')
+    #     print()
+    #     print('Visualización de geometrías')
+    #     print(geometry.GetGeometryName())
+    #     print(geometry.ExportToWkt())
+    # del ds
     return None
+
+def parse_ds_and_name(path, verbose):
+    ds_name, layer_name = os.path.split(path)
+    # Modificación de layer_name para quitarle la extensión al archivo
+    layer_name = layer_name.split('.')[0]
+
+    if verbose:
+        print()
+        print(f'Verbose de función {parse_ds_and_name.__name__}')
+        print(f'Nombre de ds: {ds_name}')
+        print(f'Nombre de layer: {layer_name}')
+    return ds_name, layer_name
+
 
 def df_proc(df, verbose):
     # Primer paso: descomponer nombre de producto (en columna 'Name') en otras columnas
