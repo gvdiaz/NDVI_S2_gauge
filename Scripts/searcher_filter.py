@@ -45,6 +45,6 @@ msf.save_df(df_and_name_tuple, pre_out_prod)
 # Genero wkt en carpeta de Vectores/aux_wkt
 msf.write_wkt_4326(conf_dict['FOLDERS']['roi'], conf_dict['FOLDERS']['wkt_roi'], verbose2conf)
 # Genero shp en carpeta ...
-msf.write_shp_4326(conf_dict['FOLDERS']['roi'], conf_dict['FOLDERS']['shp_roi'], True)
+msf.write_shp_4326(conf_dict['FOLDERS']['roi'], conf_dict['FOLDERS']['shp_roi'], verbose2conf)
 # Guardo configuración para Procesador (paso posterior)
 msf.save_conf2proc(conf_dict, search_df, conf_dict['SCRIPTING']['verbose'])
