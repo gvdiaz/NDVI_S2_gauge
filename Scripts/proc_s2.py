@@ -38,19 +38,21 @@ root_folder.mkdir()
 # Función 1D
 # Creación de carpeta cutted_masked partiendo de root_folder
 subfolder_name = 'cutted_masked'
+# Creación de carpeta NDVI o RGB
+flag_proc = conf_dict['PROCESSOR']['type']
+if flag_proc == 'NDVI':
+    subfolder_name = 'NDVI' + '_' + subfolder_name
+elif flag_proc == 'RGB':
+    subfolder_name = 'RGB' + '_' + subfolder_name
+
 cutted_masked_path = msnap.folder_creator(root_folder, subfolder_name, False)
+
+table_path = msnap.folder_creator(root_folder, subfolder_name, True)
 
 # Función 1E
 # Creación de carpeta table (carpeta donde guardaré df de salida)
 subfolder_name = 'table'
 table_path = msnap.folder_creator(root_folder, subfolder_name, False)
-
-# Función 1E_2
-# Creación de carpeta NDVI (si es necesario)
-flag_proc = conf_dict['PROCESSOR']['type']
-if flag_proc == 'NDVI':
-    subfolder_name = 'NDVI'
-    table_path = msnap.folder_creator(root_folder, subfolder_name, True)
 
 # Función 1F
 # Creación de carpeta temporal (se guardará producto S2 y se procesará, en caso de que necesite guardar algún subproducto)
@@ -103,20 +105,28 @@ for row in df.iterrows():
     prod_s_res_msk = msnap.masking(resamp_prod, 'cirrus_clouds', False)
 
     # Agrego shape a vectores
-    shp_path = conf_dict['FOLDERS']['wkt_roi']
+    shp_path = conf_dict['FOLDERS']['shp_roi']
     added_geom_prod = msnap.add_geometry2prod_3(resamp_prod, shp_path)
+    shp_name = os.path.basename(shp_path).split('.')[0] # Guardo nombre para llamarlo en la función masking
 
     # Implementación de Función 1M
-    prod_s_res_msk_roi_msk = msnap.masking(added_geom_prod, 'Tratayen', False)
+    prod_s_res_msk_roi_msk = msnap.masking(added_geom_prod, shp_name, False)
 
     # Implementación de Función 1Na
     file_extension = '_c_and_m'
+    if flag_proc == 'NDVI':
+        file_extension = '_NDVI' + '_' + file_extension
+    elif flag_proc == 'RGB':
+        file_extension = '_RGB' + '_' + file_extension
     output_name = msnap.out_filename(prod_name, file_extension, False)
 
     # Escritura de archivo de salida
     output_path = os.path.join(cutted_masked_path, output_name)
     # msnap.writeProd(prod_s_res_msk_roi_msk, output_path)
-    msnap.plotRGB_s2_2_png(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 0.3)
+    if flag_proc == 'NDVI':
+        msnap.plotNDVI_s2_png(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 1)
+    elif flag_proc == 'RGB':
+        msnap.plotRGB_s2_2_png(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 0.3)
 
     # Borrado de archivo bajado
     msnap.erase_tmp(path2prod, True)
