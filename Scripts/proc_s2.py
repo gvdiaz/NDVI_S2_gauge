@@ -47,7 +47,7 @@ elif flag_proc == 'RGB':
 
 cutted_masked_path = msnap.folder_creator(root_folder, subfolder_name, False)
 
-table_path = msnap.folder_creator(root_folder, subfolder_name, True)
+# table_path = msnap.folder_creator(root_folder, subfolder_name, True)
 
 # Función 1E
 # Creación de carpeta table (carpeta donde guardaré df de salida)
