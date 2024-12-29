@@ -127,24 +127,96 @@ def plotRGB_s2_2_png(product, title, path, vmin, vmax):
 def plotNDVI_s2_png(product, title, path, vmin, vmax):
     band_list = ['B4','B8']
     band_stack = []
-    for band in band_list:
-        band=product.getBand(band)
-        w=band.getRasterWidth()
-        h=band.getRasterHeight()
-#         depth = 3
-        # print(w,h)
-        band_layer=np.zeros(w*h,np.float32)
-        band.readPixels(0,0,w,h,band_layer)
-        band_layer.shape=h,w
-        band_stack.append(band_layer)
+#     for band in band_list:
+#         band=product.getBand(band)
+#         w=band.getRasterWidth()
+#         h=band.getRasterHeight()
+# #         depth = 3
+#         # print(w,h)
+#         band_layer=np.zeros(w*h,np.float32)
+#         band.readPixels(0,0,w,h,band_layer)
+#         band_layer.shape=h,w
+#         band_stack.append(band_layer)
         
+#     width=12
+#     height=12
+#     rgb = np.dstack(band_stack)  # stacks 3 h x w arrays -> h x w x 3
+#     plt.figure(figsize=(width,height))
+#     plt.title('Producto de fecha: ' + title, fontweight ="bold") 
+#     imgplot=plt.imshow(rgb,cmap=plt.cm.binary,vmin=vmin,vmax=vmax)
+#     plt.savefig(path + '.png', bbox_inches='tight')
+
+#*****************************************************************************************
+
+    # product = ProductIO.readProduct(file)   # Apertura de producto
+    width = product.getSceneRasterWidth()   # Obtención de ancho de producto
+    height = product.getSceneRasterHeight() # Obtención de alto de producto
+    name = product.getName()                # Obtención de nombre de producto
+    description = product.getDescription()  # Obtención de descripción de producto
+    # band_names = product.getBandNames()
+
+    # print("Product:     %s, %s" % (name, description))
+    # print("Raster size: %d x %d pixels" % (width, height))
+    # print("Start time:  " + str(product.getStartTime()))
+    # print("End time:    " + str(product.getEndTime()))
+    # print("Bands:       %s" % (list(band_names)))
+
+
+    b4 = product.getBand('B4')                                                  # Lectura de banda (supongo que roja)
+    b8 = product.getBand('B8')                                                  # Lectura de banda (supongo que infrarroja)
+    # ndviProduct = Product('NDVI', 'NDVI', width, height)                        # Definición de producto nuevo
+    # ndviBand = ndviProduct.addBand('ndvi', ProductData.TYPE_FLOAT32)            # Agrego banda única (ndvi)
+    # ndviFlagsBand = ndviProduct.addBand('ndvi_flags', ProductData.TYPE_UINT8)   # Agrego flags supongo que para el tipo de producto
+    # writer = ProductIO.getProductWriter('BEAM-DIMAP')                           # Escritura de producto
+
+    # ProductUtils.copyGeoCoding(product, ndviProduct)                            # Copia de proyección de georreferencia
+
+    # ndviFlagCoding = FlagCoding('ndvi_flags')                                   # Flags de ndvi
+    # ndviFlagCoding.addFlag("NDVI_LOW", 1, "NDVI below 0")                       # Agrego flag de mínimo valor
+    # ndviFlagCoding.addFlag("NDVI_HIGH", 2, "NDVI above 1")                      # Agrego flag de máximo valor
+    # group = ndviProduct.getFlagCodingGroup()                                    # Creo grupo de flags
+    # #print(dir(group))
+    # group.add(ndviFlagCoding)                                                   # Agrego grupo a producto
+
+    # ndviFlagsBand.setSampleCoding(ndviFlagCoding)                               
+
+    # ndviProduct.setProductWriter(writer)                                        # Creación de producto
+    # ndviProduct.writeHeader('snappy_ndvi_output.dim')                           # Nombre de producto de salida
+
+    r4 = np.zeros(width, dtype=np.float32)                                # Creación de línea en numpy banda B4
+    r8 = np.zeros(width, dtype=np.float32)                               # Creación de línea en numpy banda B8
+
+    v4  = np.zeros(width, dtype=np.uint8)                                 # Creación de línea, supongo para enmascarar B4
+    v8 = np.zeros(width, dtype=np.uint8)                                 # Creación de línea, supongo para enmascarar B8
+
+    for y in range(height):
+        b4.readPixels(0, y, width, 1, r4)                                       # Lectura de líneas de banda B4
+        b8.readPixels(0, y, width, 1, r8)                                     # Lectura de línea de banda B8
+
+        b4.readValidMask(0, y, width, 1, v4)                                    # Lectura de máscara válida para B4
+        b8.readValidMask(0, y, width, 1, v8)                                  # Lectura de máscara válida para B8
+
+        invalidMask4 = np.where(v4 == 0, 1, 0)                               # Lectura de valores inválidos B4
+        invalidMask8 = np.where(v8 == 0, 1, 0)                             # Lectura de valores inválidos B4
+
+        ma4 = np.ma.array(r4, mask=invalidMask4, fill_value=np.nan)       # Enmascarado de línea en banda B4
+        ma8 = np.ma.array(r8, mask=invalidMask8, fill_value=np.nan)    # Enmascarado de línea en banda B8
+
+        print("processing line ", y, " of ", height)                            # Muestra de procesamiento de línea
+        ndvi_row = (ma8 - ma4) / (ma8 + ma4)                                  # Cómputo de la línea.
+        
+        ndvi = ndvi_row if y == 0 else np.vstack([ndvi, ndvi_row])              # Stackeo vertical de producto NDVI
+        # np.vstack([ndvi, ndvi_row])
+
+        # ndviBand.writePixels(0, y, width, 1, ndvi.filled(numpy.nan))            # Escritura línea de NDVI
+
     width=12
     height=12
-    rgb = np.dstack(band_stack)  # stacks 3 h x w arrays -> h x w x 3
+    # rgb = np.dstack(band_stack)  # stacks 3 h x w arrays -> h x w x 3
     plt.figure(figsize=(width,height))
-    plt.title('Producto de fecha: ' + title, fontweight ="bold") 
-    imgplot=plt.imshow(rgb,cmap=plt.cm.binary,vmin=vmin,vmax=vmax)
-    plt.savefig(path + '.png', bbox_inches='tight')
+    plt.title('Producto de fecha: ' + 'NDVI ' + title, fontweight ="bold") 
+    imgplot=plt.imshow(ndvi,cmap='Greens',vmin=vmin,vmax=vmax)
+    plt.savefig(path + '_NDVI' + '.png', bbox_inches='tight')
 
     return None
 
