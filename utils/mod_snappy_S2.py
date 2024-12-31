@@ -215,7 +215,8 @@ def plotNDVI_s2_png(product, title, path, vmin, vmax):
     # rgb = np.dstack(band_stack)  # stacks 3 h x w arrays -> h x w x 3
     plt.figure(figsize=(width,height))
     plt.title('Producto de fecha: ' + 'NDVI ' + title, fontweight ="bold") 
-    imgplot=plt.imshow(ndvi,cmap='Greens',vmin=vmin,vmax=vmax)
+    imgplot=plt.imshow(ndvi,cmap='viridis',vmin=vmin,vmax=vmax)
+    plt.colorbar(imgplot)
     plt.savefig(path + '_NDVI' + '.png', bbox_inches='tight')
 
     return None
