@@ -8,6 +8,8 @@ import configparser
 import shutil
 # módulo para verificar si un path existe
 from pathlib import Path
+# Módulo necesario para convertir columna de dataframe e ntipo datetime
+from datetime import datetime
 
 import snappy
 from snappy import WKTReader
@@ -119,9 +121,15 @@ def plotRGB_s2_2_png(product, title, path, vmin, vmax):
     plt.figure(figsize=(width,height))
     plt.title('Producto de fecha: ' + title, fontweight ="bold") 
     imgplot=plt.imshow(rgb,cmap=plt.cm.binary,vmin=vmin,vmax=vmax)
-    plt.savefig(path + '.png', bbox_inches='tight')
+    png_path = path + '.png'
+    plt.savefig(png_path, bbox_inches='tight')
 
-    return None
+    # Cómputo de estadísticas de rgb
+    panc_band = (band_stack[0] + band_stack[1] + band_stack[2]) / 3
+    panc_mean = np.mean(panc_band)
+    panc_std_dev = np.std(ndvi)
+
+    return panc_mean, panc_std_dev, png_path
 
 # Función para guardar y computar estadísticas de producto NDVI del producto
 def plotNDVI_s2_png(product, title, path, vmin, vmax):
@@ -217,9 +225,14 @@ def plotNDVI_s2_png(product, title, path, vmin, vmax):
     plt.title('Producto de fecha: ' + 'NDVI ' + title, fontweight ="bold") 
     imgplot=plt.imshow(ndvi,cmap='viridis',vmin=vmin,vmax=vmax)
     plt.colorbar(imgplot)
-    plt.savefig(path + '_NDVI' + '.png', bbox_inches='tight')
+    png_path = path + '.png'
+    plt.savefig(png_path , bbox_inches='tight')
 
-    return None
+    # Cómputo de estadísticas en producto
+    ndvi_mean = np.mean(ndvi)
+    ndvi_std_dev = np.std(ndvi)
+
+    return ndvi_mean, ndvi_std_dev, png_path
 
 # Creación o lectura de archivo de configuración
 def read_conf_proc(path2conf, verbose):
@@ -317,6 +330,10 @@ def folder_creator(root_path, folder2create, verbose):
 
 def lectura_csv(path, verbose):
     df = pd.read_csv(path)
+    df['acq_date'] = pd.to_datetime(df['acq_date'])
+    # df.sort_values(by='A', ascending=True, inplace=True)
+    df.sort_values(by='acq_date', ascending=True)
+
     if verbose:
         print(f'Muestro variable path de funcion {lectura_csv.__name__}')
         print()
@@ -477,3 +494,22 @@ def erase_tmp(path2tmp, verbose):
     if verbose:
         print(f'Borrado de archivo {path2tmp}')
     return
+
+def save_simple_df(df, output_path, verbose):
+    # # Salvo dataframes en excels
+    # with pd.ExcelWriter(output_path) as writer:
+    #     # df_conf.to_excel(writer, sheet_name=s_names[0])
+    #     # gdf.to_excel(writer, sheet_name=s_names[1])
+    #     for df, name in df_and_name:
+    #         df.to_excel(writer, sheet_name=name)
+    #     # df2.to_excel(writer, sheet_name='Sheet_name_2')
+    # # Creo nombres de archivos csv y pkl de salida
+    # # print(output_path)
+    output_path_csv = output_path + '.csv'
+    output_path_xls = output_path + '.xls'
+    df.to_csv(output_path_csv)
+    df.to_excel(output_path_xls)
+    if verbose:
+        print(df)
+    
+    return None
