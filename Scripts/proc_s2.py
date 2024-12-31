@@ -75,6 +75,8 @@ flag_one_proc = False
 user = conf_dict['ATTRIB']['user']
 passw = conf_dict['ATTRIB']['pass']
 kc_token = 'KEYCLOAK_TOKEN'
+
+# Definición de parámetros a registrar sobre cada producto
 dict2df = {'path2prod':[],
             'mean_value': [],
             'std_dev_value': []
@@ -83,7 +85,7 @@ dict2df = {'path2prod':[],
 for row in df.iterrows():
     prod_id = row[1]['Id']
     prod_name = row[1]['Name']
-    acq_date = row[1]['acq_date']
+    acq_date = str(row[1]['acq_date'])
     str_token = mdl.get_keycloak(user, passw, False)
     os.environ[kc_token] = str_token
     file2verif = os.path.join(tmp_path,prod_name + '.zip')
@@ -119,24 +121,39 @@ for row in df.iterrows():
     # Implementación de Función 1Na
     file_extension = '_c_and_m'
     if flag_proc == 'NDVI':
-        file_extension = '_NDVI' + '_' + file_extension
+        file_extension = '_NDVI' + file_extension
     elif flag_proc == 'RGB':
-        file_extension = '_RGB' + '_' + file_extension
+        file_extension = '_RGB' + file_extension
     output_name = msnap.out_filename(prod_name, file_extension, False)
 
     # Escritura de archivo de salida
     output_path = os.path.join(cutted_masked_path, output_name)
     # msnap.writeProd(prod_s_res_msk_roi_msk, output_path)
     if flag_proc == 'NDVI':
-        msnap.plotNDVI_s2_png(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 1)
+        # La siguiente función devuelve media, std_dev y path de producto generado
+        mean, std_dev, path2prod = msnap.plotNDVI_s2_png(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 1)
     elif flag_proc == 'RGB':
-        msnap.plotRGB_s2_2_png(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 0.3)
+        mean, std_dev, path2prod = msnap.plotRGB_s2_2_png(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 0.3)
+
+    # Guardo datos estadísticos de cualquiera de las dos procesamientos
+    dict2df['path2prod'].append(path2prod)
+    dict2df['mean_value'].append(mean)
+    dict2df['std_dev_value'].append(std_dev)
 
     # Borrado de archivo bajado
     msnap.erase_tmp(path2prod, True)
     
     if flag_one_proc == True:
         break
+
+# Guardado en df de los nuevos datos estadísticos.
+for key, value in dict2df.items():
+    df[key] = value
+
+# Exporto df a tabla para poder explorarla
+# Primero creo el path al archivo
+path2table = os.path.join(table_path, 'statistics')
+msnap.save_simple_df(df, path2table, True)
 
 if verbose2conf:
     print(conf_dict)
