@@ -75,6 +75,10 @@ flag_one_proc = False
 user = conf_dict['ATTRIB']['user']
 passw = conf_dict['ATTRIB']['pass']
 kc_token = 'KEYCLOAK_TOKEN'
+dict2df = {'path2prod':[],
+            'mean_value': [],
+            'std_dev_value': []
+}
 
 for row in df.iterrows():
     prod_id = row[1]['Id']
