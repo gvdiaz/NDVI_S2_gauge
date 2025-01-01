@@ -77,7 +77,7 @@ passw = conf_dict['ATTRIB']['pass']
 kc_token = 'KEYCLOAK_TOKEN'
 
 # Definición de parámetros a registrar sobre cada producto
-dict2df = {'path2prod':[],
+dict2df = {'path2png':[],
             'mean_value': [],
             'std_dev_value': []
 }
@@ -131,12 +131,12 @@ for row in df.iterrows():
     # msnap.writeProd(prod_s_res_msk_roi_msk, output_path)
     if flag_proc == 'NDVI':
         # La siguiente función devuelve media, std_dev y path de producto generado
-        mean, std_dev, path2prod = msnap.plotNDVI_s2_png(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 1)
+        mean, std_dev, path2png = msnap.plotNDVI_s2_png(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 1)
     elif flag_proc == 'RGB':
-        mean, std_dev, path2prod = msnap.plotRGB_s2_2_png(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 0.3)
+        mean, std_dev, path2png = msnap.plotRGB_s2_2_png(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 0.3)
 
     # Guardo datos estadísticos de cualquiera de las dos procesamientos
-    dict2df['path2prod'].append(path2prod)
+    dict2df['path2png'].append(path2png)
     dict2df['mean_value'].append(mean)
     dict2df['std_dev_value'].append(std_dev)
 
