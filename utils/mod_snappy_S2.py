@@ -513,3 +513,32 @@ def save_simple_df(df, output_path, verbose):
         print(df)
     
     return None
+
+def temp_series_2(df, folder2save, verbose):
+    out_path = os.path.join(folder2save, 'temporal_series.png')
+    # Create a figure and axis
+    fig, ax1 = plt.subplots(figsize=(10, 6))
+
+    ndvi_color = 'green'
+    ax1.errorbar(df['acq_date'], df['mean_value'], yerr = df['std_dev_value']/2, linestyle='-', marker='o', color=ndvi_color, label='mean_NDVI')
+    ax1.set_xlabel('Date')
+    ax1.set_ylabel('NDVI [-]', color=ndvi_color)
+    ax1.tick_params(axis='y', labelcolor=ndvi_color)
+    plt.legend(loc='lower right')
+
+    # Create a secondary y-axis
+    ax2 = ax1.twinx()
+    ax2.plot(df['acq_date'], df['cloudCover'], linestyle='', marker='D', color='blue', label='Product Cloud cover')
+    ax2.set_ylabel('Cloud cover (%)', color='blue')
+    ax2.tick_params(axis='y', labelcolor='blue')
+
+    # Add titles and grid
+    plt.title('Temporal series two axis')
+    fig.tight_layout()  # Adjust layout to prevent overlap
+    plt.grid()
+    plt.legend()
+    plt.savefig(out_path , bbox_inches='tight')
+    
+    if verbose:
+        plt.show()
+    return None
