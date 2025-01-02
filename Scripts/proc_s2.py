@@ -153,7 +153,11 @@ for key, value in dict2df.items():
 # Exporto df a tabla para poder explorarla
 # Primero creo el path al archivo
 path2table = os.path.join(table_path, 'statistics')
-msnap.save_simple_df(df, path2table, True)
+msnap.save_simple_df(df, path2table, False)
+
+# Ploteo de serie temporal (por ahora solo para NDVI)
+msnap.temp_series_2(df, table_path, False)
+
 
 if verbose2conf:
     print(conf_dict)
