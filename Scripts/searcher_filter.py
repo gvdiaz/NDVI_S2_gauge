@@ -13,7 +13,7 @@ verbose2conf = False
 # Lectura de archivo de configuración de búsqueda
 conf_dict = msf.read_conf_searcher(config_path, verbose2conf)
 # Armado de request para realizar la búsqueda
-req_str = msf.set_ESA_req(conf_dict, verbose2conf)
+req_str = msf.set_ESA_req(conf_dict, True)
 # Envío de request
 json = msf.send_req(req_str)
 # Conversión de información recibida a df
