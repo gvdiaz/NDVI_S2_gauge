@@ -181,8 +181,8 @@ def req_to_df(req_from_dict, verbose = False):
 def set_ESA_req(dict, verbose):
     filter_Sent = set_platform(dict['ATTRIB']['sent_mission'], verbose)
     wkt = set_wkt_V1(dict['FOLDERS']['roi'], False)
-    init_date = set_init_date(dict['ATTRIB']['init_date'], True)
-    final_date = set_final_date(dict['ATTRIB']['final_date'], True)
+    init_date = set_init_date(dict['ATTRIB']['init_date'], False)
+    final_date = set_final_date(dict['ATTRIB']['final_date'], False)
     orderby_str = dict['ESA_SERVER']['orderby']
     quantity = dict['ESA_SERVER']['top']
     url = dict['ESA_SERVER']['url']
@@ -206,7 +206,12 @@ def set_ESA_req(dict, verbose):
 
 
 def set_platform(plat_str, verbose):
-    return f"Collection/Name%20eq%20%27{plat_str}%27%20"
+    if plat_str == 'SENTINEL-2':
+        # Busco por colección y por contenido de la palabra en el producto ('MSIL2A')
+        ret_str = f"Collection/Name eq '{plat_str}' and contains(Name,'MSIL2A')"
+    else:
+        ret_str = f"Collection/Name eq '{plat_str}'"
+    return ret_str
 
 def get_time_format_req(date_data, verbose):
 # Función para pasar dato de horario a str de salida con formato requerido para hora
