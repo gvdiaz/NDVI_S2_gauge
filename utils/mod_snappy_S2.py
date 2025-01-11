@@ -462,6 +462,36 @@ def masking(product, geometry_name, invert):
         parameters.put('invertGeometry', invert)
         prod_masked = GPF.createProduct('Land-Sea-Mask', parameters, product)
     return prod_masked
+
+def get_mask_list(product, verbose):
+    maskGroup = product.getMaskGroup()
+    msk_list = []
+    for i in range(maskGroup.getNodeCount()):
+        msk_list.append(maskGroup.get(i).getName())
+        # print(f'Mask number {i} = ', maskGroup.get(i).getName())
+    if verbose:
+        for mask_name in msk_list:
+            print(mask_name)
+    return msk_list
+
+def masking_2(product, geometry_name, invert):
+    if geometry_name == 'cirrus_clouds':
+        mask_list = get_mask_list(product, False)
+        cirrus_names = ['cirrus_clouds', 'cirrus_clouds_10m', 'scl_cloud_medium_proba']
+        for posible_name in cirrus_names:
+            if posible_name in mask_list:
+                geometry_name = posible_name
+        if geometry_name is posible_name:
+            pass
+        else:
+            print(f'The mask {geometry_name} does not exist in the product.')
+            return product
+    HashMap = snappy.jpy.get_type('java.util.HashMap')
+    parameters = HashMap()
+    parameters.put('geometry', geometry_name)
+    parameters.put('invertGeometry', invert)
+    prod_masked = GPF.createProduct('Land-Sea-Mask', parameters, product)
+    return prod_masked
     
 # Función 1Na
 # Creación de nombre de producto
