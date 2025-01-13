@@ -18,6 +18,12 @@ from snappy import GPF
 from snappy import ProductIO
 from snappy import File
 from snappy import ProgressMonitor
+from snappy import PlainFeatureFactory
+from snappy import DefaultGeographicCRS
+from snappy import SimpleFeatureBuilder
+from snappy import ListFeatureCollection
+from snappy import FeatureUtils
+from snappy import VectorDataNode
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
@@ -64,18 +70,18 @@ def lect_vars(serie, verbose=False):
         print()
     return (prod_id, prod_name, acq_date)
 
-def subset_prod(path2prod, path2wkt, verbose):
-    # Objetivo 2 del día Cortar producto por geometría
-    product = ProductIO.readProduct(path2prod)
-    SubsetOp = snappy.jpy.get_type('org.esa.snap.core.gpf.common.SubsetOp')
-    geometry = WKTReader().read(path2wkt)
-    HashMap = snappy.jpy.get_type('java.util.HashMap')
-    GPF.getDefaultInstance().getOperatorSpiRegistry().loadOperatorSpis()
-    parameters = HashMap()
-    parameters.put('copyMetadata', True)
-    parameters.put('geoRegion', geometry)
-    # product_subset = GPF.createProduct('Subset', parameters, product)
-    return GPF.createProduct('Subset', parameters, product)
+# def subset_prod(path2prod, path2wkt, verbose):
+#     # Objetivo 2 del día Cortar producto por geometría
+#     product = ProductIO.readProduct(path2prod)
+#     SubsetOp = snappy.jpy.get_type('org.esa.snap.core.gpf.common.SubsetOp')
+#     geometry = WKTReader().read(path2wkt)
+#     HashMap = snappy.jpy.get_type('java.util.HashMap')
+#     GPF.getDefaultInstance().getOperatorSpiRegistry().loadOperatorSpis()
+#     parameters = HashMap()
+#     parameters.put('copyMetadata', True)
+#     parameters.put('geoRegion', geometry)
+#     # product_subset = GPF.createProduct('Subset', parameters, product)
+#     return GPF.createProduct('Subset', parameters, product)
 
 def plotRGB_s2(product, title, vmin, vmax):
     band_list = ['B4','B3','B2']
@@ -429,6 +435,30 @@ def resize(product, referenceBand):
     parameters.put('resampleOnPyramidLevels', resampleOPL)
     return GPF.createProduct('Resample', parameters, product)
 
+def add_geometry2prod_4(product, wkt_path, verbose = False):
+    # product = ProductIO.readProduct(path2prod)
+    # SubsetOp = snappy.jpy.get_type('org.esa.snap.core.gpf.common.SubsetOp')
+    with open(wkt_path, 'r') as f:
+        wkt_orig = f.readline()
+    geometry = WKTReader().read(wkt_orig)
+    wktFeatureType = PlainFeatureFactory.createDefaultFeatureType(DefaultGeographicCRS.WGS84)
+    featureBuilder = SimpleFeatureBuilder(wktFeatureType)
+    wktFeature = featureBuilder.buildFeature('shape')
+    # dir(wktFeature)
+    wktFeature.setDefaultGeometry(geometry)
+
+    newCollection = ListFeatureCollection(wktFeatureType)
+    newCollection.add(wktFeature)
+
+    productFeatures = FeatureUtils.clipFeatureCollectionToProductBounds(newCollection, product, None, ProgressMonitor.NULL)
+
+    node = VectorDataNode('shape', productFeatures)
+    print ('Num features = ', node.getFeatureCollection().size())
+
+    product.getVectorDataGroup().add(node)
+
+    return masked_prod
+
 def add_geometry2prod_3(prod, shp_path, verbose = False):
     # Implementación aconsejada en https://forum.step.esa.int/t/import-vector-data-shapefile-from-snappy-python/4115/2
     # Importar vector de un shapefile
@@ -492,7 +522,7 @@ def masking_2(product, geometry_name, invert):
     parameters.put('invertGeometry', invert)
     prod_masked = GPF.createProduct('Land-Sea-Mask', parameters, product)
     return prod_masked
-    
+
 # Función 1Na
 # Creación de nombre de producto
 def path_creator(folder, file_name, verbose):
