@@ -11,19 +11,23 @@ from pathlib import Path
 # Módulo necesario para convertir columna de dataframe e ntipo datetime
 from datetime import datetime
 
-import snappy
+# import snappy
 from snappy import WKTReader
 from snappy import HashMap
 from snappy import GPF
 from snappy import ProductIO
 from snappy import File
-from snappy import ProgressMonitor
-from snappy import PlainFeatureFactory
-from snappy import DefaultGeographicCRS
-from snappy import SimpleFeatureBuilder
-from snappy import ListFeatureCollection
-from snappy import FeatureUtils
-from snappy import VectorDataNode
+#from snappy import ProgressMonitor
+#from snappy import PlainFeatureFactory
+#from snappy import DefaultGeographicCRS
+#from snappy import SimpleFeatureBuilder
+#from snappy import ListFeatureCollection
+#from snappy import FeatureUtils
+#from snappy import VectorDataNode
+from snappy import (ProgressMonitor, VectorDataNode,
+                    WKTReader, ProductIO, PlainFeatureFactory,
+                    SimpleFeatureBuilder, DefaultGeographicCRS,
+                    ListFeatureCollection, FeatureUtils)
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
@@ -441,6 +445,8 @@ def add_geometry2prod_4(product, wkt_path, verbose = False):
     with open(wkt_path, 'r') as f:
         wkt_orig = f.readline()
     geometry = WKTReader().read(wkt_orig)
+    print('WKT leído con función open:',wkt_orig)
+    print('WKT leído con WKTE:',geometry)
     wktFeatureType = PlainFeatureFactory.createDefaultFeatureType(DefaultGeographicCRS.WGS84)
     featureBuilder = SimpleFeatureBuilder(wktFeatureType)
     wktFeature = featureBuilder.buildFeature('shape')
@@ -457,7 +463,7 @@ def add_geometry2prod_4(product, wkt_path, verbose = False):
 
     product.getVectorDataGroup().add(node)
 
-    return masked_prod
+    return product
 
 def add_geometry2prod_3(prod, shp_path, verbose = False):
     # Implementación aconsejada en https://forum.step.esa.int/t/import-vector-data-shapefile-from-snappy-python/4115/2
@@ -470,28 +476,28 @@ def add_geometry2prod_3(prod, shp_path, verbose = False):
     result = GPF.createProduct('Import-Vector', parameters, prod)
     return result
 
-def masking(product, geometry_name, invert):
-    # **Error que da origen a modificación de código**
-    # expression: Undefined symbol 'cirrus_clouds'. due to Undefined symbol 'cirrus_clouds'.
-    # Traceback (most recent call last):
-    # File "proc_s2.py", line 109, in <module>
-    # prod_s_res_msk = msnap.masking(resamp_prod, 'cirrus_clouds', False)
-    # File "../utils/mod_snappy_S2.py", line 335, in masking
-    # return GPF.createProduct('Land-Sea-Mask', parameters, product)
-    # RuntimeError: org.esa.snap.core.gpf.OperatorException: expression: Undefined symbol 'cirrus_clouds'. due to Undefined symbol 'cirrus_clouds'.
-    HashMap = snappy.jpy.get_type('java.util.HashMap')
-    parameters = HashMap()
-    parameters.put('geometry', geometry_name)
-    parameters.put('invertGeometry', invert)
-    # parameters.put('byPass', True)
-    try:
-        prod_masked = GPF.createProduct('Land-Sea-Mask', parameters, product)
-    except RuntimeError:
-        parameters = HashMap()
-        parameters.put('geometry', 'cirrus_clouds_10m')
-        parameters.put('invertGeometry', invert)
-        prod_masked = GPF.createProduct('Land-Sea-Mask', parameters, product)
-    return prod_masked
+# def masking(product, geometry_name, invert):
+#     # **Error que da origen a modificación de código**
+#     # expression: Undefined symbol 'cirrus_clouds'. due to Undefined symbol 'cirrus_clouds'.
+#     # Traceback (most recent call last):
+#     # File "proc_s2.py", line 109, in <module>
+#     # prod_s_res_msk = msnap.masking(resamp_prod, 'cirrus_clouds', False)
+#     # File "../utils/mod_snappy_S2.py", line 335, in masking
+#     # return GPF.createProduct('Land-Sea-Mask', parameters, product)
+#     # RuntimeError: org.esa.snap.core.gpf.OperatorException: expression: Undefined symbol 'cirrus_clouds'. due to Undefined symbol 'cirrus_clouds'.
+#     HashMap = snappy.jpy.get_type('java.util.HashMap')
+#     parameters = HashMap()
+#     parameters.put('geometry', geometry_name)
+#     parameters.put('invertGeometry', invert)
+#     # parameters.put('byPass', True)
+#     try:
+#         prod_masked = GPF.createProduct('Land-Sea-Mask', parameters, product)
+#     except RuntimeError:
+#         parameters = HashMap()
+#         parameters.put('geometry', 'cirrus_clouds_10m')
+#         parameters.put('invertGeometry', invert)
+#         prod_masked = GPF.createProduct('Land-Sea-Mask', parameters, product)
+#     return prod_masked
 
 def get_mask_list(product, verbose):
     maskGroup = product.getMaskGroup()
@@ -504,7 +510,7 @@ def get_mask_list(product, verbose):
             print(mask_name)
     return msk_list
 
-def masking_2(product, geometry_name, invert):
+def masking(product, geometry_name, invert):
     if geometry_name == 'cirrus_clouds':
         mask_list = get_mask_list(product, False)
         cirrus_names = ['cirrus_clouds', 'cirrus_clouds_10m', 'scl_cloud_medium_proba']
