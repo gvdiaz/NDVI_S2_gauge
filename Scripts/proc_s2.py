@@ -112,7 +112,7 @@ for row in df.iterrows():
 
     # Agrego shape a vectores
     shp_path = conf_dict['FOLDERS']['shp_roi']
-    added_geom_prod = msnap.add_geometry2prod_3(resamp_prod, shp_path)
+    added_geom_prod = msnap.add_geometry2prod_4(resamp_prod, shp_path)
     shp_name = os.path.basename(shp_path).split('.')[0] # Guardo nombre para llamarlo en la función masking
 
     # Implementación de Función 1M
