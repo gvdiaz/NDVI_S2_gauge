@@ -11,7 +11,7 @@ from pathlib import Path
 # Módulo necesario para convertir columna de dataframe e ntipo datetime
 from datetime import datetime
 
-# import snappy
+import snappy
 from snappy import WKTReader
 from snappy import HashMap
 from snappy import GPF
@@ -445,8 +445,8 @@ def add_geometry2prod_4(product, wkt_path, verbose = False):
     with open(wkt_path, 'r') as f:
         wkt_orig = f.readline()
     geometry = WKTReader().read(wkt_orig)
-    print('WKT leído con función open:',wkt_orig)
-    print('WKT leído con WKTE:',geometry)
+    print('WKT leido con funcion open:',wkt_orig)
+    print('WKT leido con WKTE:',geometry)
     wktFeatureType = PlainFeatureFactory.createDefaultFeatureType(DefaultGeographicCRS.WGS84)
     featureBuilder = SimpleFeatureBuilder(wktFeatureType)
     wktFeature = featureBuilder.buildFeature('shape')
