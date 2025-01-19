@@ -108,15 +108,17 @@ for row in df.iterrows():
 
     # Función 1K
     # Enmascarado de cirros
-    prod_s_res_msk = msnap.masking(resamp_prod, 'cirrus_clouds', False)
+    prod_s_res_msk = msnap.masking(resamp_prod, 'cirrus_clouds', invert = True)
 
     # Agrego shape a vectores
     shp_path = conf_dict['FOLDERS']['shp_roi']
-    added_geom_prod = msnap.add_geometry2prod_4(resamp_prod, shp_path)
+    # added_geom_prod = msnap.add_geometry2prod_4(resamp_prod, shp_path) # Código comentado porque cambió el origen del shape, ahora debe ser wkt
+    added_geom_prod = msnap.add_geometry2prod_4(resamp_prod, path2wkt)
     shp_name = os.path.basename(shp_path).split('.')[0] # Guardo nombre para llamarlo en la función masking
+    shp_name = 'shape' # Hardcodeo porque la función add_geometry2prod_4 solo lo guarda con ese nombre genérico
 
     # Implementación de Función 1M
-    prod_s_res_msk_roi_msk = msnap.masking(added_geom_prod, shp_name, False)
+    prod_s_res_msk_roi_msk = msnap.masking(added_geom_prod, shp_name, invert = False)
 
     # Implementación de Función 1Na
     file_extension = '_c_and_m'
