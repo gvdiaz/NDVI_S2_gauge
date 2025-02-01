@@ -239,8 +239,13 @@ def plotNDVI_s2_png(product, title, path, vmin, vmax):
     plt.savefig(png_path , bbox_inches='tight')
 
     # Cómputo de estadísticas en producto
-    ndvi_mean = np.mean(ndvi)
-    ndvi_std_dev = np.std(ndvi)
+
+    # Antes de computar estadísticas seteo el valor 0 como np.nan para que no sea tomado en las estadísticas.
+    ndvi = ndvi.astype(np.float32)  # Ensure the array can hold np.nan (float type)
+    ndvi = np.where(ndvi == 0, np.nan, ndvi)  # Replace -1 with NaN
+    # ndvi[ndvi == 0.0] = np.nan   # seteo 0 como np.nan
+    ndvi_mean = np.nanmean(ndvi)
+    ndvi_std_dev = np.nanstd(ndvi)
 
     return ndvi_mean, ndvi_std_dev, png_path
 
