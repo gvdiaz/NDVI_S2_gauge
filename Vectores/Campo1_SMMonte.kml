@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="Campo1_SMMonte" id="Campo1_SMMonte">
+	<SimpleField name="id" type="float"></SimpleField>
+</Schema>
+<Folder><name>Campo1_SMMonte</name>
+  <Placemark>
+	<name>Campo1</name>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#Campo1_SMMonte">
+		<SimpleData name="id">1</SimpleData>
+	</SchemaData></ExtendedData>
+      <MultiGeometry><Polygon><outerBoundaryIs><LinearRing><coordinates>-58.7757763092653,-35.4702267217582 -58.7802506263501,-35.4733463110006 -58.7775145331687,-35.4758890799229 -58.7730402160839,-35.4727695893355 -58.7757763092653,-35.4702267217582</coordinates></LinearRing></outerBoundaryIs></Polygon></MultiGeometry>
+  </Placemark>
+</Folder>
+</Document></kml>
