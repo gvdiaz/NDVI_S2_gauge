@@ -7,6 +7,7 @@ from datetime import datetime
 import pytz
 import requests
 import pandas as pd
+import getpass
 
 import geopandas as gpd, geoplot, matplotlib
 from shapely.geometry import shape
@@ -64,9 +65,7 @@ def create_conf_file(path2conf):
             ';Prueba de comentarios para ESA_SERVER':None,
             'url':'https://catalogue.dataspace.copernicus.eu/odata/v1/Products',
             'orderby': 'ContentDate/Start',
-            'top':'100',
-            'user':'gus838@gmail.com',
-            'pass':'Ul!RsPWTPuw3'
+            'top':'100'
     },
         'SCRIPTING':{
             ';Configuración para aplicar en funciones':None,
@@ -97,6 +96,27 @@ def create_conf_file(path2conf):
         config_object.write(file)
     # file.close()
     return None
+
+def read_keys(config_dictionary, verbose):
+    new_conf_dict = config_dictionary
+    print('A continuación se requerirá el ingreso del usuario de dataspace copernicus:')
+    name = input("Ingreso de usuario: ")
+    new_conf_dict['ESA_SERVER']['user'] = name
+    # print(f"Hello, {name}!")
+    # pass_key = input('Ingreso de contraseña')
+    # password = getpass.getpass(f"Ingreso de contraseña (para {name}): ")
+    while True:
+        try:
+            password = getpass.getpass(f"Ingreso de contraseña (para {name}): ")
+            if not password:  # Checks if input is empty
+                raise ValueError("La contraseña no puede estar vacía. Intente nuevamente.")
+            break  # Exit loop if password is valid
+        except ValueError as e:
+            print(e)
+
+# print("Password received successfully!")
+    new_conf_dict['ESA_SERVER']['pass'] = password
+    return new_conf_dict
 
 # Creación de archivo de configuración para procesador
 def save_conf2proc(conf_searcher, output_meta_df, verbose):
