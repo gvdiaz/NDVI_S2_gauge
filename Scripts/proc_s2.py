@@ -160,6 +160,9 @@ msnap.save_simple_df(df, path2table, False)
 # Ploteo de serie temporal (por ahora solo para NDVI)
 msnap.temp_series_2(df, table_path, False)
 
+# Guardo archivo de configuración en carpeta de salida
+msnap.save_search_conf(config_path, conf_dict, verbose2conf)
+
 
 if verbose2conf:
     print(conf_dict)
