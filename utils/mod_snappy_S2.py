@@ -317,6 +317,18 @@ def create_conf_file_proc(path2conf):
     # file.close()
     return None
 
+def save_search_conf(file2del, conf_dict, verbose):
+    # Borro archivo de configuración de procesador, necesario para que no queden rastros de pass
+    os.remove(file2del)
+
+    # Copio archivo de configuración de búscador a carpeta de salida
+    # Primero obtengo nombre de archivo base
+    out_name = os.path.basename(conf_dict['PROCESSOR']['conf_search_path'])
+    # Segundo, genero ruta de archivo de salida
+    out_path = os.path.join(conf_dict['FOLDERS']['output'], out_name)
+    shutil.copy(conf_dict['PROCESSOR']['conf_search_path'], out_path)
+    return None
+
 # Limpieza de carpeta generada (normalmente va a estar completa en etapa de debbuging.
 def del_folder(path2folder, verbose):
     # Creo la variable root_folder para definir la carpeta base a borrar
