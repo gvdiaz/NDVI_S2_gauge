@@ -75,7 +75,8 @@ def create_conf_file(path2conf):
             '; Configuración para procesador posterior a búsqueda/filtrado':None,
             '; Type: Significa el tipo de procesamiento a aplicar a la colección de productos a bajar, puede ser NDVI, RGB': None,
             'Type':'RGB',
-            'Conf_proc':'/src/utils/CONF_PROC.INI'
+            'Conf_proc':'/src/utils/CONF_PROC.INI',
+            'conf_searcher':'/src/utils/CONF_SEARCHER.INI'
         }
     }
     with open(path2conf,"w") as file:
@@ -164,7 +165,8 @@ def save_conf2proc(conf_searcher, output_meta_df, verbose):
         'PROCESSOR': {
             '; Configuracion para procesador posterior a busqueda/filtrado':None,
             '; Type: Significa el tipo de procesamiento a aplicar a la coleccion de productos a bajar, puede ser NDVI, RGB': None,
-            'Type':conf_searcher['PROCESSOR']['type']
+            'Type':conf_searcher['PROCESSOR']['type'],
+            'conf_search_path':conf_searcher['PROCESSOR']['conf_searcher']
         }
     }
     with open(conf_searcher['PROCESSOR']['conf_proc'],"w") as file:
