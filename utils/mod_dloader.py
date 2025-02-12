@@ -42,6 +42,24 @@ def show_dict(dict_def):
     print("----------Separador de fin show_dict----------")
     return None
 
+def save_response(dict_def, path2save, verbose):
+    
+    tmp_file_name = "esa_response.txt"
+    tmp_file_path = os.path.join(path2save, tmp_file_name)
+
+    with open(tmp_file_path, "w") as file:
+        for key, value in dict_def.items():
+            file.write(f"{key}: {value}\n")
+
+    print("File written successfully!")
+
+    if verbose:
+        with open(tmp_file_path, "r") as file:
+            content = file.read()
+            print(content)
+    
+    return None
+
 def prod_downloader(prod_id, keycloak_token,output_path,file_name):
     print("inicio de 'bajador'")
     session = requests.Session()
@@ -116,6 +134,8 @@ def prod_downloader_2(prod_id, keycloak_token, output_path, file_name, verbose):
     session.headers.update(headers)
     response = session.get(url, headers=headers, stream=True)
     
+    save_response(response.headers, output_path, verbose)
+
     file_name=file_name + ".zip"
     product_file = os.path.join(output_path,file_name)
 
