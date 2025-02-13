@@ -13,6 +13,10 @@ import geopandas as gpd, geoplot, matplotlib
 from shapely.geometry import shape
 from shapely import wkt
 
+# Módulo para Verificar si las credenciales ingresadas son correctas
+sys.path.append(r'../utils')
+from mod_dloader import get_keycloak
+
 # Módulo para transcribir funciones desarrolladas para la búsqueda y filtrado de productos Sentinel-2 en Notebook "Nube_funciones.ipynb"
 
 # Definiciones del código
@@ -96,6 +100,21 @@ def create_conf_file(path2conf):
                 config_object.set(section, field, str(value))
         config_object.write(file)
     # file.close()
+    return None
+
+def verfi_cred(dictWcreds, verbose):
+    # utilizo diccionario con credencailes ingresadas de manera manual
+    # print(dictWcreds)
+    user = dictWcreds['ESA_SERVER']['user']
+    passw = dictWcreds['ESA_SERVER']['pass']
+    str_token = get_keycloak(user, passw, False)
+    print(str_token)
+    print('Salida de debbuging en verficación de credenciales')
+    os._exit(0)
+    if verbose:
+        print(dictWcreds)
+        print(str_token)
+
     return None
 
 def read_keys(config_dictionary, verbose):
