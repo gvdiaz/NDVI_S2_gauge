@@ -22,7 +22,33 @@ def get_keycloak(username: str, password: str, verbose) -> str:
     if verbose:
         print('Visualización de variables en get_keycloak en módulo mod_dloader.py')
         print(data)
+        print(r.json())
     return r.json()["access_token"]
+
+def try_cred(username: str, password: str, verbose) -> str:
+    flag_status = None
+    response = None
+    data = {
+        "client_id": "cdse-public",
+        "username": username,
+        "password": password,
+        "grant_type": "password"
+        }
+    r = requests.post("https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token",
+    data=data)
+    # r.raise_for_status()
+    response = r.json()
+    if 'error' in response:
+        flag_status = False
+    elif 'access_token' in response:
+        flag_status = True
+    else:
+        flag_status = False
+    if verbose:
+        print('Visualización de variables en get_keycloak en módulo mod_dloader.py')
+        print(data)
+        print(r.json())
+    return response, flag_status
 
 # keycloak_token = get_keycloak("USERNAME", "PASSWORD")
 
