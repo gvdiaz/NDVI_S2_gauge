@@ -15,7 +15,7 @@ from shapely import wkt
 
 # Módulo para Verificar si las credenciales ingresadas son correctas
 sys.path.append(r'../utils')
-from mod_dloader import get_keycloak
+from mod_dloader import try_cred
 
 # Módulo para transcribir funciones desarrolladas para la búsqueda y filtrado de productos Sentinel-2 en Notebook "Nube_funciones.ipynb"
 
@@ -107,13 +107,21 @@ def verfi_cred(dictWcreds, verbose):
     # print(dictWcreds)
     user = dictWcreds['ESA_SERVER']['user']
     passw = dictWcreds['ESA_SERVER']['pass']
-    str_token = get_keycloak(user, passw, False)
-    print(str_token)
-    print('Salida de debbuging en verficación de credenciales')
-    os._exit(0)
+    msg_dict, status_creds = try_cred(user, passw, False)
+    # print(str_token)
+    while(not status_creds):
+        print('Credenciales inválidas, vuelva a ingresarlas por favor.')
+        # Vuelvo a ingresar credenciales por teclado
+        new_dictWcreds = read_keys(dictWcreds, False)
+        user = new_dictWcreds['ESA_SERVER']['user']
+        passw = new_dictWcreds['ESA_SERVER']['pass']
+        msg_dict, status_creds = try_cred(user, passw, False)
+    print('Credenciales validas')
     if verbose:
         print(dictWcreds)
-        print(str_token)
+        # print(str_token)
+    # print('Salida de debbuging en verficación de credenciales')
+    # os._exit(0)
 
     return None
 
