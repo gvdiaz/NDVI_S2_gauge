@@ -15,7 +15,7 @@ conf_dict = msf.read_conf_searcher(config_path, verbose2conf)
 # Lectura de usuario y pass de DataSpace Copernicus de la ESA (https://documentation.dataspace.copernicus.eu/APIs/OData.html#product-download)
 conf_dict = msf.read_keys(conf_dict, verbose2conf)
 # Verifico credenciales ingresadas antes de continuar
-msf.verfi_cred(conf_dict, True)
+msf.verfi_cred(conf_dict, verbose2conf)
 # Armado de request para realizar la búsqueda
 req_str = msf.set_ESA_req(conf_dict, True)
 # Envío de request
