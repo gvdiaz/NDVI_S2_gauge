@@ -135,9 +135,19 @@ def plotRGB_s2_2_png(product, title, path, vmin, vmax):
     plt.savefig(png_path, bbox_inches='tight')
 
     # Cómputo de estadísticas de rgb
+    # # Antes de computar estadísticas seteo el valor 0 como np.nan para que no sea tomado en las estadísticas.
+    # ndvi = ndvi.astype(np.float32)  # Ensure the array can hold np.nan (float type)
+    # ndvi = np.where(ndvi == 0, np.nan, ndvi)  # Replace -1 with NaN
+    # # ndvi[ndvi == 0.0] = np.nan   # seteo 0 como np.nan
+    # ndvi_mean = np.nanmean(ndvi)
+    # ndvi_std_dev = np.nanstd(ndvi)
     panc_band = (band_stack[0] + band_stack[1] + band_stack[2]) / 3
-    panc_mean = np.mean(panc_band)
-    panc_std_dev = np.std(ndvi)
+
+    panc_band = panc_band.astype(np.float32)
+    panc_band = np.where(panc_band == 0, np.nan, panc_band)
+
+    panc_mean = np.nanmean(panc_band)
+    panc_std_dev = np.nanstd(panc_band)
 
     return panc_mean, panc_std_dev, png_path
 
