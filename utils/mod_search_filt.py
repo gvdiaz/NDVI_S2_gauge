@@ -13,6 +13,9 @@ import geopandas as gpd, geoplot, matplotlib
 from shapely.geometry import shape
 from shapely import wkt
 
+# Módulo para computar cociente y resto de una división
+import numpy as np
+
 # Módulo para Verificar si las credenciales ingresadas son correctas
 sys.path.append(r'../utils')
 from mod_dloader import try_cred
@@ -57,13 +60,15 @@ def create_conf_file(path2conf):
             'OUTPUT': '/src/Output/'
         },
         'ATTRIB': {
-            ';Prueba de comentarios para ATTRIB':None,
+            ';Comment line test for ATTRIB':None,
             'init_date':'01-01-2019',
             'final_date':'31-01-2021',
             'max_cloud':'50',
             'Sent_mission':'SENTINEL-2',
-            ';Atriburo "proj_name" no debe tener espacios':None,
-            'proj_name':'Your_name'
+            ';The attribute "proj_name" should not have blank spaces':None,
+            'proj_name':'Your_name',
+            ';The processor will process the quantity of sample number':None,
+            'sample_number':'12'
         },
         'ESA_SERVER': {
             ';Prueba de comentarios para ESA_SERVER':None,
@@ -634,6 +639,37 @@ def disp_and_type(obj, type_of_show='display'):
     else:
         display(obj)
     return None
+
+# def msf.sample_gdf(gdf_filtered, conf_dict['ATTRIB']['sample_number'], True)
+def sample_gdf(gdf, sample_number, verbose):
+    tot_samp = len(gdf)
+    sample_number = int(sample_number)
+    if sample_number == 0:
+        if verbose:
+            print("No se modifica cantidad de regsitros en dataframe")
+        return gdf
+    else: 
+        quotient, remaider = np.divmod(tot_samp, sample_number)
+        if quotient >= 1:
+            if remaider == 0:
+                sample_step = quotient
+            elif remaider > 0:
+                sample_step = quotient + 1
+        elif quotient < 1:
+            sample_step = 1
+
+    if verbose:
+        print(f'Muestro valor de variables de función {sample_gdf.__name__}')
+        print(f"Cantidad de entradas totales: {tot_samp}")
+        print(f"Cantidad de muestras deseadas: {sample_number}")
+        print(f"Saltos dentro de muestreo: {sample_step}")
+        print(f"Cantidad de muestras final de dataframe: {len(gdf[::sample_step])}")
+        print('Original dataframe without sample it')
+        print(gdf)
+        print('Dataframe sampled')
+        print(gdf[::sample_step])
+
+    return gdf[::sample_step]
 
 def save_df(df_and_name, output_path):
     # Salvo dataframes en excels

@@ -28,9 +28,11 @@ gdf_final = msf.df_proc(df, False)
 gdf_intersec = msf.comp_intersec(gdf_final, conf_dict['FOLDERS']['roi'], verbose = False)
 # Filtrado de opciones presentadas (hay tres opciones)
 gdf_filtered = msf.filter_df(gdf_intersec, filter_type =3)
-gdf_filtered_name = 'search_page'
+# Reducción de dataframe filtrado para que entregue la cantidad de 'sample_number' diccionario de configuración
+gdf_filtered_reduc = msf.sample_gdf(gdf_filtered, conf_dict['ATTRIB']['sample_number'], True)
+gdf_filtered_reduc_name = 'search_page'
 # Genero dataframe resumido para facilitar lectura en excel
-resume_gdf = gdf_filtered.loc[:, ['cloudCover', 'Id', 'Name', 'shape', 'acq_date']]
+resume_gdf = gdf_filtered_reduc.loc[:, ['cloudCover', 'Id', 'Name', 'shape', 'acq_date']]
 resume_gdf_name = 'resume_search'
 # df_new = df.loc[:, ['team', 'rebounds']]
 # Armado de portada de búsqueda (se guardará en excel)
@@ -39,7 +41,7 @@ search_df_name = 'cover_search'
 # Compendio de información a guardar
 df_and_name_tuple = [(search_df, search_df_name),\
                      (resume_gdf, resume_gdf_name), \
-                     (gdf_filtered, gdf_filtered_name)]
+                     (gdf_filtered_reduc, gdf_filtered_reduc_name)]
 # Tomo nombre generado en los atributos de búsqueda
 bsname = search_df.loc['Search name'].item()
 # Agrego carpeta a path de archivo de salida
