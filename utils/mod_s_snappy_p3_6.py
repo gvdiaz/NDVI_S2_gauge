@@ -1,7 +1,106 @@
 import pickle
-import pandas
+import pandas as pd
 import configparser
 import os
+# La función del_folder y read_conf_proc
+import shutil
+from pathlib import Path
+
+# Limpieza de carpeta generada (normalmente va a estar completa en etapa de debbuging.
+def del_folder(path2folder, verbose):
+    # Creo la variable root_folder para definir la carpeta base a borrar
+    root_folder = Path(path2folder)
+    # Verifico si existe la carpeta
+    if root_folder.exists():
+        shutil.rmtree(path2folder)
+    if verbose:
+        print(f'The folder {root_folder} has been deleted.')
+    return None
+
+# Creación o lectura de archivo de configuración
+def read_conf_proc(path2conf, verbose):
+    if not(os.path.exists(path2conf)):
+        create_conf_file_proc(path2conf)
+    if verbose:
+        with open(path2conf, 'r') as file:
+            # Read the content of the file
+            file_content = file.read()
+            # Print the content
+            print("File Content:\n", file_content)
+    conf2dict = configparser.ConfigParser()
+    with open(path2conf,"r") as file:
+        conf2dict.read_file(file)
+    # conf2dict.read_file(path2conf)
+    return {s:dict(conf2dict.items(s)) for s in conf2dict.sections()}
+
+def create_conf_file_proc(path2conf):
+    # Configuración inicial
+    # ROI*
+    # Fecha de inicio de búsqueda
+    # Fecha de fin de búsqueda
+    # Tipo de producto Sentinel
+    # Porcentaje de nubosidad límite
+    # Nombre de proyecto relacionado
+    dict_gen = {
+        'FOLDERS': {
+            ';Prueba de comentarios para FOLDERS':None,
+            'ROI': r'/src/Vectores/',
+            'OUTPUT': '/src/Output/'
+        },
+        'ATTRIB': {
+            ';Prueba de comentarios para ATTRIB':None,
+            'init_date':'01-01-2019',
+            'final_date':'31-01-2021',
+            'max_cloud':'50',
+            'Sent_mission':'MSIL2A',
+            'proj_name':'Your name'
+        },
+        'ESA_SERVER': {
+            ';Prueba de comentarios para ESA_SERVER':None,
+            'url':'https://catalogue.dataspace.copernicus.eu/odata/v1/Products',
+            'orderby': 'ContentDate/Start',
+            'top':'100'
+    },
+        'SCRIPTING':{
+            ';Configuración para aplicar en funciones':None,
+            'verbose': False
+        }
+    }
+
+def folder_creator_method(root_path, folder2create, verbose):
+    # Creo la variable root_folder para definir la carpeta base sobre la cual se crearán las subcarpetas del proyecto.
+    root_folder = Path(root_path)
+    if root_folder.exists():
+        folder_list = [root_folder, folder2create]
+        path2newfol = Path(*folder_list)
+        path2newfol.mkdir()
+    else:
+        sys.exit(f'Funcion "{folder_creator.__name__()}" terminada porque no se encontró la ruta a la carpeta "{root_path}" donde debe crearse "{folder2create}"')
+    if verbose:
+        print(f'Creacion correcta de carpeta "{path2newfol}"')
+    return path2newfol
+
+# Lectura de dataframes de búsqueda a partir del csv
+
+def lectura_csv(path, verbose):
+    df = pd.read_csv(path)
+    df['acq_date'] = pd.to_datetime(df['acq_date'])
+    # df.sort_values(by='A', ascending=True, inplace=True)
+    df.sort_values(by='acq_date', ascending=True)
+
+    if verbose:
+        print(f'Muestro variable path de funcion {lectura_csv.__name__}')
+        print()
+        print(df)
+    return df
+
+def lectura_pkl(path, verbose):
+    df = pd.read_pickle(path)
+    if verbose:
+        print(f'Muestro variable path de funcion {lectura_csv.__name__}')
+        print()
+        print(df)
+    return df
 
 # Funciones para escribir lista de búsqueda y poder leerla
 # write list to binary file
