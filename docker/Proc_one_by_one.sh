@@ -3,6 +3,13 @@
 # Fecha: 03/03/2025
 # Autor: Gustavo V. Diaz
 
+# Configuraciones
+# Configuración para mostrar los comandos cuando se ejecutan
+# set -x
+
+# Monitor de parámetros
+tty
+
 # PATHS
 PATH_REPO="$(cd ..&& pwd)"
 # PATH_REPO="$(cd ../ && pwd)"
@@ -57,9 +64,10 @@ cat $PATH2LIST
 while IFS= read -r line; do
     echo Línea: $line
     echo $(pwd)
-    LAUNCH_SCRIPT="./${PYTHON_LAUNCHER} ${DOWNLOADER_PROD} ${line}"
-    echo $LAUNCH_SCRIPT
-    $LAUNCH_SCRIPT
+    echo "./${PYTHON_LAUNCHER} ${DOWNLOADER_PROD} ${line}"
+    ./"$PYTHON_LAUNCHER" "$DOWNLOADER_PROD" "$line"
+    # echo $LAUNCH_SCRIPT
+    # $LAUNCH_SCRIPT
     # ./${PYTHON_LAUNCHER} ${DOWNLOADER_PROD} ${line}
     # DOWNLOADER_RESPONSE=$(sudo -t ./${PYTHON_LAUNCHER} ${DOWNLOADER_PROD} ${line})
     echo $DOWNLOADER_RESPONSE
