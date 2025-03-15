@@ -1,6 +1,9 @@
 #! /bin/bash
 # Script en bash para levantar arrancar bash de docker de desarrollo en imagen snappy_9_gvd
 
+# Configuración de script
+set -x
+
 PATH_REPO="$(cd ../ && cd ../ && pwd)"
 PATH_SCRIPTS="${PATH_REPO}/Scripts"
 PATH_VECTORES="${PATH_REPO}/Vectores"
@@ -13,8 +16,7 @@ PATH_OUTPUT="${PATH_REPO}/output"
 # echo $2
 
 # bash en imagen snappy_9_gvd
-docker run --rm --name snappy_develop \
-    -it \
+sudo docker run --rm --name snappy_develop \
     -v $PATH_SCRIPTS:/src/Scripts \
     -v $PATH_VECTORES:/src/Vectores \
     -v $PATH_UTILS:/src/utils \
