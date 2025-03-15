@@ -20,13 +20,14 @@ SEARCH_SCRIPT="search_filt_runner.sh"
 
 # SCRIPTS PYTHON3
 FOLDER_CREATOR="folder_creator.py"
+DOWNLOADER_PROD="downloader_prods.py"
 
 # Me situo sobre la carpeta REPO
 # cd ${PATH_REPO}
 # echo "Directorio para repo: $(pwd)"
 # pwd
 # echo ${PATH_REPO}
-cd ${PATH_PY_GIS}
+# cd ${PATH_PY_GIS}
 # sudo ./${SEARCH_SCRIPT}
 # echo "Directorio para py_GIS_dock: $(pwd)"
 # pwd
@@ -36,13 +37,34 @@ cd ${PATH_SNAPPY}
 # sudo ./${PYTHON_LAUNCHER} ${FOLDER_CREATOR}
 
 REL_PATH2LIST=$(sudo ./${PYTHON_LAUNCHER} ${FOLDER_CREATOR})
-# echo ${REL_PATH2LIST}
+echo "Primera impresión"
+echo ${REL_PATH2LIST}
 PATH2LIST="${PATH_OUTPUT}${REL_PATH2LIST}"
+# echo $REL_PATH2LIST
 echo $PATH2LIST
+
+# if [ -e $PATH2LIST ]; then
+#     echo "File exists."
+# else
+#     echo "File does not exist."
+# fi
+
 cat $PATH2LIST
 # echo "Directorio para snapy_dock: $(pwd)"
 # pwd
 # echo ${PATH_SNAPPY}
+
+while IFS= read -r line; do
+    echo Línea: $line
+    echo $(pwd)
+    LAUNCH_SCRIPT="./${PYTHON_LAUNCHER} ${DOWNLOADER_PROD} ${line}"
+    echo $LAUNCH_SCRIPT
+    $LAUNCH_SCRIPT
+    # ./${PYTHON_LAUNCHER} ${DOWNLOADER_PROD} ${line}
+    # DOWNLOADER_RESPONSE=$(sudo -t ./${PYTHON_LAUNCHER} ${DOWNLOADER_PROD} ${line})
+    echo $DOWNLOADER_RESPONSE
+    echo
+done < $PATH2LIST
 
 while IFS= read -r line; do
     # echo "Line: $line"

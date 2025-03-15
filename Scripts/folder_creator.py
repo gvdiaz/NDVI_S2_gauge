@@ -73,8 +73,10 @@ df['Name'].to_csv(path2list, index=False, header=False)
 
 # os.environ["MY_VAR"] = os.path.join(tmp_path, list_name)
 output_folder = conf_dict['FOLDERS']['output'].split('/')[3]
-# print(output_folder)
-os.environ["MY_VAR"] = os.path.join(output_folder, subfolder_name, list_name)
-print(os.environ["MY_VAR"])
+# print(str(output_folder))
+# Creación de path para ejecutarlo en bash del SO base.
+output_path = os.path.join(output_folder, subfolder_name, list_name)
+# Imprimo el path de salida sin que tenga el retorno de carro (me dificultó mucho encontrar este claro error)
+print(output_path, end="")
 
 # print("Fin de procesador folder_creator.py")

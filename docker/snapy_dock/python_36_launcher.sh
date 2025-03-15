@@ -8,6 +8,10 @@ PATH_UTILS="${PATH_REPO}/utils"
 PATH_TOKEN="${PATH_REPO}/token"
 PATH_OUTPUT="${PATH_REPO}/output"
 
+# echo "Entradas a script $0"
+# echo $1
+# echo $2
+
 # bash en imagen snappy_9_gvd
 docker run --rm --name snappy_develop \
     -it \
@@ -18,8 +22,9 @@ docker run --rm --name snappy_develop \
     -v $PATH_OUTPUT:/src/Output \
     --workdir /src/Scripts \
     snappy_9_gvd \
-    "python3" $1
+    "python3" $1 $2
     # -p 8888:8888 \
     # bash
     # "jupyter" "notebook" "--allow-root"
     #'jupyter notebook'
+# echo $0 $1 $2
