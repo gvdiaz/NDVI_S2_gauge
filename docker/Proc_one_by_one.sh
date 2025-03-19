@@ -44,11 +44,11 @@ cd ${PATH_SNAPPY}
 # sudo ./${PYTHON_LAUNCHER} ${FOLDER_CREATOR}
 
 REL_PATH2LIST=$(sudo ./${PYTHON_LAUNCHER} ${FOLDER_CREATOR})
-echo "Primera impresión"
-echo ${REL_PATH2LIST}
+# echo "Primera impresión"
+# echo ${REL_PATH2LIST}
 PATH2LIST="${PATH_OUTPUT}${REL_PATH2LIST}"
 # echo $REL_PATH2LIST
-echo $PATH2LIST
+# echo $PATH2LIST
 
 # if [ -e $PATH2LIST ]; then
 #     echo "File exists."
@@ -63,14 +63,14 @@ cat $PATH2LIST
 
 while IFS= read -r line; do
     echo Línea: $line
-    echo $(pwd)
-    echo "./${PYTHON_LAUNCHER} ${DOWNLOADER_PROD} ${line}"
+    # echo $(pwd)
+    # echo "./${PYTHON_LAUNCHER} ${DOWNLOADER_PROD} ${line}"
     ./"$PYTHON_LAUNCHER" "$DOWNLOADER_PROD" "$line"
     # echo $LAUNCH_SCRIPT
     # $LAUNCH_SCRIPT
     # ./${PYTHON_LAUNCHER} ${DOWNLOADER_PROD} ${line}
     # DOWNLOADER_RESPONSE=$(sudo -t ./${PYTHON_LAUNCHER} ${DOWNLOADER_PROD} ${line})
-    echo $DOWNLOADER_RESPONSE
+    # echo $DOWNLOADER_RESPONSE
     echo
 done < $PATH2LIST
 
