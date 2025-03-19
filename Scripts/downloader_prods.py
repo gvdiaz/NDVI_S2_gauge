@@ -33,6 +33,17 @@ conf_dict = mfc.read_conf_proc(config_path, verbose2conf)
 path2csv = conf_dict['FOLDERS']['prods_list']
 df = mfc.lectura_csv(path2csv, False)
 
-print("Presento argumento 1", sys.argv[1])
+# print("Presento argumento 1", sys.argv[1])
 
-print(f"Muestro dataframe: {df}")
+# print(f"Muestro dataframe: \n{df}")
+filt_id = df['Name'] == sys.argv[1]
+id = df.loc[filt_id]['Id']
+
+print()
+print(f'Presento id de producto: {sys.argv[1]}\n{id}')
+print()
+# print(f'Fila que tiene coincidencia con argumento {sys.argv[1]}\n{row}')
+print(f'Presento el tipo de id:\n{type(id)}')
+# print(f'Y presento el id que necesito:\n{row.get('Id')}')
+# print(f'Y presento el tipo de dato:\n{type(row)}')
+# print(f'Y presento el id que necesito:\n{row['Id']}')
