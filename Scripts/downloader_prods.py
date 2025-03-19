@@ -14,6 +14,8 @@ import os
 # Módulo para bajer productos S2
 sys.path.append(r'../utils')
 import mod_s_snappy_p3_6 as mfc
+# Módulo para bajar productos y acceder a token
+import mod_dloader as mdl
 
 # Funciones que necesito implementar
 
@@ -46,7 +48,21 @@ print()
 print(f'Presento id de producto: {sys.argv[1]}\n{id}')
 print()
 # print(f'Fila que tiene coincidencia con argumento {sys.argv[1]}\n{row}')
-print(f'Presento el tipo de id:\n{type(id)}')
+# print(f'Presento el tipo de id:\n{type(id)}')
 # print(f'Y presento el id que necesito:\n{row.get('Id')}')
 # print(f'Y presento el tipo de dato:\n{type(row)}')
 # print(f'Y presento el id que necesito:\n{row['Id']}')
+
+# Recopilación de datos para bajar producto
+# Definición de usuario
+user = conf_dict['ATTRIB']['user']
+passw = conf_dict['ATTRIB']['pass']
+
+prod_id = df.at[idx_row, 'Id']
+prod_name = df.at[idx_row, 'Name']
+acq_date = str(df.at[idx_row, 'acq_date'])
+str_token = mdl.get_keycloak(user, passw, False)
+print(prod_id, prod_name, acq_date, str_token, sep='\n')
+# file2verif = os.path.join(tmp_path,prod_name + '.zip')
+
+# mdl.prod_downloader_2(prod_id, str_token, tmp_path, prod_name, False)
