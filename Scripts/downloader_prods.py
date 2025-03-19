@@ -37,7 +37,10 @@ df = mfc.lectura_csv(path2csv, False)
 
 # print(f"Muestro dataframe: \n{df}")
 filt_id = df['Name'] == sys.argv[1]
-id = df.loc[filt_id]['Id']
+idx_row = df.loc[filt_id].index.to_list()[0]
+# id = df.loc[filt_id]['Id']
+print(f'Indice de linea de producto buscado{idx_row}')
+id = df.at[idx_row, 'Id']
 
 print()
 print(f'Presento id de producto: {sys.argv[1]}\n{id}')
