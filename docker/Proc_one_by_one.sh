@@ -28,14 +28,15 @@ SEARCH_SCRIPT="search_filt_runner.sh"
 # SCRIPTS PYTHON3
 FOLDER_CREATOR="folder_creator.py"
 DOWNLOADER_PROD="downloader_prods.py"
+PROC_PROD="proc_prods.py"
 
 # Me situo sobre la carpeta REPO
 # cd ${PATH_REPO}
 # echo "Directorio para repo: $(pwd)"
 # pwd
 # echo ${PATH_REPO}
-# cd ${PATH_PY_GIS}
-# sudo ./${SEARCH_SCRIPT}
+cd ${PATH_PY_GIS}
+sudo ./${SEARCH_SCRIPT}
 # echo "Directorio para py_GIS_dock: $(pwd)"
 # pwd
 # echo ${PATH_PY_GIS}
@@ -44,8 +45,8 @@ cd ${PATH_SNAPPY}
 # sudo ./${PYTHON_LAUNCHER} ${FOLDER_CREATOR}
 
 REL_PATH2LIST=$(sudo ./${PYTHON_LAUNCHER} ${FOLDER_CREATOR})
-# echo "Primera impresión"
-# echo ${REL_PATH2LIST}
+echo "Primera impresión"
+echo ${REL_PATH2LIST}
 PATH2LIST="${PATH_OUTPUT}${REL_PATH2LIST}"
 # echo $REL_PATH2LIST
 # echo $PATH2LIST
@@ -66,6 +67,7 @@ while IFS= read -r line; do
     # echo $(pwd)
     # echo "./${PYTHON_LAUNCHER} ${DOWNLOADER_PROD} ${line}"
     ./"$PYTHON_LAUNCHER" "$DOWNLOADER_PROD" "$line"
+    ./"$PYTHON_LAUNCHER" "$PROC_PROD" "$line"
     # echo $LAUNCH_SCRIPT
     # $LAUNCH_SCRIPT
     # ./${PYTHON_LAUNCHER} ${DOWNLOADER_PROD} ${line}
