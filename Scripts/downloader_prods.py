@@ -62,7 +62,35 @@ prod_id = df.at[idx_row, 'Id']
 prod_name = df.at[idx_row, 'Name']
 acq_date = str(df.at[idx_row, 'acq_date'])
 str_token = mdl.get_keycloak(user, passw, False)
-print(prod_id, prod_name, acq_date, str_token, sep='\n')
+# print(prod_id, prod_name, acq_date, str_token, sep='\n')
+# Verifico creación de directorios de proyecto
+root_folder = conf_dict['FOLDERS']['output']
+print(root_folder)
+subfolder_name = 'tmp'
+tmp_path = os.path.join(root_folder, subfolder_name)
+if os.path.isdir(tmp_path):
+    print(f"Carpeta temporal {tmp_path} creada.")
+else:
+    print(f"Carpeta temporal {tmp_path} no creada.")
+
+if len(os.listdir(tmp_path)) > 1:
+    print("Hay mas de un archivo bajado, termino script")
+    sys.exit(0)
+else:
+    pass
+
+out_name = prod_name + '.zip'
+prod_path = os.path.join(tmp_path, out_name)
+print(f"Debug downloader_prods.py, nombre de archivo de salida:\n{prod_path}")
+
+# Ahora verifico si existe el producto bajado
+if os.path.isfile(prod_path):
+    print(f"Archivo {prod_path} bajado.")
+else:
+    print(f"Archivo {prod_path} no bajado.")
+    print("Bajando...")
+    mdl.prod_downloader_2(prod_id, str_token, tmp_path, prod_name, verbose2conf)
+
 # file2verif = os.path.join(tmp_path,prod_name + '.zip')
 
 # mdl.prod_downloader_2(prod_id, str_token, tmp_path, prod_name, False)
