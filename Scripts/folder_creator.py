@@ -21,7 +21,7 @@ import mod_s_snappy_p3_6 as mfc
 # Parte 1ra
 # Tengo definido ruta a archivo de configación del procesador general.
 config_path = r'/src/utils/CONF_PROC.INI'
-development = True
+development = False
 verbose2conf = False
 
 # Función 1A
@@ -36,7 +36,13 @@ if development:
 
 # # Función 1C
 # # Creación de carpeta root para salida de procesamiento
-root_folder.mkdir()
+if root_folder.exists() and root_folder.is_dir():
+    # print("Folder exists")
+    pass
+else:
+    root_folder.mkdir()
+    # print("Folder does not exist")
+    # print("Creating...")
 
 # Función 1D
 # Creación de carpeta cutted_masked partiendo de root_folder
