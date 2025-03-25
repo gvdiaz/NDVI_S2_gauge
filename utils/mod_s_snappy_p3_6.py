@@ -70,10 +70,13 @@ def create_conf_file_proc(path2conf):
 def folder_creator_method(root_path, folder2create, verbose):
     # Creo la variable root_folder para definir la carpeta base sobre la cual se crearán las subcarpetas del proyecto.
     root_folder = Path(root_path)
-    if root_folder.exists():
+    if root_folder.exists() and root_folder.is_dir():
         folder_list = [root_folder, folder2create]
         path2newfol = Path(*folder_list)
-        path2newfol.mkdir()
+        if path2newfol.exists() and path2newfol.is_dir():
+            pass
+        else:
+            path2newfol.mkdir()
     else:
         sys.exit(f'Funcion "{folder_creator.__name__()}" terminada porque no se encontró la ruta a la carpeta "{root_path}" donde debe crearse "{folder2create}"')
     if verbose:
