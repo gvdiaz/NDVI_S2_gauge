@@ -159,8 +159,6 @@ def prod_downloader_2(prod_id, keycloak_token, output_path, file_name, verbose):
     session = requests.Session()
     session.headers.update(headers)
     response = session.get(url, headers=headers, stream=True)
-    
-    save_response(response.headers, output_path, verbose)
 
     file_name=file_name + ".zip"
     product_file = os.path.join(output_path,file_name)
@@ -171,6 +169,7 @@ def prod_downloader_2(prod_id, keycloak_token, output_path, file_name, verbose):
     unit_div = 1024
 
     if verbose:
+        save_response(response.headers, output_path, verbose)
         print('Muestro diccionario de headers a request: \n')
         show_dict(response.headers)
         print('Cantidad de bytes a bajar')
