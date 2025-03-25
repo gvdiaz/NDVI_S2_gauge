@@ -24,10 +24,11 @@ from snappy import File
 #from snappy import ListFeatureCollection
 #from snappy import FeatureUtils
 #from snappy import VectorDataNode
+# from snappy import jpy
 from snappy import (ProgressMonitor, VectorDataNode,
                     WKTReader, ProductIO, PlainFeatureFactory,
                     SimpleFeatureBuilder, DefaultGeographicCRS,
-                    ListFeatureCollection, FeatureUtils)
+                    ListFeatureCollection, FeatureUtils, jpy)
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
@@ -424,12 +425,12 @@ def show_att_snapobj(snap_prod, verbose = False):
 def subset_prod(path2prod, path2wkt, verbose):
     # Objetivo 2 del día Cortar producto por geometría
     product = ProductIO.readProduct(path2prod)
-    SubsetOp = snappy.jpy.get_type('org.esa.snap.core.gpf.common.SubsetOp')
+    SubsetOp = jpy.get_type('org.esa.snap.core.gpf.common.SubsetOp')
     with open(path2wkt, 'r') as f:
         wkt_orig = f.readline()
     geometry = WKTReader().read(wkt_orig)
     print(geometry)
-    HashMap = snappy.jpy.get_type('java.util.HashMap')
+    HashMap = jpy.get_type('java.util.HashMap')
     GPF.getDefaultInstance().getOperatorSpiRegistry().loadOperatorSpis()
     parameters = HashMap()
     parameters.put('copyMetadata', True)
