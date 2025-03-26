@@ -15,7 +15,7 @@ import mod_snappy_S2 as msnap
 # Parte 1ra
 # Tengo definido ruta a archivo de configación del procesador general.
 config_path = r'/src/utils/CONF_PROC.INI'
-development = True
+# development = True
 verbose2conf = False
 
 # Función 1A
@@ -68,6 +68,8 @@ prod_path = os.path.join(tmp_path,prod_name + '.zip')
 # Ahora verifico si existe el producto bajado
 if os.path.isfile(prod_path):
     print(f"Archivo {prod_path} bajado.")
+
+    dict2df = msnap.dict_reader(tmp_path, verbose)
     
     # Función 1I
     # Recortar producto
@@ -109,8 +111,15 @@ if os.path.isfile(prod_path):
     
     print(f"Valores estadisticos obtenidos:\nmedia: {mean}\nstd_dev: {std_dev}\nUbicacion: {path2png}")
 
+    # Guardo datos estadísticos de cualquiera de las dos procesamientos
+    dict2df['path2png'].append(path2png)
+    dict2df['mean_value'].append(mean)
+    dict2df['std_dev_value'].append(std_dev)
+
     # Borrado de archivo bajado
     msnap.erase_tmp(prod_path, True)
+
+    dict_saver(tmp_path, dict2df, False)
 
 else:
     print(f"Archivo {tmp_path} no bajado.")
