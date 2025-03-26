@@ -33,6 +33,9 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
+# Atriibutos
+pick_name = 'statistics_dict.pkl'
+
 def set_input_vars(verbose=False):
     aux_dict = {}
     aux_dict['input_path'] = r'/src/output/research_20240725T223256_Tratayen.xls'
@@ -588,6 +591,27 @@ def erase_tmp(path2tmp, verbose):
     if verbose:
         print(f'Borrado de archivo {path2tmp}')
     return
+
+def dict_reader(path2dict, verbose):
+    # Función para crear o abrir diccionario pickel
+    # pick_name = 'statistics_dict.pkl' -> lo defino en los atributos para que lo pueda usar el read como el saver
+    pick_path = os.path.join(path2dict, pick_name)
+    if os.path.isfile(pick_path):
+        with open(pick_path, 'rb') as file:
+            pkl_dict = pickle.load(file)
+    else:
+        pkl_dict = {'path2png':[],
+                    'mean_value': [],
+                    'std_dev_value': []
+                    }
+
+    return pkl_dict
+
+def dict_saver(path2dict, dict2save, verbose):
+    pick_path = os.path.join(path2dict, pick_name)
+    with open(pick_path, 'wb') as file:  # 'wb' mode for writing binary data
+        pickle.dump(dict2save, file)
+    return None
 
 def save_simple_df(df, output_path, verbose):
     # # Salvo dataframes en excels
