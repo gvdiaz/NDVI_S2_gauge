@@ -69,7 +69,7 @@ prod_path = os.path.join(tmp_path,prod_name + '.zip')
 if os.path.isfile(prod_path):
     print(f"Archivo {prod_path} bajado.")
 
-    dict2df = msnap.dict_reader(tmp_path, verbose)
+    dict2df = msnap.dict_reader(tmp_path, verbose2conf)
     
     # Función 1I
     # Recortar producto
@@ -119,7 +119,7 @@ if os.path.isfile(prod_path):
     # Borrado de archivo bajado
     msnap.erase_tmp(prod_path, True)
 
-    dict_saver(tmp_path, dict2df, False)
+    msnap.dict_saver(tmp_path, dict2df, False)
 
 else:
     print(f"Archivo {tmp_path} no bajado.")
