@@ -33,6 +33,9 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
+# Módulo para guardar diccionarios necesarios.
+import pickle
+
 # Atriibutos
 pick_name = 'statistics_dict.pkl'
 
