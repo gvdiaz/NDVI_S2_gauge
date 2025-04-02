@@ -6,6 +6,13 @@ import os
 import shutil
 from pathlib import Path
 
+# Módulos para mostrar resumen de serie temporal
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Atributos
+pick_name = 'statistics_dict.pkl'
+
 # Limpieza de carpeta generada (normalmente va a estar completa en etapa de debbuging.
 def del_folder(path2folder, verbose):
     # Creo la variable root_folder para definir la carpeta base a borrar
@@ -216,5 +223,70 @@ def create_conf_file(path2conf):
         config_object.write(file)
     # file.close()
     return None
+
+def dict_reader(path2dict, verbose):
+    # Función para crear o abrir diccionario pickel
+    # pick_name = 'statistics_dict.pkl' -> lo defino en los atributos para que lo pueda usar el read como el saver
+    pick_path = os.path.join(path2dict, pick_name)
+    if os.path.isfile(pick_path):
+        with open(pick_path, 'rb') as file:
+            pkl_dict = pickle.load(file)
+    else:
+        pkl_dict = {'path2png':[],
+                    'mean_value': [],
+                    'std_dev_value': []
+                    }
+
+    return pkl_dict
     
+def temp_series_2(df, folder2save, verbose):
+    out_path = os.path.join(folder2save, 'temporal_series.png')
+    # Create a figure and axis
+    fig, ax1 = plt.subplots(figsize=(10, 6))
+
+    ndvi_color = 'green'
+    ax1.errorbar(df['acq_date'], df['mean_value'], yerr = df['std_dev_value']/2, linestyle='-', marker='o', color=ndvi_color, label='mean_NDVI')
+    ax1.set_xlabel('Date')
+    ax1.set_ylabel('NDVI [-]', color=ndvi_color)
+    ax1.tick_params(axis='y', labelcolor=ndvi_color)
+    plt.legend(loc='lower right')
+
+    # Create a secondary y-axis
+    ax2 = ax1.twinx()
+    ax2.plot(df['acq_date'], df['cloudCover'], linestyle='', marker='D', color='blue', label='Product Cloud cover')
+    ax2.set_ylabel('Cloud cover (%)', color='blue')
+    ax2.tick_params(axis='y', labelcolor='blue')
+
+    # Add titles and grid
+    plt.title('Temporal series two axis')
+    fig.tight_layout()  # Adjust layout to prevent overlap
+    plt.grid()
+    plt.legend()
+    plt.savefig(out_path , bbox_inches='tight')
     
+    if verbose:
+        plt.show()
+    return None
+
+def save_simple_df(df, output_path, verbose):
+    # # Salvo dataframes en excels
+    output_path_csv = output_path + '.csv'
+    output_path_xls = output_path + '.xls'
+    df.to_csv(output_path_csv)
+    df.to_excel(output_path_xls)
+    if verbose:
+        print(df)
+    
+    return None
+
+def save_search_conf(file2del, conf_dict, verbose):
+    # Borro archivo de configuración de procesador, necesario para que no queden rastros de pass
+    os.remove(file2del)
+
+    # Copio archivo de configuración de búscador a carpeta de salida
+    # Primero obtengo nombre de archivo base
+    out_name = os.path.basename(conf_dict['PROCESSOR']['conf_search_path'])
+    # Segundo, genero ruta de archivo de salida
+    out_path = os.path.join(conf_dict['FOLDERS']['output'], out_name)
+    shutil.copy(conf_dict['PROCESSOR']['conf_search_path'], out_path)
+    return None
