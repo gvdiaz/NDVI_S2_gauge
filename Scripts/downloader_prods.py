@@ -23,7 +23,7 @@ import mod_dloader as mdl
 # Parte 2da
 # Tengo definido ruta a archivo de configación del procesador general.
 config_path = r'/src/utils/CONF_PROC.INI'
-development = True
+development = False
 verbose2conf = False
 
 # Función 1A
@@ -73,11 +73,11 @@ if os.path.isdir(tmp_path):
 else:
     print(f"Carpeta temporal {tmp_path} no creada.")
 
-if len(os.listdir(tmp_path)) > 1:
-    print("Hay mas de un archivo bajado, termino script")
-    sys.exit(0)
-else:
-    pass
+# if len(os.listdir(tmp_path)) > 2:
+#     print("Hay mas de un archivo bajado, termino script")
+#     sys.exit(0)
+# else:
+#     pass
 
 out_name = prod_name + '.zip'
 prod_path = os.path.join(tmp_path, out_name)
