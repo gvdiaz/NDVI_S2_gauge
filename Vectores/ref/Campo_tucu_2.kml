@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>Proyecto sin título</name>
+	<gx:CascadingStyle kml:id="__managed_style_1A42D8CCB237179F6FD0">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>6</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_0885CC1CE737179F6FD0">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>4</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_030E04E64437179F6FCF">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_0885CC1CE737179F6FD0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_1A42D8CCB237179F6FD0</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Placemark id="0629C326C93549DBEC67">
+		<name>Pza_flores</name>
+		<LookAt>
+			<longitude>-58.46408199214233</longitude>
+			<latitude>-34.62790033671935</latitude>
+			<altitude>22.21485773975657</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>542.2071638963099</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_030E04E64437179F6FCF</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-58.46462825639247,-34.62801745806473,0 -58.46416656868694,-34.62915934584641,0 -58.46275521208571,-34.6287737233892,0 -58.46322391721937,-34.6276406998055,0 -58.46462825639247,-34.62801745806473,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="03FA8ACD563717A10714">
+		<name>Campo_Tucu_2</name>
+		<LookAt>
+			<longitude>-65.27884888352919</longitude>
+			<latitude>-27.4283272438754</latitude>
+			<altitude>308.1173362467763</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>30</gx:fovy>
+			<range>2647.295520679036</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_030E04E64437179F6FCF</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.28001689528695,-27.42499390877415,0 -65.28102250549881,-27.42994149842975,0 -65.28045968514616,-27.43011108832352,0 -65.28010511402219,-27.42975706125203,0 -65.27867148330911,-27.42994116447871,0 -65.27765166764084,-27.4254409948823,0 -65.28001689528695,-27.42499390877415,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+</Document>
+</kml>
