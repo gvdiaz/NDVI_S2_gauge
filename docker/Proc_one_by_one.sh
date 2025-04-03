@@ -29,6 +29,7 @@ SEARCH_SCRIPT="search_filt_runner.sh"
 FOLDER_CREATOR="folder_creator.py"
 DOWNLOADER_PROD="downloader_prods.py"
 PROC_PROD="proc_prods.py"
+RESUMER="resumer.py"
 
 # Me situo sobre la carpeta REPO
 # cd ${PATH_REPO}
@@ -75,6 +76,8 @@ while IFS= read -r line; do
     # echo $DOWNLOADER_RESPONSE
     echo
 done < $PATH2LIST
+
+./"$PYTHON_LAUNCHER" "$RESUMER"
 
 while IFS= read -r line; do
     # echo "Line: $line"
