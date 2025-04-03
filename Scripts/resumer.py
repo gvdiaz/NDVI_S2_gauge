@@ -43,7 +43,7 @@ path2csv = conf_dict['FOLDERS']['prods_list']
 df = mfc.lectura_csv(path2csv, False)
 
 # Agrego columnas de estadística en dataframe con los valores agregados
-df = df.assign(**dict2df)
+df = df.assign(**dict2df).ffill()
 
 print(df)
 
