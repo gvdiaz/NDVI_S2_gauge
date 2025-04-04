@@ -294,5 +294,5 @@ def save_search_conf(file2del, conf_dict, verbose):
 
 def add_statistics(df_init, dict2add, verbose):
     df_stats = pd.DataFrame(dict2add)
-    df_final = pd.merge(left=df_init, right=df_stats, how=left, left_on='name', rigth_on='prod_name' )
+    df_final = pd.merge(left=df_init, right=df_stats, how='left', left_on='name', rigth_on='prod_name' )
     return df_final
