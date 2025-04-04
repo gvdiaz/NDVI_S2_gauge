@@ -79,21 +79,21 @@ done < $PATH2LIST
 
 ./"$PYTHON_LAUNCHER" "$RESUMER"
 
-while IFS= read -r line; do
-    # echo "Line: $line"
-    if [[ "$line" == prods_list* ]]; then
-        echo $line
-        path="${line}"
-        filename=$(basename "$path")
-        path_bash="${PATH_OUTPUT}${filename}"
-        echo $path_bash
-        line_count="Cantida de lineas en $path_bash"
-        # cat $path_bash
-        echo $line_count
-        lines=$(($(wc -l < "$path_bash") - 1 ))
-        echo $lines
+# while IFS= read -r line; do
+#     # echo "Line: $line"
+#     if [[ "$line" == prods_list* ]]; then
+#         echo $line
+#         path="${line}"
+#         filename=$(basename "$path")
+#         path_bash="${PATH_OUTPUT}${filename}"
+#         echo $path_bash
+#         line_count="Cantida de lineas en $path_bash"
+#         # cat $path_bash
+#         echo $line_count
+#         lines=$(($(wc -l < "$path_bash") - 1 ))
+#         echo $lines
 
-    fi
-done < $PROC_CONF
+#     fi
+# done < $PROC_CONF
 
 # line_count=$(wc -l < "$file")
