@@ -280,10 +280,7 @@ def save_simple_df(df, output_path, verbose):
     
     return None
 
-def save_search_conf(file2del, conf_dict, verbose):
-    # Borro archivo de configuración de procesador, necesario para que no queden rastros de pass
-    os.remove(file2del)
-
+def save_search_conf(conf_dict, verbose):
     # Copio archivo de configuración de búscador a carpeta de salida
     # Primero obtengo nombre de archivo base
     out_name = os.path.basename(conf_dict['PROCESSOR']['conf_search_path'])
@@ -296,3 +293,8 @@ def add_statistics(df_init, dict2add, verbose):
     df_stats = pd.DataFrame(dict2add)
     df_final = pd.merge(left=df_init, right=df_stats, how='left', left_on='Name', right_on='prod_name')
     return df_final
+
+def mfc.delete_file(file2del, verbose2conf):
+# Borro archivo de configuración de procesador, necesario para que no queden rastros de pass
+    os.remove(file2del)
+    return None
