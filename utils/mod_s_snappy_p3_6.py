@@ -294,7 +294,7 @@ def add_statistics(df_init, dict2add, verbose):
     df_final = pd.merge(left=df_init, right=df_stats, how='left', left_on='Name', right_on='prod_name')
     return df_final
 
-def mfc.delete_file(file2del, verbose2conf):
+def delete_file(file2del, verbose2conf):
 # Borro archivo de configuración de procesador, necesario para que no queden rastros de pass
     os.remove(file2del)
     return None
