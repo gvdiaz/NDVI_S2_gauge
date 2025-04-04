@@ -605,7 +605,8 @@ def dict_reader(path2dict, verbose):
     else:
         pkl_dict = {'path2png':[],
                     'mean_value': [],
-                    'std_dev_value': []
+                    'std_dev_value': [],
+                    'prod_name': []
                     }
 
     return pkl_dict
