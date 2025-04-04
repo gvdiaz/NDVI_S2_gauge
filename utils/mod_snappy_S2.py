@@ -245,16 +245,6 @@ def plotNDVI_s2_png(product, title, path, vmin, vmax):
 
         # ndviBand.writePixels(0, y, width, 1, ndvi.filled(numpy.nan))            # Escritura línea de NDVI
 
-    width=12
-    height=12
-    # rgb = np.dstack(band_stack)  # stacks 3 h x w arrays -> h x w x 3
-    plt.figure(figsize=(width,height))
-    plt.title('Producto de fecha: ' + 'NDVI ' + title, fontweight ="bold") 
-    imgplot=plt.imshow(ndvi,cmap='viridis',vmin=vmin,vmax=vmax)
-    plt.colorbar(imgplot)
-    png_path = path + '.png'
-    plt.savefig(png_path , bbox_inches='tight')
-
     # Cómputo de estadísticas en producto
 
     # Antes de computar estadísticas seteo el valor 0 como np.nan para que no sea tomado en las estadísticas.
@@ -263,6 +253,22 @@ def plotNDVI_s2_png(product, title, path, vmin, vmax):
     # ndvi[ndvi == 0.0] = np.nan   # seteo 0 como np.nan
     ndvi_mean = np.nanmean(ndvi)
     ndvi_std_dev = np.nanstd(ndvi)
+
+    width=12
+    height=12
+    # rgb = np.dstack(band_stack)  # stacks 3 h x w arrays -> h x w x 3
+    plt.figure(figsize=(width,height))
+    plt.title('Producto de fecha: ' + 'NDVI ' + title, fontweight ="bold") 
+    imgplot=plt.imshow(ndvi,cmap='viridis',vmin=vmin,vmax=vmax)
+    plt.colorbar(imgplot)
+    png_path = path + '.png'
+
+    # Add text with mean and std (position in data coordinates)
+    plt.text(0.5, -0.5, f'Mean: {ndvi_mean:.2f}, Std: {ndvi_std_dev:.2f}', 
+    ha='center', va='center', fontsize=10, color='red',
+    bbox=dict(facecolor='white', alpha=0.7))
+
+    plt.savefig(png_path , bbox_inches='tight')
 
     return ndvi_mean, ndvi_std_dev, png_path
 
