@@ -264,9 +264,9 @@ def plotNDVI_s2_png(product, title, path, vmin, vmax):
     png_path = path + '.png'
 
     # Add text with mean and std (position in data coordinates)
-    plt.text(0.5, -0.5, f'Mean: {ndvi_mean:.2f}, Std: {ndvi_std_dev:.2f}', 
-    ha='center', va='center', fontsize=10, color='red',
-    bbox=dict(facecolor='white', alpha=0.7))
+    plt.text(5, 4, f'Mean: {ndvi_mean:.2f}, Std: {ndvi_std_dev:.2f}', 
+    ha='center', va='center', fontsize=10, color='white',
+    bbox=dict(facecolor='white', alpha=0.3))
 
     plt.savefig(png_path , bbox_inches='tight')
 
