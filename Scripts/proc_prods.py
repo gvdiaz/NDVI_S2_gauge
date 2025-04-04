@@ -115,6 +115,7 @@ if os.path.isfile(prod_path):
     dict2df['path2png'].append(path2png)
     dict2df['mean_value'].append(mean)
     dict2df['std_dev_value'].append(std_dev)
+    dict2df['prod_name'].append(prod_name)
 
     # Borrado de archivo bajado
     msnap.erase_tmp(prod_path, True)
