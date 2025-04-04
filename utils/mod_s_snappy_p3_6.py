@@ -291,3 +291,8 @@ def save_search_conf(file2del, conf_dict, verbose):
     out_path = os.path.join(conf_dict['FOLDERS']['output'], out_name)
     shutil.copy(conf_dict['PROCESSOR']['conf_search_path'], out_path)
     return None
+
+def add_statistics(df_init, dict2add, verbose):
+    df_stats = pd.DataFrame(dict2add)
+    df_final = pd.merge(left=df_init, right=df_stats, how=left, left_on='name', rigth_on='prod_name' )
+    return df_final
