@@ -62,7 +62,7 @@ mfc.save_simple_df(df, path2table, False)
 mfc.temp_series_2(df, table_path, False)
 
 # Guardo archivo de configuración en carpeta de salida
-mfc.save_search_conf(config_path, conf_dict, verbose2conf)
+# mfc.save_search_conf(config_path, conf_dict, verbose2conf)
 
 
 if verbose2conf:
