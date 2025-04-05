@@ -1,3 +1,37 @@
+Fecha: 05/04/2025
+Autor: Gustavo V. Diaz
+Registro de archivos que fallaron en la prueba del procesamiento "SMM_vacas_2025_test_3_20250405T033933"
+S2A_MSIL2A_20250112T134701_N0511_R024_T21HUA_20250112T183356.SAFE.zip
+S2B_MSIL2A_20241208T134709_N0511_R024_T21HUA_20241208T190915.SAFE.zip
+S2C_MSIL2A_20250201T134731_N0511_R024_T21HUA_20250201T172610.SAFE.zip
+S2A_MSIL2A_20241113T134701_N0511_R024_T21HUA_20241113T183442.SAFE.zip
+S2A_MSIL2A_20240924T134711_N0511_R024_T21HUA_20240924T190249.SAFE.zip
+S2A_MSIL2A_20240726T134711_N0511_R024_T21HUA_20240727T091206.SAFE.zip
+
+Pendientes:
+Probar los últimos productos con una nueva versión del procesador.
+
+* La nueva nueva versión del procesador tendrá el ploteo de histograma junto al producto satelital, también puedo agregar las bandas involucradas en el cómputo del NDVI
+* Modificar el registro del producto satelital en RGB para que agregue los valores estadísticos y los histogramas de los mismos.
+** La versión del histograma estaría bueno que genere el histograma con las tres bandas
+
+Objetivo:
+Comparar los valores medios del imshow y del histograma para ver si tiene sentido lo que veo.
+
+Acciones a tomar:
+1_ Configurar CONF_SEARCHER.INI para que baje los productos que reporté y se compute el NDVI
+    Fecha inicio: 26-07-2024
+    Fecha fin: 12-01-2025 (Agrego un día para que tome el último producto que encontró)
+    Vector: Sigo procesando con el vector de SMM
+2_ Modificar la función "plotNDVI_s2_png" en el módulo "mod_snappy_S2.py" para que:
+    * Genere el histograma del NDVI, B4 y B8 en un solo plot e imprimir mean y std_dev sobre el histograma
+    * Plotear el imshow del lado izquierdo y el histograma del lado derecho
+3_ Modificar la función "plotRGB_s2_png" en el módulo "mod_snappy_S2.py" para que:
+    * Genere el histograma del B2, B3, B4 en un solo plot e imprimir mean y std_dev sobre el histograma
+    * Plotear el imshow RGB del lado izquierdo y el histograma del lado derecho
+4_ Ejecutar el proceso
+
+*****************************************************************************************************
 Archivo para registrar problemas en uso de repositorios
 
 Problema 1 22/08/2023
