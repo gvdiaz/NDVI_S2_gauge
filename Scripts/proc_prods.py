@@ -105,7 +105,7 @@ if os.path.isfile(prod_path):
     # msnap.writeProd(prod_s_res_msk_roi_msk, output_path)
     if flag_proc == 'NDVI':
         # La siguiente función devuelve media, std_dev y path de producto generado
-        mean, std_dev, path2png = msnap.plotNDVI_s2_png(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 1)
+        mean, std_dev, path2png = msnap.plotNDVI_s2_png_v2(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 1)
     elif flag_proc == 'RGB':
         mean, std_dev, path2png = msnap.plotRGB_s2_2_png(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 0.3)
     
