@@ -158,6 +158,94 @@ def plotRGB_s2_2_png(product, title, path, vmin, vmax):
 
     return panc_mean, panc_std_dev, png_path
 
+def sturges_bins(data):
+    """Sturges' rule: 1 + log2(n)"""
+    n = len(data.flatten())
+    return int(1 + np.log2(n))
+
+def plotNDVI_s2_png_v2(product, title, path, vmin, vmax):
+    band_list = ['B4','B8']
+    band_stack = []
+
+    width = product.getSceneRasterWidth()   # Obtención de ancho de producto
+    height = product.getSceneRasterHeight() # Obtención de alto de producto
+    name = product.getName()                # Obtención de nombre de producto
+    description = product.getDescription()  # Obtención de descripción de producto
+
+    b4 = product.getBand('B4')                                                  # Lectura de banda (supongo que roja)
+    b8 = product.getBand('B8') 
+
+    r4 = np.zeros(width, dtype=np.float32)                                # Creación de línea en numpy banda B4
+    r8 = np.zeros(width, dtype=np.float32)                               # Creación de línea en numpy banda B8
+
+    v4  = np.zeros(width, dtype=np.uint8)                                 # Creación de línea, supongo para enmascarar B4
+    v8 = np.zeros(width, dtype=np.uint8)                                 # Creación de línea, supongo para enmascarar B8
+
+    for y in range(height):
+        b4.readPixels(0, y, width, 1, r4)                                       # Lectura de líneas de banda B4
+        b8.readPixels(0, y, width, 1, r8)                                     # Lectura de línea de banda B8
+
+        b4.readValidMask(0, y, width, 1, v4)                                    # Lectura de máscara válida para B4
+        b8.readValidMask(0, y, width, 1, v8)                                  # Lectura de máscara válida para B8
+
+        invalidMask4 = np.where(v4 == 0, 1, 0)                               # Lectura de valores inválidos B4
+        invalidMask8 = np.where(v8 == 0, 1, 0)                             # Lectura de valores inválidos B4
+
+        ma4 = np.ma.array(r4, mask=invalidMask4, fill_value=np.nan)       # Enmascarado de línea en banda B4
+        ma8 = np.ma.array(r8, mask=invalidMask8, fill_value=np.nan)    # Enmascarado de línea en banda B8
+
+        print("processing line ", y, " of ", height)                            # Muestra de procesamiento de línea
+        ndvi_row = (ma8 - ma4) / (ma8 + ma4)                                  # Cómputo de la línea.
+        
+        ndvi = ndvi_row if y == 0 else np.vstack([ndvi, ndvi_row])              # Stackeo vertical de producto NDVI
+    
+    # Antes de computar estadísticas seteo el valor 0 como np.nan para que no sea tomado en las estadísticas.
+    ndvi = ndvi.astype(np.float32)  # Ensure the array can hold np.nan (float type)
+    ndvi = np.where(ndvi == 0, np.nan, ndvi)  # Replace -1 with NaN
+    # ndvi[ndvi == 0.0] = np.nan   # seteo 0 como np.nan
+    ndvi_mean = np.nanmean(ndvi)
+    ndvi_std_dev = np.nanstd(ndvi)
+
+    width=12
+    height=12
+    # rgb = np.dstack(band_stack)  # stacks 3 h x w arrays -> h x w x 3
+
+    # Create figure with two subplots
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), 
+                             gridspec_kw={'width_ratios': [2, 1]})
+    
+    # Left plot: 2D array visualization
+    im = ax1.imshow(ndvi, cmap='viridis', aspect='auto')
+    ax1.set_title('Producto de fecha: ' + 'NDVI ' + title)
+    cbar = fig.colorbar(im, ax=ax1, shrink=0.7)
+    cbar.set_label("NDVI Value")
+
+    qty_bins = sturges_bins(data)
+
+    # Right plot: Histogram of all values
+    ax2.hist(ndvi.flatten(), bins=qty_bins, color='skyblue', 
+            edgecolor='black', density=False)
+    ax2.set_title("NDVI Distribution")
+    ax2.set_xlabel("Values")
+    ax2.set_ylabel("Frequency")
+
+    # Add statistics to histogram
+    # mean_val = np.mean(data)
+    # std_val = np.std(data)
+    ax2.axvline(ndvi_mean, color='red', linestyle='--', 
+            label=f'Mean: {ndvi_mean:.2f}')
+    ax2.axvline(ndvi_mean + ndvi_std_dev, color='orange', 
+            linestyle=':', label=f'±1σ: {ndvi_std_dev:.2f}')
+    ax2.axvline(ndvi_mean - ndvi_std_dev, color='orange', linestyle=':')
+    ax2.legend()
+
+    # Adjust layout and save as PNG
+    plt.tight_layout()
+    plt.savefig(png_path, dpi=300, bbox_inches='tight')
+    # print("Figure saved as 'array_histogram.png'")
+
+    return ndvi_mean, ndvi_std_dev, png_path
+
 # Función para guardar y computar estadísticas de producto NDVI del producto
 def plotNDVI_s2_png(product, title, path, vmin, vmax):
     band_list = ['B4','B8']
@@ -257,6 +345,8 @@ def plotNDVI_s2_png(product, title, path, vmin, vmax):
     width=12
     height=12
     # rgb = np.dstack(band_stack)  # stacks 3 h x w arrays -> h x w x 3
+
+
     plt.figure(figsize=(width,height))
     plt.title('Producto de fecha: ' + 'NDVI ' + title, fontweight ="bold") 
     imgplot=plt.imshow(ndvi,cmap='viridis',vmin=vmin,vmax=vmax)
