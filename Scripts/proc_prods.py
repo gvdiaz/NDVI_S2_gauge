@@ -71,6 +71,10 @@ if os.path.isfile(prod_path):
 
     dict2df = msnap.dict_reader(tmp_path, verbose2conf)
     
+    # Verificación de fecha para adaptar los nuevos productos Sentinel-2 (acq_date > 01-07-2024)
+    
+    
+
     # Función 1I
     # Recortar producto
     product_subset = msnap.subset_prod(prod_path, path2wkt, False)
