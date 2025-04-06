@@ -760,3 +760,11 @@ def temp_series_2(df, folder2save, verbose):
     if verbose:
         plt.show()
     return None
+
+def verify_new_metadata(path2zip, prod_date, verbose):
+    # 4/1/2020  13:51:09
+    # Convert to datetime object
+    dt_obj = datetime.strptime(date_str, "%m/%d/%Y %H:%M:%S")
+    
+
+    return None
