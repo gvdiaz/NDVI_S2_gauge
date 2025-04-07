@@ -1,0 +1,25 @@
+Objetivo de nueva rama fix_1:
+Resolver el problema de apertura de productos Sentinel-2 que fueron procesados luego de Julio del 2024
+Fecha: 07/04/2025
+Autor: Gustavo V. Diaz
+
+Caminos propuestos:
+1_ Modificar contendor py_GIS_dock para instalar snap 10 que contiene snappy instalado y utilizarlo para abrir nuevo formato de productos Sentinel-2.
+2_ Modificar MTD_MSIL2A.xml de los que se procesaron luego de Julio 2024 para que pueda ser leido por el procesador snappy_dock.
+
+Referencias a utilizar
+
+Github esa-snappy
+https://github.com/senbox-org/esa-snappy?tab=readme-ov-file
+
+Step forum -> Solución posible con snap 11
+https://forum.step.esa.int/t/impossible-to-install-snappy-on-ubuntu-nogui-mode-snap-11-0-0/43898
+
+Step forum -> Solución posible con snap 10
+https://forum.step.esa.int/t/install-snappy-on-ubuntu-22-04/42732
+
+Repo de snap 10 para instalar
+https://step.esa.int/main/download/snap-download/previous-versions/
+
+Configuración esa-snappy para snap 10
+https://senbox.atlassian.net/wiki/spaces/SNAP/pages/2499051521/Configure+Python+to+use+the+SNAP-Python+esa_snappy+interface+SNAP+version+10
