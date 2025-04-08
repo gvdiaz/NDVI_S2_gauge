@@ -50,16 +50,16 @@ WORKDIR $PYBRIDGE_FOL
 # RUN apt install python3.6-distutils -y
 RUN apt install python3-venv python3-pip -y
 RUN pip install pybridge
-RUN git clone https://github.com/bcdev/jpy
-ARG JPY=$PYBRIDGE_FOL/jpy
-# #TODO fix on forman committed on May 18 1 parent ff48ea0 commit 76548cb6f3b9ba795ed6b3a42327607234eaba3c
+# RUN git clone https://github.com/bcdev/jpy
+# ARG JPY=$PYBRIDGE_FOL/jpy
+# # #TODO fix on forman committed on May 18 1 parent ff48ea0 commit 76548cb6f3b9ba795ed6b3a42327607234eaba3c
 
-##maven
-ARG MAVEN_INST=${SOURCE_PATH}/maven_install
-WORKDIR $MAVEN_INST
-RUN wget https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
-RUN tar xzvf apache-maven-3.8.6-bin.tar.gz
-ENV PATH $PATH:$MAVEN_INST/apache-maven-3.8.6/bin
-# Línea agregada por Rama para probar si pasa la línea de instalación de jpy
-# RUN pip install wheel
-RUN cd $JPY && python3 setup.py build maven bdist_wheel
+# ##maven
+# ARG MAVEN_INST=${SOURCE_PATH}/maven_install
+# WORKDIR $MAVEN_INST
+# RUN wget https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
+# RUN tar xzvf apache-maven-3.8.6-bin.tar.gz
+# ENV PATH $PATH:$MAVEN_INST/apache-maven-3.8.6/bin
+# # Línea agregada por Rama para probar si pasa la línea de instalación de jpy
+# # RUN pip install wheel
+# RUN cd $JPY && python3 setup.py build maven bdist_wheel
