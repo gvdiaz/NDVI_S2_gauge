@@ -51,7 +51,7 @@ ENV JAVA_HOME $JDK_HOME
 ##pybridge
 ARG PYBRIDGE_FOL=${SOURCE_PATH}/pybridge
 WORKDIR $PYBRIDGE_FOL
-# RUN apt install python3.6-distutils -y
+# RUN apt install python3.11-distutils -y
 RUN apt install python3-venv python3-pip -y
 RUN pip install pybridge
 RUN git clone https://github.com/bcdev/jpy
@@ -68,15 +68,34 @@ ENV PATH $PATH:$MAVEN_INST/apache-maven-3.8.6/bin
 # RUN pip install wheel
 # RUN cd $JPY && python3 setup.py build maven bdist_wheel
 
+RUN add-apt-repository ppa:ubuntugis/ppa
+RUN apt-get update && \
+      apt-get install -y \
+      gdal-bin \
+      libgdal-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
+ENV C_INCLUDE_PATH=/usr/include/gdal
+RUN pip3 install GDAL
+
+ARG source_req=./aux_files/requirements_casa.txt
+ARG dest_req=/tmp_gdal/requirements.txt
+RUN mkdir /tmp_gdal
+
+COPY ${source_req} ${dest_req}
+RUN cat ${dest_req}
+RUN pip3 install -r ${dest_req}
 
 # # SNAP
 ARG SNAP=${SOURCE_PATH}/snap2compile
-ARG SNAP_INST=/opt/snap
+ARG SNAP_INST=/opt/esa-snap/bin/
 RUN mkdir $SNAP
 ENV DISPLAY=""
-RUN mkdir ${SNAP_INST} && \
-    cd ${SNAP} && \
+RUN cd ${SNAP} && \
     wget --no-check-certificate -q https://download.esa.int/step/snap/11.0/installers/esa-snap_all_linux-11.0.0.sh && \
     chmod 777 -R esa-snap_all_linux-11.0.0.sh && \
     ./esa-snap_all_linux-11.0.0.sh -q
+
+RUN cd ${SNAP_INST} && ./snap --nosplash --nogui --modules --install eu.esa.snap.esa.snappy
 
