@@ -7,7 +7,7 @@ RUN apt-get update && \
       DEBIAN_FRONTEND=noninteractive apt-get install -y \
       build-essential \
       python3.10 \
-      python3.10-dev
+      python3.10-dev \
       libpython3.10-dev \
       python3-pip \
       net-tools \
