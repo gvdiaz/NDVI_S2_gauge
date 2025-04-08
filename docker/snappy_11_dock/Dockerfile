@@ -47,7 +47,7 @@ ENV JAVA_HOME $JDK_HOME
 ##pybridge
 ARG PYBRIDGE_FOL=${SOURCE_PATH}/pybridge
 WORKDIR $PYBRIDGE_FOL
-RUN apt install python3.6-distutils -y
+# RUN apt install python3.6-distutils -y
 RUN apt install python3-venv python3-pip -y
 RUN pip install pybridge
 RUN git clone https://github.com/bcdev/jpy
