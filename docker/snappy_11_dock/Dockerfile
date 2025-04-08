@@ -26,6 +26,8 @@ RUN apt-get update && \
 RUN apt update
 RUN apt install wget -y
 RUN apt install dos2unix -y
+RUN apt install git -y
+
 
 # Definición de carpeta de trabajo
 ARG SOURCE_PATH=/src
@@ -50,8 +52,8 @@ WORKDIR $PYBRIDGE_FOL
 # RUN apt install python3.6-distutils -y
 RUN apt install python3-venv python3-pip -y
 RUN pip install pybridge
-# RUN git clone https://github.com/bcdev/jpy
-# ARG JPY=$PYBRIDGE_FOL/jpy
+RUN git clone https://github.com/bcdev/jpy
+ARG JPY=$PYBRIDGE_FOL/jpy
 # # #TODO fix on forman committed on May 18 1 parent ff48ea0 commit 76548cb6f3b9ba795ed6b3a42327607234eaba3c
 
 # ##maven
