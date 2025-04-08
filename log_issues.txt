@@ -1,3 +1,11 @@
+Fecha: 08/04/2025
+Autor: Gustavo V. Diaz
+Ejecuté la "acción a tomar 1" de la entrada del 05/04/2025. Y cuando ejecuté el procesador con esa configuración me percaté del problema fix_1. Es decir que con esta versión de snap instalada (snap 9) no puedo abrir productos Sentinel-2 procesados posterior del 01-07-2024.
+
+Esto se tornó un problema importante para resolver asi que antes de continuar con las mejoras debo resolver este tema. En el archivo fix_1.txt doy mayor detalle de los caminos a tomar.
+
+*****************************************************************************************************
+
 Fecha: 05/04/2025
 Autor: Gustavo V. Diaz
 Registro de archivos que fallaron en la prueba del procesamiento "SMM_vacas_2025_test_3_20250405T033933"
