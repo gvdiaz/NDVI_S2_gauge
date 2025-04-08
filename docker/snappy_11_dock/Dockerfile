@@ -77,6 +77,6 @@ ENV DISPLAY=""
 RUN mkdir ${SNAP_INST} && \
     cd ${SNAP} && \
     wget --no-check-certificate -q https://download.esa.int/step/snap/11.0/installers/esa-snap_all_linux-11.0.0.sh && \
-    chmod 777 -R esa-snap_all_unix_11_0_0.sh && \
+    chmod 777 -R esa-snap_all_linux-11.0.0.sh && \
     ./esa-snap_all_linux-11.0.0.sh -q
 
