@@ -64,16 +64,16 @@ RUN tar xzvf apache-maven-3.8.6-bin.tar.gz
 ENV PATH $PATH:$MAVEN_INST/apache-maven-3.8.6/bin
 # Línea agregada por Rama para probar si pasa la línea de instalación de jpy
 # RUN pip install wheel
-RUN cd $JPY && python3 setup.py build maven bdist_wheel
+# RUN cd $JPY && python3 setup.py build maven bdist_wheel
 
 
-# SNAP
-ARG SNAP=${SOURCE_PATH}/snap2compile
-ARG SNAP_INST=/opt/snap
-RUN mkdir $SNAP
-ENV DISPLAY=""
-RUN mkdir ${SNAP_INST} && \
-    cd ${SNAP} && \
-    wget --no-check-certificate -q https://download.esa.int/step/snap/11.0/installers/esa-snap_all_linux-11.0.0.sh && \
-    chmod 777 -R esa-snap_all_unix_9_0_0.sh && \
-    ./esa-snap_all_linux-11.0.0.sh -q
+# # SNAP
+# ARG SNAP=${SOURCE_PATH}/snap2compile
+# ARG SNAP_INST=/opt/snap
+# RUN mkdir $SNAP
+# ENV DISPLAY=""
+# RUN mkdir ${SNAP_INST} && \
+#     cd ${SNAP} && \
+#     wget --no-check-certificate -q https://download.esa.int/step/snap/11.0/installers/esa-snap_all_linux-11.0.0.sh && \
+#     chmod 777 -R esa-snap_all_unix_9_0_0.sh && \
+#     ./esa-snap_all_linux-11.0.0.sh -q
