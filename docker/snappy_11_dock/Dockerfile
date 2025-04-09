@@ -89,7 +89,7 @@ RUN pip3 install -r ${dest_req}
 
 # # SNAP
 ARG SNAP=${SOURCE_PATH}/snap2compile
-ARG SNAP_INST=/opt/esa-snap/bin/
+ARG SNAP_INST=/usr/local/esa-snap/bin/
 RUN mkdir $SNAP
 ENV DISPLAY=""
 RUN cd ${SNAP} && \
@@ -97,5 +97,5 @@ RUN cd ${SNAP} && \
     chmod 777 -R esa-snap_all_linux-11.0.0.sh && \
     ./esa-snap_all_linux-11.0.0.sh -q
 
-# RUN cd ${SNAP_INST} && ./snap --nosplash --nogui --modules --install eu.esa.snap.esa.snappy
+RUN cd ${SNAP_INST} && ./snap --nosplash --nogui --modules --install eu.esa.snap.esa.snappy
 
