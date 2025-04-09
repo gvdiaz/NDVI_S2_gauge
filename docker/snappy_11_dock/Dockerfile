@@ -99,3 +99,4 @@ RUN cd ${SNAP} && \
 
 RUN cd ${SNAP_INST} && ./snap --nosplash --nogui --modules --install eu.esa.snap.esa.snappy
 
+RUN ./snap --nogui --nosplash --snappy /usr/bin/python3 /usr/local/lib/python3.10/dist-packages/
