@@ -97,6 +97,10 @@ RUN cd ${SNAP} && \
     chmod 777 -R esa-snap_all_linux-11.0.0.sh && \
     ./esa-snap_all_linux-11.0.0.sh -q
 
-RUN cd ${SNAP_INST} && ./snap --nosplash --nogui --modules --install eu.esa.snap.esa.snappy
+WORKDIR $SNAP_INST
+
+RUN ./snap --nosplash --nogui --modules --install eu.esa.snap.esa.snappy
 
 RUN ./snap --nogui --nosplash --snappy /usr/bin/python3 /usr/local/lib/python3.10/dist-packages/
+
+WORKDIR $SOURCE_PATH
