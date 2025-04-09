@@ -23,3 +23,12 @@ https://step.esa.int/main/download/snap-download/previous-versions/
 
 Configuración esa-snappy para snap 10
 https://senbox.atlassian.net/wiki/spaces/SNAP/pages/2499051521/Configure+Python+to+use+the+SNAP-Python+esa_snappy+interface+SNAP+version+10
+
+Actualización 09/04/2025
+
+El día de ayer logré compilar un contenedor que tiene instalado snap 11 con el módulo snappy funcionando. Utilicé los consejos de link "Solución posible con snap 11".
+
+De los caminos propuestos no implementé ninguno. En vez de ellos instalé snap 11 con snappy. Lo probé con python3 dentro del contenedor y logró importar el módulo "esa_snappy".
+
+PENDIENTES:
+Implementar las funciones del contenedor snappy_dock (scripts asociados "folder_creator.py", "downloader_prods.py", "proc_prods.py" y "resumer.py") e implementarlas en el nuevo contendor que está funcionando con python3.10. y sobretodo verificar que se puedan abrir bien los productos Sentinel-2 con nuevo procesamiento.
