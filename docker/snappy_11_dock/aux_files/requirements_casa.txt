@@ -13,7 +13,7 @@ backcall==0.2.0
 beautifulsoup4==4.12.2
 bleach==6.0.0
 branca==0.6.0
-Cartopy==0.21.1
+Cartopy
 certifi==2023.5.7
 cffi==1.15.1
 charset-normalizer==3.2.0
