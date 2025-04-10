@@ -49,8 +49,8 @@ ENV JDK_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 ENV JAVA_HOME $JDK_HOME
 
 ##pybridge
-ARG PYBRIDGE_FOL=${SOURCE_PATH}/pybridge
-WORKDIR $PYBRIDGE_FOL
+# ARG PYBRIDGE_FOL=${SOURCE_PATH}/pybridge
+# WORKDIR $PYBRIDGE_FOL
 # RUN apt install python3.11-distutils -y
 RUN apt install python3-venv python3-pip -y
 # RUN pip install pybridge
@@ -96,6 +96,7 @@ RUN cd ${SNAP} && \
     wget --no-check-certificate -q https://download.esa.int/step/snap/11.0/installers/esa-snap_all_linux-11.0.0.sh && \
     chmod 777 -R esa-snap_all_linux-11.0.0.sh && \
     ./esa-snap_all_linux-11.0.0.sh -q
+RUN rm -r ${SNAP}
 
 WORKDIR $SNAP_INST
 
