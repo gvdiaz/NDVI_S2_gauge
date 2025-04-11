@@ -1,5 +1,5 @@
 #! /bin/bash
-# Script en bash para levantar arrancar bash de docker de desarrollo en imagen snappy_9_gvd
+# Script en bash para levantar arrancar bash de docker de desarrollo en imagen snappy_11_gvd
 
 PATH_REPO="$(cd ../ && cd ../ && pwd)"
 PATH_SCRIPTS="${PATH_REPO}/Scripts"
