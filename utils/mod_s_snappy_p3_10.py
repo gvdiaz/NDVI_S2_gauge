@@ -272,7 +272,7 @@ def temp_series_2(df, folder2save, verbose):
 def save_simple_df(df, output_path, verbose):
     # # Salvo dataframes en excels
     output_path_csv = output_path + '.csv'
-    output_path_xls = output_path + '.xls'
+    output_path_xls = output_path + '.xlsx'
     df.to_csv(output_path_csv)
     df.to_excel(output_path_xls)
     if verbose:
