@@ -599,7 +599,7 @@ def add_geometry2prod_3(prod, shp_path, verbose = False):
     # Implementación aconsejada en https://forum.step.esa.int/t/import-vector-data-shapefile-from-snappy-python/4115/2
     # Importar vector de un shapefile
     GPF.getDefaultInstance().getOperatorSpiRegistry().loadOperatorSpis()
-    HashMap = snappy.jpy.get_type('java.util.HashMap')
+    HashMap = esa_snappy.jpy.get_type('java.util.HashMap')
     parameters = HashMap()
     parameters.put('vectorFile', shp_path)
     parameters.put('separateShapes', False)
@@ -652,7 +652,7 @@ def masking(product, geometry_name, invert):
         else:
             print(f'The mask {geometry_name} does not exist in the product.')
             return product
-    HashMap = snappy.jpy.get_type('java.util.HashMap')
+    HashMap = esa_snappy.jpy.get_type('java.util.HashMap')
     parameters = HashMap()
     parameters.put('geometry', geometry_name)
     parameters.put('invertGeometry', invert)
@@ -676,7 +676,7 @@ def out_filename(filename, end, verbose = False):
 
 # Escritura de producto (optimizada)
 def writeProd(prod2write_obj, prod_path):
-    WriteOp = snappy.jpy.get_type('org.esa.snap.core.gpf.common.WriteOp')
+    WriteOp = esa_snappy.jpy.get_type('org.esa.snap.core.gpf.common.WriteOp')
 #     writeOp = WriteOp(prod_s_res_msk_roi_msk, File(output_path), 'BEAM-DIMAP')
     writeOp = WriteOp(prod2write_obj, File(prod_path), 'BEAM-DIMAP')
     writeOp.writeProduct(ProgressMonitor.NULL)
