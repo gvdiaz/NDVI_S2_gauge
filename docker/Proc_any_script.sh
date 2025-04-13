@@ -46,7 +46,7 @@ sudo ./${SEARCH_SCRIPT}
 # echo ${PATH_PY_GIS}
 cd ${PATH_SNAPPY}
 
-sudo ./${PYTHON_LAUNCHER} ${FOLDER_CREATOR}
+# sudo ./${PYTHON_LAUNCHER} ${FOLDER_CREATOR}
 
 REL_PATH2LIST=$(sudo ./${PYTHON_LAUNCHER} ${FOLDER_CREATOR})
 echo "Primera impresión"
