@@ -13,7 +13,7 @@ import os
 # Módulo con funciones desarrolladas.
 # Módulo para bajer productos S2
 sys.path.append(r'../utils')
-import mod_s_snappy_p3_6 as mfc
+import mod_s_snappy_p3_10 as mfc
 
 # Funciones que necesito implementar
 

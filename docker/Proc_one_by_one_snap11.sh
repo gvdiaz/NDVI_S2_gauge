@@ -77,7 +77,7 @@ while IFS= read -r line; do
     echo
 done < $PATH2LIST
 
-# ./"$PYTHON_LAUNCHER" "$RESUMER"
+./"$PYTHON_LAUNCHER" "$RESUMER"
 
 # while IFS= read -r line; do
 #     # echo "Line: $line"
