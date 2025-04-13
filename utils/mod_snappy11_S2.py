@@ -241,6 +241,7 @@ def plotNDVI_s2_png_v2(product, title, path, vmin, vmax):
 
     # Adjust layout and save as PNG
     plt.tight_layout()
+    png_path = path + '.png'
     plt.savefig(png_path, dpi=300, bbox_inches='tight')
     # print("Figure saved as 'array_histogram.png'")
 
