@@ -7,8 +7,8 @@ import os
 # Módulo para bajer productos S2
 sys.path.append(r'../utils')
 
-# Para implementar funciones de snappy en módulo
-import mod_snappy_S2 as msnap
+# Para implementar funciones de esa_snappy en módulo
+import mod_snappy11_S2 as msnap
 
 
 # Cuerpo de script a ejecutar
