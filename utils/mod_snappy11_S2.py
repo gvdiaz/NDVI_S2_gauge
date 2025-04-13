@@ -220,7 +220,7 @@ def plotNDVI_s2_png_v2(product, title, path, vmin, vmax):
     cbar = fig.colorbar(im, ax=ax1, shrink=0.7)
     cbar.set_label("NDVI Value")
 
-    qty_bins = sturges_bins(data)
+    qty_bins = sturges_bins(ndvi)
 
     # Right plot: Histogram of all values
     ax2.hist(ndvi.flatten(), bins=qty_bins, color='skyblue', 
