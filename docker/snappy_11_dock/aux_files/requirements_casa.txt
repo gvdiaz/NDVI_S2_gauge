@@ -76,6 +76,7 @@ networkx==3.1
 notebook==7.0.0
 notebook_shim==0.2.3
 numpy==1.25.1
+openpyxl
 overrides==7.3.1
 packaging==23.1
 pandas==2.0.3
