@@ -201,52 +201,58 @@ def plotNDVI_s2_png_v2(product, title, path, vmin, vmax):
     
     # Antes de computar estadísticas seteo el valor 0 como np.nan para que no sea tomado en las estadísticas.
     # ndvi = ndvi.astype(np.float32)  # Ensure the array can hold np.nan (float type)
-    ndvi = np.where(ndvi < 0, np.nan, ndvi)  # Replace -1 with NaN
-    # ndvi[ndvi == 0.0] = np.nan   # seteo 0 como np.nan
-    ndvi_mean = np.nanmean(ndvi)
-    ndvi_std_dev = np.nanstd(ndvi)
 
-    width=12
-    height=12
-    # rgb = np.dstack(band_stack)  # stacks 3 h x w arrays -> h x w x 3
+    # Verificación si el array ndvi está lleno de numpy.nan o tiene información
+    if np.all(np.isnan(arr)):
+        ndvi_mean = np.nan
+        ndvi_std_dev = np.nanstd(ndvi)
+    else:
+        ndvi = np.where(ndvi < 0, np.nan, ndvi)  # Replace -1 with NaN
+        # ndvi[ndvi == 0.0] = np.nan   # seteo 0 como np.nan
+        ndvi_mean = np.nanmean(ndvi)
+        ndvi_std_dev = np.nanstd(ndvi)
 
-    # Create figure with two subplots
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), 
-                             gridspec_kw={'width_ratios': [2, 1]})
-    
-    # Left plot: 2D array visualization
-    im = ax1.imshow(ndvi, cmap='viridis', aspect='auto', vmin=vmin, vmax=vmax)
-    ax1.set_title('Producto de fecha: ' + 'NDVI ' + title)
-    cbar = fig.colorbar(im, ax=ax1, shrink=0.7)
-    cbar.set_label("NDVI Value")
+        width=12
+        height=12
+        # rgb = np.dstack(band_stack)  # stacks 3 h x w arrays -> h x w x 3
 
-    # Cómputo de barras original
-    # qty_bins = sturges_bins(ndvi)
-    # Prueba para visualizar con el doble de barras
-    qty_bins = sturges_bins(ndvi)*2
+        # Create figure with two subplots
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), 
+                                gridspec_kw={'width_ratios': [2, 1]})
+        
+        # Left plot: 2D array visualization
+        im = ax1.imshow(ndvi, cmap='viridis', aspect='auto', vmin=vmin, vmax=vmax)
+        ax1.set_title('Producto de fecha: ' + 'NDVI ' + title)
+        cbar = fig.colorbar(im, ax=ax1, shrink=0.7)
+        cbar.set_label("NDVI Value")
 
-    # Right plot: Histogram of all values
-    ax2.hist(ndvi.flatten(), bins=qty_bins, color='skyblue', 
-            edgecolor='black', density=False)
-    ax2.set_title("NDVI Distribution")
-    ax2.set_xlabel("Values")
-    ax2.set_ylabel("Frequency")
+        # Cómputo de barras original
+        # qty_bins = sturges_bins(ndvi)
+        # Prueba para visualizar con el doble de barras
+        qty_bins = sturges_bins(ndvi)*2
 
-    # Add statistics to histogram
-    # mean_val = np.mean(data)
-    # std_val = np.std(data)
-    ax2.axvline(ndvi_mean, color='red', linestyle='--', 
-            label=f'Mean: {ndvi_mean:.2f}')
-    ax2.axvline(ndvi_mean + ndvi_std_dev, color='orange', 
-            linestyle=':', label=f'±1σ: {ndvi_std_dev:.2f}')
-    ax2.axvline(ndvi_mean - ndvi_std_dev, color='orange', linestyle=':')
-    ax2.legend()
+        # Right plot: Histogram of all values
+        ax2.hist(ndvi.flatten(), bins=qty_bins, color='skyblue', 
+                edgecolor='black', density=False)
+        ax2.set_title("NDVI Distribution")
+        ax2.set_xlabel("Values")
+        ax2.set_ylabel("Frequency")
 
-    # Adjust layout and save as PNG
-    plt.tight_layout()
-    png_path = path + '.png'
-    plt.savefig(png_path, dpi=300, bbox_inches='tight')
-    # print("Figure saved as 'array_histogram.png'")
+        # Add statistics to histogram
+        # mean_val = np.mean(data)
+        # std_val = np.std(data)
+        ax2.axvline(ndvi_mean, color='red', linestyle='--', 
+                label=f'Mean: {ndvi_mean:.2f}')
+        ax2.axvline(ndvi_mean + ndvi_std_dev, color='orange', 
+                linestyle=':', label=f'±1σ: {ndvi_std_dev:.2f}')
+        ax2.axvline(ndvi_mean - ndvi_std_dev, color='orange', linestyle=':')
+        ax2.legend()
+
+        # Adjust layout and save as PNG
+        plt.tight_layout()
+        png_path = path + '.png'
+        plt.savefig(png_path, dpi=300, bbox_inches='tight')
+        # print("Figure saved as 'array_histogram.png'")
 
     return ndvi_mean, ndvi_std_dev, png_path
 
