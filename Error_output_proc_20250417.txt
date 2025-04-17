@@ -1,0 +1,164 @@
+Troubles with processor
+CONF_PROC.INI
+[FOLDERS]
+;prueba de comentarios para folders = None
+roi = /src/Vectores/
+wkt_roi = /src/Vectores/aux_wkt/wkt_file.txt
+shp_roi = /src/Vectores/shp/shp_file.shp
+output = /src/Output/
+
+[ATTRIB]
+;comment line test for attrib = None
+init_date = 01-01-2023
+final_date = 01-03-2024
+max_cloud = 100
+sent_mission = SENTINEL-2
+;the attribute "proj_name" should not have blank spaces = None
+proj_name = SMM_snappy11_test_10
+;the processor will process the quantity of sample number = None
+sample_number = 85
+
+[ESA_SERVER]
+;prueba de comentarios para esa_server = None
+url = https://catalogue.dataspace.copernicus.eu/odata/v1/Products
+orderby = ContentDate/Start
+top = 1000
+
+[SCRIPTING]
+;configuración para aplicar en funciones = None
+verbose = False
+
+[PROCESSOR]
+; configuración para procesador posterior a búsqueda/filtrado = None
+; type: significa el tipo de procesamiento a aplicar a la colección de productos a bajar, puede ser ndvi, rgb = None
+type = NDVI
+conf_proc = /src/utils/CONF_PROC.INI
+conf_searcher = /src/utils/CONF_SEARCHER.INI
+
+
+1
+After computing the NDVI product python3 retrives me this,
+Traceback (most recent call last):
+  File "/src/Scripts/proc_prods.py", line 112, in <module>
+    mean, std_dev, path2png = msnap.plotNDVI_s2_png_v2(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 1)
+  File "/src/Scripts/../utils/mod_snappy11_S2.py", line 229, in plotNDVI_s2_png_v2
+    ax2.hist(ndvi.flatten(), bins=qty_bins, color='skyblue', 
+  File "/usr/local/lib/python3.10/dist-packages/matplotlib/__init__.py", line 1446, in inner
+    return func(ax, *map(sanitize_sequence, args), **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/matplotlib/axes/_axes.py", line 6791, in hist
+    m, bins = np.histogram(x[i], bins, weights=w[i], **hist_kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/numpy/lib/histograms.py", line 780, in histogram
+    bin_edges, uniform_bins = _get_bin_edges(a, bins, range, weights)
+  File "/usr/local/lib/python3.10/dist-packages/numpy/lib/histograms.py", line 426, in _get_bin_edges
+    first_edge, last_edge = _get_outer_edges(a, range)
+  File "/usr/local/lib/python3.10/dist-packages/numpy/lib/histograms.py", line 323, in _get_outer_edges
+    raise ValueError(
+ValueError: autodetected range of [nan, nan] is not finite
+
+The product of interest is the Nombre: S2B_MSIL2A_20240212T134709_N0510_R024_T21HUA_20240212T173451
+
+And before the error python retrives another error message,
+/src/Scripts/../utils/mod_snappy11_S2.py:206: RuntimeWarning: Mean of empty slice
+  ndvi_mean = np.nanmean(ndvi)
+/usr/local/lib/python3.10/dist-packages/numpy/lib/nanfunctions.py:1879: RuntimeWarning: Degrees of freedom <= 0 for slice.
+  var = nanvar(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+/usr/local/lib/python3.10/dist-packages/matplotlib/axes/_axes.py:6763: RuntimeWarning: All-NaN slice encountered
+  xmin = min(xmin, np.nanmin(xi))
+/usr/local/lib/python3.10/dist-packages/matplotlib/axes/_axes.py:6764: RuntimeWarning: All-NaN slice encountered
+  xmax = max(xmax, np.nanmax(xi))
+
+2
+Again after computing the NDVI product python3 retrives me this,
+Traceback (most recent call last):
+  File "/src/Scripts/proc_prods.py", line 112, in <module>
+    mean, std_dev, path2png = msnap.plotNDVI_s2_png_v2(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 1)
+  File "/src/Scripts/../utils/mod_snappy11_S2.py", line 229, in plotNDVI_s2_png_v2
+    ax2.hist(ndvi.flatten(), bins=qty_bins, color='skyblue', 
+  File "/usr/local/lib/python3.10/dist-packages/matplotlib/__init__.py", line 1446, in inner
+    return func(ax, *map(sanitize_sequence, args), **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/matplotlib/axes/_axes.py", line 6791, in hist
+    m, bins = np.histogram(x[i], bins, weights=w[i], **hist_kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/numpy/lib/histograms.py", line 780, in histogram
+    bin_edges, uniform_bins = _get_bin_edges(a, bins, range, weights)
+  File "/usr/local/lib/python3.10/dist-packages/numpy/lib/histograms.py", line 426, in _get_bin_edges
+    first_edge, last_edge = _get_outer_edges(a, range)
+  File "/usr/local/lib/python3.10/dist-packages/numpy/lib/histograms.py", line 323, in _get_outer_edges
+    raise ValueError(
+ValueError: autodetected range of [nan, nan] is not finite
+
+The product of interest is the S2A_MSIL2A_20240207T134701_N0510_R024_T21HUA_20240207T183251
+
+And again before python3 retrives this error,
+/src/Scripts/../utils/mod_snappy11_S2.py:206: RuntimeWarning: Mean of empty slice
+  ndvi_mean = np.nanmean(ndvi)
+/usr/local/lib/python3.10/dist-packages/numpy/lib/nanfunctions.py:1879: RuntimeWarning: Degrees of freedom <= 0 for slice.
+  var = nanvar(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+/usr/local/lib/python3.10/dist-packages/matplotlib/axes/_axes.py:6763: RuntimeWarning: All-NaN slice encountered
+  xmin = min(xmin, np.nanmin(xi))
+/usr/local/lib/python3.10/dist-packages/matplotlib/axes/_axes.py:6764: RuntimeWarning: All-NaN slice encountered
+  xmax = max(xmax, np.nanmax(xi))
+
+3
+
+The product S2B_MSIL2A_20240113T134659_N0510_R024_T21HUA_20240113T173356 retrives the same error as the last two cases.
+
+I will save the message with context to understand where is the error,
+
+WARNING: org.esa.snap.core.metadata.GenericXmlMetadata: Metadata: the path to element [metadata_level] does not exist
+WARNING: org.esa.snap.core.metadata.GenericXmlMetadata: Metadata: the path to element [bandid] does not exist
+WARNING: org.esa.snap.core.metadata.GenericXmlMetadata: Metadata: the path to element [bandid] does not exist
+WARNING: org.esa.snap.core.metadata.GenericXmlMetadata: Metadata: the path to element [bandid] does not exist
+WARNING: org.esa.snap.core.metadata.GenericXmlMetadata: Metadata: the path to element [bandid] does not exist
+WARNING: org.esa.snap.core.metadata.GenericXmlMetadata: Metadata: the path to element [bandid] does not exist
+WARNING: eu.esa.opt.dataio.s2.ortho.metadata.S2OrthoMetadata: Warning: missing file /src/Output/SMM_snappy11_test_10_20250417T123559/tmp/S2B_MSIL2A_20240113T134659_N0510_R024_T21HUA_20240113T173356.SAFE.zip/S2B_MSIL2A_20240113T134659_N0510_R024_T21HUA_20240113T173356.SAFE/GRANULE/L2A_T21HUA_A035800_20240113T135918/QI_DATA/L2A_T21HUA_20240113T134659_DDV_20m.jp2
+
+WARNING: eu.esa.opt.dataio.s2.ortho.metadata.S2OrthoMetadata: Warning: no image files found for band quality_dense_dark_vegetation
+
+
+100% done.
+
+100% done.
+
+100% done.
+
+100% done.
+
+100% done.
+/src/Scripts/../utils/mod_snappy11_S2.py:206: RuntimeWarning: Mean of empty slice
+  ndvi_mean = np.nanmean(ndvi)
+/usr/local/lib/python3.10/dist-packages/numpy/lib/nanfunctions.py:1879: RuntimeWarning: Degrees of freedom <= 0 for slice.
+  var = nanvar(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+/usr/local/lib/python3.10/dist-packages/matplotlib/axes/_axes.py:6763: RuntimeWarning: All-NaN slice encountered
+  xmin = min(xmin, np.nanmin(xi))
+/usr/local/lib/python3.10/dist-packages/matplotlib/axes/_axes.py:6764: RuntimeWarning: All-NaN slice encountered
+  xmax = max(xmax, np.nanmax(xi))
+Carpeta temporal /src/Output/SMM_snappy11_test_10_20250417T123559/tmp creada.
+Archivo /src/Output/SMM_snappy11_test_10_20250417T123559/tmp/S2B_MSIL2A_20240113T134659_N0510_R024_T21HUA_20240113T173356.SAFE.zip bajado.
+MULTIPOLYGON (((-58.7757763092653 -35.4702267217582, -58.7802506263501 -35.4733463110006, -58.7775145331687 -35.4758890799229, -58.7730402160839 -35.4727695893355, -58.7757763092653 -35.4702267217582)))
+Datos de producto S2 completo
+Ancho: 10980 px
+
+Alto: 10980 px
+
+Nombre: S2B_MSIL2A_20240113T134659_N0510_R024_T21HUA_20240113T173356
+
+Cantidad de bandas: 158
+
+Datos de producto S2 recortado
+Ancho: 65 px
+
+Alto: 63 px
+
+Nombre: Subset_S2B_MSIL2A_20240113T134659_N0510_R024_T21HUA_20240113T173356
+
+Cantidad de bandas: 158
+
+processing line  0  of  63
+processing line  1  of  63
+processing line  2  of  63
+processing line  3  of  63
+
+
+4
+
+The product S2B_MSIL2A_20231224T134709_N0510_R024_T21HUA_20231224T173516 retrives the same error. Now I will just register the product name 
