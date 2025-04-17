@@ -65,9 +65,9 @@ def main():
         print(f"Carpeta temporal {tmp_path} no creada.")
 
     # Configuración para guardar errores en archivo de log
-    log_name = sys.argv[1].split('.')[0] + "_proc_prods_error.log"
-    log_path = os.path.join(tmp_path, log_name)
-    sys.stderr = open(log_path, 'w')
+    # log_name = sys.argv[1].split('.')[0] + "_proc_prods_error.log"
+    # log_path = os.path.join(tmp_path, log_name)
+    # sys.stderr = open(log_path, 'w')
 
     path2wkt = conf_dict['FOLDERS']['wkt_roi']
 
