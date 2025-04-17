@@ -201,8 +201,8 @@ def plotNDVI_s2_png_v2(product, title, path, vmin, vmax):
     
     # Antes de computar estadísticas seteo el valor 0 como np.nan para que no sea tomado en las estadísticas.
     ndvi = ndvi.astype(np.float32)  # Ensure the array can hold np.nan (float type)
-    ndvi = np.where(ndvi == 0, np.nan, ndvi)  # Replace -1 with NaN
-    # ndvi[ndvi == 0.0] = np.nan   # seteo 0 como np.nan
+    # ndvi = np.where(ndvi == 0, np.nan, ndvi)  # Replace -1 with NaN
+    ndvi[ndvi == 0.0] = np.nan   # seteo 0 como np.nan
     ndvi_mean = np.nanmean(ndvi)
     ndvi_std_dev = np.nanstd(ndvi)
 
@@ -215,12 +215,15 @@ def plotNDVI_s2_png_v2(product, title, path, vmin, vmax):
                              gridspec_kw={'width_ratios': [2, 1]})
     
     # Left plot: 2D array visualization
-    im = ax1.imshow(ndvi, cmap='viridis', aspect='auto')
+    im = ax1.imshow(ndvi, cmap='viridis', aspect='auto', vmin=vmin, vmax=vmax)
     ax1.set_title('Producto de fecha: ' + 'NDVI ' + title)
     cbar = fig.colorbar(im, ax=ax1, shrink=0.7)
     cbar.set_label("NDVI Value")
 
-    qty_bins = sturges_bins(ndvi)
+    # Cómputo de barras original
+    # qty_bins = sturges_bins(ndvi)
+    # Prueba para visualizar con el doble de barras
+    qty_bins = sturges_bins(ndvi)*2
 
     # Right plot: Histogram of all values
     ax2.hist(ndvi.flatten(), bins=qty_bins, color='skyblue', 
