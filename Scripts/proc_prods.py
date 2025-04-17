@@ -12,7 +12,7 @@ sys.path.append(r'../utils')
 # Para implementar funciones de esa_snappy en módulo
 import mod_snappy11_S2 as msnap
 
-    def main():
+def main():
 
     # Cuerpo de script a ejecutar
     # Parte 1ra
