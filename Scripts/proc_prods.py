@@ -7,8 +7,6 @@ import os
 # Módulo para bajer productos S2
 sys.path.append(r'../utils')
 
-
-
 # Para implementar funciones de esa_snappy en módulo
 import mod_snappy11_S2 as msnap
 
@@ -137,16 +135,27 @@ def main():
     else:
         print(f"Archivo {tmp_path} no bajado.")
 
+    return 0
+
+# if __name__ == "__main__":
+#     try:
+#         main()
+#     except Exception as e:
+#         if 'prod_path' in globals():    
+#             if os.path.isfile(prod_path):
+#                 os.remove(prod_path)
+#                 print(f'Archivo {prod_path} borrado.')
+#             # print(f"Critical error: {e}", file=sys.stderr)
+#             # traceback.print_exc()  # Print full traceback
+#             # # Take custom actions:
+#             # send_alert_email("Script crashed!")  # Example recovery
+#             # sys.exit(1)  # Exit with error code
+
 if __name__ == "__main__":
+    msf.configure_logging()
     try:
-        main()
+        exit_code = main()
     except Exception as e:
-        if 'prod_path' in globals():    
-            if os.path.isfile(prod_path):
-                os.remove(prod_path)
-                print(f'Archivo {prod_path} borrado.')
-            # print(f"Critical error: {e}", file=sys.stderr)
-            # traceback.print_exc()  # Print full traceback
-            # # Take custom actions:
-            # send_alert_email("Script crashed!")  # Example recovery
-            # sys.exit(1)  # Exit with error code
+        logging.error(f"Fatal error: {str(e)}", exc_info=True)
+        exit_code = 1
+    sys.exit(exit_code)
