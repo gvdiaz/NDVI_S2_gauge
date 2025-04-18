@@ -36,6 +36,9 @@ import matplotlib.pyplot as plt
 # Módulo para guardar diccionarios necesarios.
 import pickle
 
+sys.path.append(r'../utils')
+from mod_common2all import configure_logging
+
 # Atriibutos
 pick_name = 'statistics_dict.pkl'
 
