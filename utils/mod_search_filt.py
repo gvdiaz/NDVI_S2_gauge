@@ -19,7 +19,7 @@ import numpy as np
 # Módulo para Verificar si las credenciales ingresadas son correctas
 sys.path.append(r'../utils')
 from mod_dloader import try_cred
-import mod_common2all
+from mod_common2all import configure_logging
 
 # Módulo para transcribir funciones desarrolladas para la búsqueda y filtrado de productos Sentinel-2 en Notebook "Nube_funciones.ipynb"
 
