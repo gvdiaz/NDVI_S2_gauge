@@ -4,6 +4,7 @@
 # Módulos a importar
 import sys
 import os
+import logging
 # Módulo para bajer productos S2
 sys.path.append(r'../utils')
 
@@ -152,7 +153,7 @@ def main():
 #             # sys.exit(1)  # Exit with error code
 
 if __name__ == "__main__":
-    msf.configure_logging()
+    msnap.configure_logging()
     try:
         exit_code = main()
     except Exception as e:
