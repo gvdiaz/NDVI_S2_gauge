@@ -7,7 +7,7 @@ from pathlib import Path  # For directory handling
 def configure_logging():
     """Set up logging configuration relative to project root"""
     # Get the directory where this script lives
-    script_dir = Path(__file__).parent.parent
+    script_dir = Path(__file__).parent
     
     # Option 1: Logs in project root/logs/
     logs_dir = script_dir / "logs"
