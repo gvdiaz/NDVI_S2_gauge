@@ -96,11 +96,13 @@ RUN cd ${SNAP} && \
     wget --no-check-certificate -q https://download.esa.int/step/snap/11.0/installers/esa-snap_all_linux-11.0.0.sh && \
     chmod 777 -R esa-snap_all_linux-11.0.0.sh && \
     ./esa-snap_all_linux-11.0.0.sh -q
-RUN rm -r ${SNAP}
+# RUN rm -r ${SNAP}
 
 WORKDIR $SNAP_INST
 
 RUN ./snap --nosplash --nogui --modules --install eu.esa.snap.esa.snappy
+
+RUN ./snap --nosplash --nogui --modules --update-all
 
 RUN ./snap --nogui --nosplash --snappy /usr/bin/python3 /usr/local/lib/python3.10/dist-packages/
 
