@@ -206,7 +206,7 @@ def plotNDVI_s2_png_v2(product, title, path, vmin, vmax):
     # ndvi = ndvi.astype(np.float32)  # Ensure the array can hold np.nan (float type)
 
     # Verificación si el array ndvi está lleno de numpy.nan o tiene información
-    if np.all(np.isnan(arr)):
+    if np.all(np.isnan(ndvi)):
         ndvi_mean = np.nan
         ndvi_std_dev = np.nanstd(ndvi)
     else:
@@ -550,13 +550,18 @@ def subset_prod(path2prod, path2wkt, verbose):
     parameters = HashMap()
     parameters.put('copyMetadata', True)
     parameters.put('geoRegion', geometry)
+    print('Datos de producto S2 completo')
+    show_att_snapobj(product, True)
+    print(parameters)
+
     product_subset = GPF.createProduct('Subset', parameters, product)
     
     # Para debuggear
-    print('Datos de producto S2 completo')
-    show_att_snapobj(product, True)
-    print('Datos de producto S2 recortado')
-    show_att_snapobj(product_subset, True)
+    if verbose:    
+        print('Datos de producto S2 completo')
+        show_att_snapobj(product, True)
+        print('Datos de producto S2 recortado')
+        show_att_snapobj(product_subset, True)
     return product_subset
 
 # Función 1J
