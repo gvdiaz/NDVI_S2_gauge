@@ -1,9 +1,0 @@
-# Ignorar carpetas
-token/output/
-Scripts/.ipynb_checkpoints/
-.gitignore
-.ipynb_checkpoints/
-
-# Ignorar archivos
-utils/__pycache__/mod_searcher.cpython-310.pyc
-
