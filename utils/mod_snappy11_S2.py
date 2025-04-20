@@ -221,7 +221,7 @@ def plotNDVI_s2_png_v2(product, title, path, vmin, vmax):
 
         # Create figure with two subplots
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), 
-                                gridspec_kw={'width_ratios': [2, 1]})
+                                gridspec_kw={'width_ratios': [2, 1]}, constrained_layout=True)
         
         # Left plot: 2D array visualization
         im = ax1.imshow(ndvi, cmap='viridis', aspect='auto', vmin=vmin, vmax=vmax)
@@ -236,10 +236,11 @@ def plotNDVI_s2_png_v2(product, title, path, vmin, vmax):
 
         # Right plot: Histogram of all values
         ax2.hist(ndvi.flatten(), bins=qty_bins, color='skyblue', 
-                edgecolor='black', density=False)
+                edgecolor='black', density=False, range=(vmin, vmax))
         ax2.set_title("NDVI Distribution")
         ax2.set_xlabel("Values")
         ax2.set_ylabel("Frequency")
+        ax2.set_xlim(vmin, vmax)  # This sets the x-axis limits
 
         # Add statistics to histogram
         # mean_val = np.mean(data)
@@ -252,7 +253,7 @@ def plotNDVI_s2_png_v2(product, title, path, vmin, vmax):
         ax2.legend()
 
         # Adjust layout and save as PNG
-        plt.tight_layout()
+        # plt.tight_layout()
         png_path = path + '.png'
         plt.savefig(png_path, dpi=300, bbox_inches='tight')
         # print("Figure saved as 'array_histogram.png'")
@@ -753,7 +754,7 @@ def save_simple_df(df, output_path, verbose):
 def temp_series_2(df, folder2save, verbose):
     out_path = os.path.join(folder2save, 'temporal_series.png')
     # Create a figure and axis
-    fig, ax1 = plt.subplots(figsize=(10, 6))
+    fig, ax1 = plt.subs(figsize=(10, 6))
 
     ndvi_color = 'green'
     ax1.errorbar(df['acq_date'], df['mean_value'], yerr = df['std_dev_value']/2, linestyle='-', marker='o', color=ndvi_color, label='mean_NDVI')
