@@ -4,6 +4,9 @@ import sys
 from datetime import datetime
 from pathlib import Path  # For directory handling
 
+# Package for config timezone
+import pytz
+
 def configure_logging():
     """Set up logging configuration relative to project root"""
     # Get the directory where this script lives
@@ -19,7 +22,8 @@ def configure_logging():
     logs_dir.mkdir(parents=True, exist_ok=True)
     
     # Create log file path
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    buenos_aires_tz = pytz.timezone('America/Argentina/Buenos_Aires')
+    timestamp = datetime.now(buenos_aires_tz).strftime("%Y-%m-%d_%H-%M-%S")
     log_filename = logs_dir / f"error_log_{timestamp}.log"
     
     # Configure logging
