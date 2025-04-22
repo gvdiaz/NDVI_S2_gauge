@@ -7,10 +7,15 @@ from pathlib import Path  # For directory handling
 # Package for config timezone
 import pytz
 
-def configure_logging():
+def configure_logging(folder_path):
     """Set up logging configuration relative to project root"""
     # Get the directory where this script lives
-    script_dir = Path(__file__).parent
+    if folder_path:
+        # Cuidado con ingresar rutas que no están mapeadas en SO nativo.
+        script_dir = folder_path
+    elif None:
+        # Sino se guarda en esta carpeta.
+        script_dir = Path(__file__).parent
     
     # Option 1: Logs in project root/logs/
     logs_dir = script_dir / "logs"
