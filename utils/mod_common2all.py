@@ -7,7 +7,7 @@ from pathlib import Path  # For directory handling
 # Package for config timezone
 import pytz
 
-def configure_logging(folder_path):
+def configure_logging(folder_path = None):
     """Set up logging configuration relative to project root"""
     # Get the directory where this script lives
     if folder_path:
