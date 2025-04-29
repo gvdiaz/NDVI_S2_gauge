@@ -11,18 +11,7 @@ sys.path.append(r'../utils')
 # Para implementar funciones de esa_snappy en módulo
 import mod_snappy11_S2 as msnap
 
-def main():
-
-    # Cuerpo de script a ejecutar
-    # Parte 1ra
-    # Tengo definido ruta a archivo de configación del procesador general.
-    config_path = r'/src/utils/CONF_PROC.INI'
-    # development = True
-    verbose2conf = False
-
-    # Función 1A
-    # Lectura de archivo de configuración de búsqueda
-    conf_dict = msnap.read_conf_proc(config_path, verbose2conf)
+def main(conf_dict, verbose2conf):
 
     # Leo tipo de procesamiento
     flag_proc = conf_dict['PROCESSOR']['type']
@@ -115,7 +104,7 @@ def main():
         output_path = os.path.join(cutted_masked_path, output_name)
         # msnap.writeProd(prod_s_res_msk_roi_msk, output_path)
         if flag_proc == 'NDVI':
-            # La siguiente función devuelve media, std_dev y path de producto generado
+            # La siguiente función dconf_dict, verbose2confevuelve media, std_dev y path de producto generado
             mean, std_dev, path2png = msnap.plotNDVI_s2_png_v2(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 1)
         elif flag_proc == 'RGB':
             mean, std_dev, path2png = msnap.plotRGB_s2_2_png(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 0.3)
@@ -153,9 +142,23 @@ def main():
 #             # sys.exit(1)  # Exit with error code
 
 if __name__ == "__main__":
-    msnap.configure_logging()
+    # Cuerpo de script a ejecutar
+    # Parte 1ra
+    # Tengo definido ruta a archivo de configación del procesador general.
+    config_path = r'/src/utils/CONF_PROC.INI'
+    verbose2conf = False
+
+    # Función 1A
+    # Lectura de archivo de configuración de búsqueda
+    conf_dict = msnap.read_conf_proc(config_path, verbose2conf)
+    log_filename = msnap.configure_logging(folder_path = conf_dict['FOLDERS']['logs'], proj_name = conf_dict['ATTRIB']['proj_name'])
+
+    # msnap.configure_logging()
     try:
-        exit_code = main()
+        exit_code = main(conf_dict, verbose2conf)
+        # exit_code = main(conf_dict, verbose2conf, development)
+        if os.path.exists(log_filename) and os.path.getsize(log_filename) == 0:
+            os.remove(log_filename)
     except Exception as e:
         logging.error(f"Fatal error: {str(e)}", exc_info=True)
         exit_code = 1
