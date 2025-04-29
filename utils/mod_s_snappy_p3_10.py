@@ -10,6 +10,12 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Módulo para importar configuraciones comunes
+import sys
+sys.path.append(r'../utils')
+# from mod_dloader import try_cred
+from mod_common2all import configure_logging
+
 # Atributos
 pick_name = 'statistics_dict.pkl'
 
