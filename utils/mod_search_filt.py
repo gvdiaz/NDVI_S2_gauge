@@ -58,7 +58,8 @@ def create_conf_file(path2conf):
             'ROI': r'/src/Vectores/',
             'WKT_ROI': r'/src/Vectores/aux_wkt/wkt_file.txt',
             'SHP_ROI': r'/src/Vectores/shp/shp_file.shp',
-            'OUTPUT': '/src/Output/'
+            'OUTPUT': '/src/Output/',
+            'SEARCHER_LOG': r'/src/utils/log'
         },
         'ATTRIB': {
             ';Comment line test for ATTRIB':None,
@@ -177,6 +178,7 @@ def save_conf2proc(conf_searcher, output_meta_df, verbose):
     # Definición de carpeta de salida de proyecto para guardar los productos de salida
     folder_output = output_meta_df.at['Proj Name', 'Datos'] + '_' + output_meta_df.at['Search name', 'Datos'].split('_')[1]
     output_path = os.path.join(conf_searcher['FOLDERS']['output'], folder_output)
+    log_path = os.path.join(output_path, 'logs')
 
 
     # Genero diccionario a guardar como configuración de procesador.
@@ -187,7 +189,8 @@ def save_conf2proc(conf_searcher, output_meta_df, verbose):
             'KML_INPUT': os.path.join(conf_searcher['FOLDERS']['roi'], output_meta_df.at['ROI name', 'Datos']),
             'WKT_ROI': conf_searcher['FOLDERS']['wkt_roi'],
             'SHP_ROI': conf_searcher['FOLDERS']['shp_roi'],
-            'OUTPUT': output_path
+            'OUTPUT': output_path,
+            'LOGS': log_path
         },
         'ATTRIB': {
             ';Prueba de comentarios para ATTRIB':None,
