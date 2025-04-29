@@ -7,13 +7,8 @@ sys.path.append(r'../utils')
 import mod_search_filt as msf
 
 # Cuerpo de script a ejecutar
-def main():
-
-    config_path = r'/src/utils/CONF_SEARCHER.INI'
-
-    verbose2conf = False
-    # Lectura de archivo de configuración de búsqueda
-    conf_dict = msf.read_conf_searcher(config_path, verbose2conf)
+def main(conf_dict, verbose2conf):
+    
     # Lectura de usuario y pass de DataSpace Copernicus de la ESA (https://documentation.dataspace.copernicus.eu/APIs/OData.html#product-download)
     conf_dict = msf.read_keys(conf_dict, verbose2conf)
     # Verifico credenciales ingresadas antes de continuar
@@ -60,9 +55,19 @@ def main():
     return 0
 
 if __name__ == "__main__":
-    msf.configure_logging()
+    # Agrego configuración general en estas líneas antes de entrar en el try
+    config_path = r'/src/utils/CONF_SEARCHER.INI'
+    verbose2conf = False
+    # Lectura de archivo de configuración de búsqueda
+    conf_dict = msf.read_conf_searcher(config_path, verbose2conf)
+    # Recibo nombre de archivo de log para luego borrar si todo se realizó bien (exit_code = 0)
+    log_filename = msf.configure_logging(folder_path = conf_dict['FOLDERS']['searcher_log'], proj_name = conf_dict['ATTRIB']['proj_name'])
     try:
-        exit_code = main()
+        exit_code = main(conf_dict, verbose2conf)
+        print(f'Debuggeo de variable log_filename: {log_filename}')
+        if os.path.exists(log_filename) and os.path.getsize(log_filename) == 0:
+            print('Verifico que ingreso a if que de log_filename.')
+            os.remove(log_filename)
     except Exception as e:
         logging.error(f"Fatal error: {str(e)}", exc_info=True)
         exit_code = 1
