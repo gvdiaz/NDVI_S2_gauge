@@ -161,6 +161,132 @@ def plotRGB_s2_2_png(product, title, path, vmin, vmax):
 
     return panc_mean, panc_std_dev, png_path
 
+def plotRGB_s2_2_png_v2(product, title, path, vmin, vmax):
+    band_list = ['B4','B3','B2']
+    band_stack = []
+
+    width = product.getSceneRasterWidth()   # Obtención de ancho de producto
+    height = product.getSceneRasterHeight() # Obtención de alto de producto
+    name = product.getName()                # Obtención de nombre de producto
+    description = product.getDescription()  # Obtención de descripción de producto
+
+    
+    b2 = product.getBand('B2')                                                  # Lectura de banda azul
+    b3 = product.getBand('B3')                                                  # Lectura de banda verde
+    b4 = product.getBand('B4')                                                  # Lectura de banda rojo
+    # Para la próxima pensar en acomodar esta manipulación en lista aunque sea.
+    
+    r2 = np.zeros(width, dtype=np.float32)                                # Creación de línea de zeros en numpy banda B2 para enmascarar este tipo de dato (numpy)
+    r3 = np.zeros(width, dtype=np.float32)                                # Creación de línea de zeros en numpy banda B3 para enmascarar este tipo de dato (numpy)
+    r4 = np.zeros(width, dtype=np.float32)                                # Creación de línea de zeros en numpy banda B4 para enmascarar este tipo de dato (numpy)
+
+
+    v2  = np.zeros(width, dtype=np.uint8)                                 # Creación de línea para enmascarar información de las variables 'rx' en banda 'B2'
+    v3  = np.zeros(width, dtype=np.uint8)                                 # Creación de línea para enmascarar información de las variables 'rx' en banda 'B3'
+    v4  = np.zeros(width, dtype=np.uint8)                                 # Creación de línea para enmascarar información de las variables 'rx' en banda 'B4'
+
+    for y in range(height):
+        b2.readPixels(0, y, width, 1, r2)                                 # Lectura de líneas de banda B2
+        b3.readPixels(0, y, width, 1, r3)                                 # Lectura de líneas de banda B3
+        b4.readPixels(0, y, width, 1, r4)                                 # Lectura de líneas de banda B4
+
+        b2.readValidMask(0, y, width, 1, v2)                              # Lectura de máscara válida para B2
+        b3.readValidMask(0, y, width, 1, v3)                              # Lectura de máscara válida para B3
+        b4.readValidMask(0, y, width, 1, v4)                              # Lectura de máscara válida para B4
+
+        invalidMask2 = np.where(v2 == 0, 1, 0)                            # Seteo de valores inválidos B2 al valor '0'
+        invalidMask3 = np.where(v3 == 0, 1, 0)                            # Seteo de valores inválidos B3 al valor '0'
+        invalidMask4 = np.where(v4 == 0, 1, 0)                            # Seteo de valores inválidos B4 al valor '0'
+
+        maB2_row = np.ma.array(r2, mask=invalidMask2, fill_value=np.nan)       # Enmascarado de línea en banda B2
+        maB3_row = np.ma.array(r3, mask=invalidMask3, fill_value=np.nan)       # Enmascarado de línea en banda B3
+        maB4_row = np.ma.array(r4, mask=invalidMask4, fill_value=np.nan)       # Enmascarado de línea en banda B4
+
+        print("processing line ", y, " of ", height)                            # Muestra de procesamiento de línea
+        # ndvi_row = (ma8 - ma4) / (ma8 + ma4)                                  # Cómputo de la línea.
+        
+        pan_row = (maB2_row + maB3_row + maB4_row)/3
+
+        blue = maB2_row if y == 0 else np.vstack([blue, maB2_row])              # Stackeo vertical de producto B2
+        green = maB3_row if y == 0 else np.vstack([green, maB3_row])            # Stackeo vertical de producto B3
+        red = maB4_row if y == 0 else np.vstack([red, maB4_row])                # Stackeo vertical de producto B4
+        pan = pan_row if y == 0 else np.vstack([pan, pan_row])                  # Stackeo vertical de producto PANCHROMATIC
+
+    # Verificación si el array ndvi está lleno de numpy.nan o tiene información
+    if np.all(np.isnan(pan)):
+        pan_mean = np.nan
+        pan_std_dev = np.nanstd(pan)
+    else:
+        ndvi = np.where(ndvi < 0, np.nan, ndvi)  # Replace -1 with NaN
+        # ndvi[ndvi == 0.0] = np.nan   # seteo 0 como np.nan
+        blue_mean = np.nanmean(blue)
+        green_mean = np.nanmean(green)
+        red_mean = np.nanmean(red)
+        pan_mean = np.nanmean(pan)
+
+        red_std_dev = np.nanstd(red)
+        green_std_dev = np.nanstd(green)
+        blue_std_dev = np.nanstd(blue)
+        pan_std_dev = np.nanstd(pan)
+
+        width_fig=12
+        height_fig=12
+        # rgb = np.dstack(band_stack)  # stacks 3 h x w arrays -> h x w x 3
+        rgb = np.dstack((blue, green, red))  # stacks 3 h x w arrays -> h x w x 3
+
+        # Implementar ploteo con las tres bandas.
+        # plt.figure(figsize=(width,height))
+        # plt.title('Producto de fecha: ' + title, fontweight ="bold") 
+        # imgplot=plt.imshow(rgb,cmap=plt.cm.binary,vmin=vmin,vmax=vmax)
+        
+        # Create figure with two subplots
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), 
+                                gridspec_kw={'width_ratios': [2, 1]}, constrained_layout=True)
+        
+        # Left plot: 2D array visualization
+        im = ax1.imshow(ndvi, cmap='viridis', aspect='equal', vmin=vmin, vmax=vmax)
+        ax1.set_title('Producto de fecha: ' + 'NDVI ' + title)
+        cbar = fig.colorbar(im, ax=ax1, shrink=0.7)
+        cbar.set_label("NDVI Value")
+
+        # Cómputo de barras original
+        # qty_bins = sturges_bins(ndvi)
+        # Prueba para visualizar con el doble de barras
+        qty_bins = sturges_bins(ndvi)*2
+
+        # Right plot: Histogram of all values
+        ax2.hist(ndvi.flatten(), bins=qty_bins, color='skyblue', 
+                edgecolor='black', density=False, range=(vmin, vmax))
+        ax2.set_title("NDVI Distribution")
+        ax2.set_xlabel("Values")
+        ax2.set_ylabel("Frequency")
+        ax2.set_xlim(vmin, vmax)  # This sets the x-axis limits
+
+        # Add statistics to histogram
+        # mean_val = np.mean(data)
+        # std_val = np.std(data)
+        ax2.axvline(ndvi_mean, color='red', linestyle='--', 
+                label=f'Mean: {ndvi_mean:.2f}')
+        ax2.axvline(ndvi_mean + ndvi_std_dev, color='orange', 
+                linestyle=':', label=f'±1σ: {ndvi_std_dev:.2f}')
+        ax2.axvline(ndvi_mean - ndvi_std_dev, color='orange', linestyle=':')
+        ax2.legend()
+
+        # Adjust layout and save as PNG
+        # plt.tight_layout()
+        png_path = path + '.png'
+        plt.savefig(png_path, dpi=300, bbox_inches='tight')
+        # print("Figure saved as 'array_histogram.png'")
+    
+
+    
+    # Antes de computar estadísticas seteo el valor 0 como np.nan para que no sea tomado en las estadísticas.
+    # ndvi = ndvi.astype(np.float32)  # Ensure the array can hold np.nan (float type)
+
+
+
+    return panc_mean, panc_std_dev, png_path
+
 def sturges_bins(data):
     """Sturges' rule: 1 + log2(n)"""
     n = len(data.flatten())
