@@ -224,7 +224,7 @@ def plotNDVI_s2_png_v2(product, title, path, vmin, vmax):
                                 gridspec_kw={'width_ratios': [2, 1]}, constrained_layout=True)
         
         # Left plot: 2D array visualization
-        im = ax1.imshow(ndvi, cmap='viridis', aspect='auto', vmin=vmin, vmax=vmax)
+        im = ax1.imshow(ndvi, cmap='viridis', aspect='equal', vmin=vmin, vmax=vmax)
         ax1.set_title('Producto de fecha: ' + 'NDVI ' + title)
         cbar = fig.colorbar(im, ax=ax1, shrink=0.7)
         cbar.set_label("NDVI Value")
