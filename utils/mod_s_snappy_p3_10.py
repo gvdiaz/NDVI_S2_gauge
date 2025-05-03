@@ -295,9 +295,17 @@ def save_search_conf(conf_dict, verbose):
     shutil.copy(conf_dict['PROCESSOR']['conf_search_path'], out_path)
     return None
 
-def add_statistics(df_init, dict2add, verbose):
+def add_statistics(df_init, dict2add, proc_type, verbose):
+    # Funcionando para los dos tipos de procesamientos (NDVI y RGB)
     df_stats = pd.DataFrame(dict2add)
+    if proc_type == 'RGB':
+        df_stats[['blue_mean', 'green_mean', 'red_mean']] = pd.DataFrame(df_stats['mean_value'].tolist(), index=df_stats.index)
+        df_stats[['blue_std', 'green_std', 'red_std']] = pd.DataFrame(df_stats['std_dev_value'].tolist(), index=df_stats.index)
+        df_stats.drop(['mean_value', 'std_dev_value'], axis=1, inplace=True)  # Drops first and third columns
+    elif proc_type == 'NDVI':
+        pass
     df_final = pd.merge(left=df_init, right=df_stats, how='left', left_on='Name', right_on='prod_name')
+    df_final.drop(['prod_name'], axis=1, inplace=True)  # Drops first and third columns
     return df_final
 
 def delete_file(file2del, verbose2conf):
