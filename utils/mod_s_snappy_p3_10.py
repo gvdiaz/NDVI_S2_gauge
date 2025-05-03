@@ -246,30 +246,61 @@ def dict_reader(path2dict, verbose):
 
     return pkl_dict
     
-def temp_series_2(df, folder2save, verbose):
+def temp_series_2(df, folder2save, proc_type, verbose):
     out_path = os.path.join(folder2save, 'temporal_series.png')
     # Create a figure and axis
-    fig, ax1 = plt.subplots(figsize=(10, 6))
+    if proc_type == 'NDVI'
+        fig, ax1 = plt.subplots(figsize=(10, 6))
 
-    ndvi_color = 'green'
-    ax1.errorbar(df['acq_date'], df['mean_value'], yerr = df['std_dev_value']/2, linestyle='-', marker='o', color=ndvi_color, label='mean_NDVI')
-    ax1.set_xlabel('Date')
-    ax1.set_ylabel('NDVI [-]', color=ndvi_color)
-    ax1.tick_params(axis='y', labelcolor=ndvi_color)
-    plt.legend(loc='lower right')
+        ndvi_color = 'green'
+        ax1.errorbar(df['acq_date'], df['mean_value'], yerr = df['std_dev_value']/2, linestyle='-', marker='o', color=ndvi_color, label='mean_NDVI')
+        ax1.set_xlabel('Date')
+        ax1.set_ylabel('NDVI [-]', color=ndvi_color)
+        ax1.tick_params(axis='y', labelcolor=ndvi_color)
+        plt.legend(loc='lower right')
 
-    # Create a secondary y-axis
-    ax2 = ax1.twinx()
-    ax2.plot(df['acq_date'], df['cloudCover'], linestyle='', marker='D', color='blue', label='Product Cloud cover')
-    ax2.set_ylabel('Cloud cover (%)', color='blue')
-    ax2.tick_params(axis='y', labelcolor='blue')
+        # Create a secondary y-axis
+        ax2 = ax1.twinx()
+        ax2.plot(df['acq_date'], df['cloudCover'], linestyle='', marker='D', color='blue', label='Product Cloud cover')
+        ax2.set_ylabel('Cloud cover (%)', color='blue')
+        ax2.tick_params(axis='y', labelcolor='blue')
 
-    # Add titles and grid
-    plt.title('Temporal series two axis')
-    fig.tight_layout()  # Adjust layout to prevent overlap
-    plt.grid()
-    plt.legend()
-    plt.savefig(out_path , bbox_inches='tight')
+        # Add titles and grid
+        plt.title('Temporal series two axis')
+        fig.tight_layout()  # Adjust layout to prevent overlap
+        plt.grid()
+        plt.legend()
+        plt.savefig(out_path , bbox_inches='tight')
+    elif proc_type == 'RGB':
+        fig, ax1 = plt.subplots(figsize=(10, 6))
+        mean_name_list = [title for title in df.columns if title.endswith('mean')]
+        std_name_list = [title for title in df.columns if title.endswith('std')]
+        color_name = [name.split('_')[0] for name in mean_name_list]
+        mean_std_col_mesh = zip(mean_name_list, mean_name_list, color_name)
+
+        fig, ax1 = plt.subplots(figsize=(10, 6))
+
+        for mean_name, std_name, color in mean_std_col_mesh:
+        
+            # ndvi_color = 'green'
+            ax1.errorbar(df['acq_date'], df[mean_name], yerr = df[std_name]/2, linestyle='-', marker='o', color=color, label='mean_RGB')
+            ax1.set_xlabel('Date')
+            ax1.set_ylabel(color + '[-]', color=color)
+            ax1.tick_params(axis='y', labelcolor=color)
+            # plt.legend(loc='lower right')
+        plt.legend()
+        # Create a secondary y-axis
+        ax2 = ax1.twinx()
+        ax2.plot(df['acq_date'], df['cloudCover'], linestyle='', marker='D', color='blue', label='Product Cloud cover')
+        ax2.set_ylabel('Cloud cover (%)', color='blue')
+        ax2.tick_params(axis='y', labelcolor='blue')
+        # Add titles and grid
+        plt.title('Temporal series two axis')
+        fig.tight_layout()  # Adjust layout to prevent overlap
+        plt.grid()
+        plt.legend()
+        plt.savefig(out_path , bbox_inches='tight')
+
     
     if verbose:
         plt.show()
