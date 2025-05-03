@@ -211,6 +211,8 @@ def plotRGB_s2_2_png_v2(product, title, path, vmin, vmax):
         green = maB3_row if y == 0 else np.vstack([green, maB3_row])            # Stackeo vertical de producto B3
         red = maB4_row if y == 0 else np.vstack([red, maB4_row])                # Stackeo vertical de producto B4
         pan = pan_row if y == 0 else np.vstack([pan, pan_row])                  # Stackeo vertical de producto PANCHROMATIC
+    
+    rgb_comp = [blue, green, red]
 
     # Verificación si el array ndvi está lleno de numpy.nan o tiene información
     if np.all(np.isnan(pan)):
@@ -222,55 +224,68 @@ def plotRGB_s2_2_png_v2(product, title, path, vmin, vmax):
         blue_mean = np.nanmean(blue)
         green_mean = np.nanmean(green)
         red_mean = np.nanmean(red)
+        mean_rgb = [blue_mean, green_mean, red_mean]
         pan_mean = np.nanmean(pan)
 
         red_std_dev = np.nanstd(red)
         green_std_dev = np.nanstd(green)
         blue_std_dev = np.nanstd(blue)
+        std_rgb = [blue_std_dev, green_std_dev, red_std_dev]
         pan_std_dev = np.nanstd(pan)
 
         width_fig=12
-        height_fig=12
+        height_fig=5
         # rgb = np.dstack(band_stack)  # stacks 3 h x w arrays -> h x w x 3
         rgb = np.dstack((blue, green, red))  # stacks 3 h x w arrays -> h x w x 3
 
         # Implementar ploteo con las tres bandas.
-        # plt.figure(figsize=(width,height))
-        # plt.title('Producto de fecha: ' + title, fontweight ="bold") 
-        # imgplot=plt.imshow(rgb,cmap=plt.cm.binary,vmin=vmin,vmax=vmax)
+        plt.figure(figsize=(width_fig,height_fig), constrained_layout=True)
+        plt.title('Producto de fecha: ' + title, fontweight ="bold") 
+        ax1 = plt.subplot2grid((3, 3), (0, 0), colspan=2, rowspan=3) # Ubicado a en fila 0 y col 0 y se expande dos columnas y 3 filas
+        ax_r = plt.subplot2grid((3, 3), (0, 2)) 
+        ax_g = plt.subplot2grid((3, 3), (1, 2))
+        ax_b = plt.subplot2grid((3, 3), (2, 2))
+        ax_rgb = [ax_b, ax_g, ax_b]
+        # ax3 = plt.subplot2grid((3, 3), (1, 2), rowspan=2)
+        imgplot=ax1.imshow(rgb, cmap=plt.cm.binary, aspect='equal', vmin=vmin, vmax=vmax)
+        ax1.set_title('Producto de fecha: ' + 'RGB ' + title)
+
+        color_hist = ['blue', 'green', 'red']
+
+        for ax, band_selec, mean_selec, std_selec, color_h in zip(ax_rgb, rgb_comp, mean_rgb, std_rgb, color_hist):
+            # Prueba para visualizar con el doble de barras
+            qty_bins = sturges_bins(band_selec)*2
+
+            # Right plot: Histogram of all values
+            ax.hist(band_selec.flatten(), bins=qty_bins, color=color_h, 
+                    edgecolor='black', density=False, range=(vmin, vmax))
+            ax.set_title(f"{color_h} Distribution")
+            ax.set_xlabel("Values")
+            ax.set_ylabel("Frequency")
+            ax2.set_xlim(vmin, vmax)  # This sets the x-axis limits
+
+            # Add statistics to histogram
+            # mean_val = np.mean(data)
+            # std_val = np.std(data)
+            ax.axvline(mean_selec, color='black', linestyle='--', 
+                    label=f'Mean: {mean_selec:.2f}')
+            ax.axvline(mean_selec + std_selec, color='orange', 
+                    linestyle=':', label=f'±1σ: {std_selec:.2f}')
+            ax.axvline(mean_selec + std_selec, color='orange', linestyle=':')
+            ax.legend()
+
         
         # Create figure with two subplots
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), 
-                                gridspec_kw={'width_ratios': [2, 1]}, constrained_layout=True)
+        # fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), 
+                                # gridspec_kw={'width_ratios': [2, 1]}, constrained_layout=True)
         
         # Left plot: 2D array visualization
-        im = ax1.imshow(ndvi, cmap='viridis', aspect='equal', vmin=vmin, vmax=vmax)
-        ax1.set_title('Producto de fecha: ' + 'NDVI ' + title)
-        cbar = fig.colorbar(im, ax=ax1, shrink=0.7)
-        cbar.set_label("NDVI Value")
+        # im = ax1.imshow(ndvi, cmap='viridis', aspect='equal', vmin=vmin, vmax=vmax)
+        # cbar = fig.colorbar(im, ax=ax1, shrink=0.7)
+        # cbar.set_label("NDVI Value")
 
         # Cómputo de barras original
         # qty_bins = sturges_bins(ndvi)
-        # Prueba para visualizar con el doble de barras
-        qty_bins = sturges_bins(ndvi)*2
-
-        # Right plot: Histogram of all values
-        ax2.hist(ndvi.flatten(), bins=qty_bins, color='skyblue', 
-                edgecolor='black', density=False, range=(vmin, vmax))
-        ax2.set_title("NDVI Distribution")
-        ax2.set_xlabel("Values")
-        ax2.set_ylabel("Frequency")
-        ax2.set_xlim(vmin, vmax)  # This sets the x-axis limits
-
-        # Add statistics to histogram
-        # mean_val = np.mean(data)
-        # std_val = np.std(data)
-        ax2.axvline(ndvi_mean, color='red', linestyle='--', 
-                label=f'Mean: {ndvi_mean:.2f}')
-        ax2.axvline(ndvi_mean + ndvi_std_dev, color='orange', 
-                linestyle=':', label=f'±1σ: {ndvi_std_dev:.2f}')
-        ax2.axvline(ndvi_mean - ndvi_std_dev, color='orange', linestyle=':')
-        ax2.legend()
 
         # Adjust layout and save as PNG
         # plt.tight_layout()
@@ -285,7 +300,7 @@ def plotRGB_s2_2_png_v2(product, title, path, vmin, vmax):
 
 
 
-    return panc_mean, panc_std_dev, png_path
+    return mean_rgb, std_rgb, png_path
 
 def sturges_bins(data):
     """Sturges' rule: 1 + log2(n)"""
