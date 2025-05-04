@@ -212,6 +212,9 @@ def plotRGB_s2_2_png_v2(product, title, path, vmin, vmax):
         red = maB4_row if y == 0 else np.vstack([red, maB4_row])                # Stackeo vertical de producto B4
         pan = pan_row if y == 0 else np.vstack([pan, pan_row])                  # Stackeo vertical de producto PANCHROMATIC
     
+    blue = np.where(blue < 0, np.nan, blue)  # Replace -1 with NaN
+    green = np.where(green < 0, np.nan, green)  # Replace -1 with NaN
+    red = np.where(red < 0, np.nan, red)  # Replace -1 with NaN
     rgb_comp = [blue, green, red]
 
     # Verificación si el array ndvi está lleno de numpy.nan o tiene información
@@ -219,7 +222,6 @@ def plotRGB_s2_2_png_v2(product, title, path, vmin, vmax):
         pan_mean = np.nan
         pan_std_dev = np.nanstd(pan)
     else:
-        ndvi = np.where(ndvi < 0, np.nan, ndvi)  # Replace -1 with NaN
         # ndvi[ndvi == 0.0] = np.nan   # seteo 0 como np.nan
         blue_mean = np.nanmean(blue)
         green_mean = np.nanmean(green)
