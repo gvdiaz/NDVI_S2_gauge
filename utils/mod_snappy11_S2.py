@@ -244,10 +244,10 @@ def plotRGB_s2_2_png_v2(product, title, path, vmin, vmax):
         plt.figure(figsize=(width_fig,height_fig), constrained_layout=True)
         plt.title('Producto de fecha: ' + title, fontweight ="bold") 
         ax1 = plt.subplot2grid((3, 3), (0, 0), colspan=2, rowspan=3) # Ubicado a en fila 0 y col 0 y se expande dos columnas y 3 filas
-        ax_r = plt.subplot2grid((3, 3), (0, 2)) 
+        ax_b = plt.subplot2grid((3, 3), (0, 2)) 
         ax_g = plt.subplot2grid((3, 3), (1, 2))
-        ax_b = plt.subplot2grid((3, 3), (2, 2))
-        ax_rgb = [ax_b, ax_g, ax_b]
+        ax_r = plt.subplot2grid((3, 3), (2, 2))
+        ax_rgb = [ax_b, ax_g, ax_r]
         # ax3 = plt.subplot2grid((3, 3), (1, 2), rowspan=2)
         imgplot=ax1.imshow(rgb, cmap=plt.cm.binary, aspect='equal', vmin=vmin, vmax=vmax)
         ax1.set_title('Producto de fecha: ' + 'RGB ' + title)
@@ -260,7 +260,7 @@ def plotRGB_s2_2_png_v2(product, title, path, vmin, vmax):
 
             # Right plot: Histogram of all values
             ax.hist(band_selec.flatten(), bins=qty_bins, color=color_h, 
-                    edgecolor='black', density=False, range=(vmin, vmax))
+                    edgecolor='black', density=False, range=(0 , 1))
             ax.set_title(f"{color_h} Distribution")
             ax.set_xlabel("Values")
             ax.set_ylabel("Frequency")
