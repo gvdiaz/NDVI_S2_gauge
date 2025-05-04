@@ -212,9 +212,9 @@ def plotRGB_s2_2_png_v2(product, title, path, vmin, vmax):
         red = maB4_row if y == 0 else np.vstack([red, maB4_row])                # Stackeo vertical de producto B4
         pan = pan_row if y == 0 else np.vstack([pan, pan_row])                  # Stackeo vertical de producto PANCHROMATIC
     
-    blue = np.where(blue < 0, np.nan, blue)  # Replace -1 with NaN
-    green = np.where(green < 0, np.nan, green)  # Replace -1 with NaN
-    red = np.where(red < 0, np.nan, red)  # Replace -1 with NaN
+    blue = np.where(blue <= 0, np.nan, blue)  # Replace -1 with NaN
+    green = np.where(green <= 0, np.nan, green)  # Replace -1 with NaN
+    red = np.where(red <= 0, np.nan, red)  # Replace -1 with NaN
     rgb_comp = [blue, green, red]
 
     # Verificación si el array ndvi está lleno de numpy.nan o tiene información
@@ -238,7 +238,7 @@ def plotRGB_s2_2_png_v2(product, title, path, vmin, vmax):
         width_fig=12
         height_fig=5
         # rgb = np.dstack(band_stack)  # stacks 3 h x w arrays -> h x w x 3
-        rgb = np.dstack((blue, green, red))  # stacks 3 h x w arrays -> h x w x 3
+        rgb = np.dstack((red, green, blue))  # stacks 3 h x w arrays -> h x w x 3
 
         # Implementar ploteo con las tres bandas.
         plt.figure(figsize=(width_fig,height_fig), constrained_layout=True)
