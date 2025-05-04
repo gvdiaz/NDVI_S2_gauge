@@ -249,7 +249,7 @@ def dict_reader(path2dict, verbose):
 def temp_series_2(df, folder2save, proc_type, verbose):
     out_path = os.path.join(folder2save, 'temporal_series.png')
     # Create a figure and axis
-    if proc_type == 'NDVI'
+    if proc_type == 'NDVI':
         fig, ax1 = plt.subplots(figsize=(10, 6))
 
         ndvi_color = 'green'
