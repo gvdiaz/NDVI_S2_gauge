@@ -264,7 +264,7 @@ def plotRGB_s2_2_png_v2(product, title, path, vmin, vmax):
             ax.set_title(f"{color_h} Distribution")
             ax.set_xlabel("Values")
             ax.set_ylabel("Frequency")
-            ax2.set_xlim(vmin, vmax)  # This sets the x-axis limits
+            ax.set_xlim(vmin, vmax)  # This sets the x-axis limits
 
             # Add statistics to histogram
             # mean_val = np.mean(data)
