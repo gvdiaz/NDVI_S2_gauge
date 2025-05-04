@@ -36,7 +36,7 @@ def main(config_path, conf_dict, development, verbose2conf):
     df = mfc.lectura_csv(path2csv, False)
 
     # Agrego columnas de estadística en dataframe con los valores agregados
-    df = mfc.add_statistics(df, dict2df, conf_dict['FOLDERS']['type'], verbose2conf)
+    df = mfc.add_statistics(df, dict2df, conf_dict['PROCESSOR']['type'], verbose2conf)
     # df = df.assign(**dict2df).ffill()
 
     print(df)
@@ -53,7 +53,7 @@ def main(config_path, conf_dict, development, verbose2conf):
     mfc.save_simple_df(df, path2table, False)
 
     # Ploteo de serie temporal (por ahora solo para NDVI)
-    mfc.temp_series_2(df, table_path, conf_dict['FOLDERS']['type'], False)
+    mfc.temp_series_2(df, table_path, conf_dict['PROCESSOR']['type'], False)
 
     # Guardo archivo de configuración en carpeta de salida
     mfc.save_search_conf(conf_dict, verbose2conf)
