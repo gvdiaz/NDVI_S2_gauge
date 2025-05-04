@@ -283,7 +283,7 @@ def temp_series_2(df, folder2save, proc_type, verbose):
         for mean_name, std_name, color in mean_std_col_mesh:
         
             # ndvi_color = 'green'
-            ax1.errorbar(df['acq_date'], df[mean_name], yerr = df[std_name]/2, linestyle='-', marker='o', color=color, label='mean_RGB', capsize='1')
+            ax1.errorbar(df['acq_date'], df[mean_name], yerr = df[std_name]/2, linestyle='-', marker='o', color=color, label='mean_RGB', capsize=1)
             ax1.set_xlabel('Date')
             ax1.set_ylabel(color + '[-]', color=color)
             ax1.tick_params(axis='y', labelcolor=color)
