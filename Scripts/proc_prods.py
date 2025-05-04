@@ -107,7 +107,7 @@ def main(conf_dict, verbose2conf):
             # La siguiente función dconf_dict, verbose2confevuelve media, std_dev y path de producto generado
             mean, std_dev, path2png = msnap.plotNDVI_s2_png_v2(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 1)
         elif flag_proc == 'RGB':
-            mean, std_dev, path2png = msnap.plotRGB_s2_2_png(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 0.3)
+            mean, std_dev, path2png = msnap.plotRGB_s2_2_png_v2(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 0.3)
         
         print(f"Valores estadisticos obtenidos:\nmedia: {mean}\nstd_dev: {std_dev}\nUbicacion: {path2png}")
 
