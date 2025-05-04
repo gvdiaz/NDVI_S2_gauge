@@ -283,11 +283,14 @@ def temp_series_2(df, folder2save, proc_type, verbose):
         for mean_name, std_name, color in mean_std_col_mesh:
         
             # ndvi_color = 'green'
-            ax1.errorbar(df['acq_date'], df[mean_name], yerr = df[std_name]/2, linestyle='-', marker='o', color=color, label='mean_RGB', capsize=1)
-            ax1.set_xlabel('Date')
-            ax1.set_ylabel(color + '[-]', color=color)
-            ax1.tick_params(axis='y', labelcolor=color)
+            ax1.errorbar(df['acq_date'], df[mean_name], yerr = df[std_name]/2, linestyle='-', marker='o', color=color, label='mean_RGB', capsize=5)
+
+            
             # plt.legend(loc='lower right')
+        
+
+        ax1.set_ylabel(proc_type, color='black')
+        ax1.tick_params(axis='y', labelcolor='black')
         plt.legend()
         # Create a secondary y-axis
         ax2 = ax1.twinx()
