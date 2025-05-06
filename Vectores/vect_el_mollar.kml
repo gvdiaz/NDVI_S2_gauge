@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="vect_el_mollar" id="vect_el_mollar">
+	<SimpleField name="id" type="float"></SimpleField>
+</Schema>
+<Folder><name>vect_el_mollar</name>
+  <Placemark id="vect_el_mollar.1">
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#vect_el_mollar">
+		<SimpleData name="id">1</SimpleData>
+	</SchemaData></ExtendedData>
+      <MultiGeometry><Polygon><outerBoundaryIs><LinearRing><coordinates>-65.7288805563895,-26.9184001280169 -65.6941203590015,-26.9179947612835 -65.6936643214265,-26.9577713719971 -65.7296912898562,-26.9576193594721 -65.7288805563895,-26.9184001280169</coordinates></LinearRing></outerBoundaryIs></Polygon></MultiGeometry>
+  </Placemark>
+</Folder>
+</Document></kml>
