@@ -40,6 +40,10 @@ def main(conf_dict, verbose2conf):
         subfolder_name = 'NDVI' + '_' + subfolder_name
     elif flag_proc == 'RGB':
         subfolder_name = 'RGB' + '_' + subfolder_name
+    elif flag_proc == 'NDRE':
+        subfolder_name = 'NDRE' + '_' + subfolder_name
+    elif flag_proc == 'NDRE+NDVI':
+        subfolder_name = 'NDRE+NDVI' + '_' + subfolder_name
 
     cutted_masked_path = os.path.join(root_folder, subfolder_name)
 
@@ -98,6 +102,10 @@ def main(conf_dict, verbose2conf):
             file_extension = '_NDVI' + file_extension
         elif flag_proc == 'RGB':
             file_extension = '_RGB' + file_extension
+        elif flag_proc == 'NDRE':
+            file_extension = '_NDRE' + file_extension
+        elif flag_proc == 'NDRE+NDVI':
+            file_extension = '_NDRE+NDVI' + file_extension
         output_name = msnap.out_filename(prod_name, file_extension, False)
 
         # Escritura de archivo de salida
@@ -108,6 +116,11 @@ def main(conf_dict, verbose2conf):
             mean, std_dev, path2png = msnap.plotNDVI_s2_png_v2(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 1)
         elif flag_proc == 'RGB':
             mean, std_dev, path2png = msnap.plotRGB_s2_2_png_v2(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 0.3)
+        elif flag_proc == 'NDRE':
+            mean, std_dev, path2png = msnap.plotNDRE_s2_png_v2(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 1)
+        elif flag_proc == 'NDRE+NDVI':
+            mean, std_dev, path2png = msnap.plotNDRE_s2_png_v2(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 1)
+            mean, std_dev, path2png = msnap.plotNDVI_s2_png_v2(prod_s_res_msk_roi_msk, acq_date, output_path, 0, 1)
         
         print(f"Valores estadisticos obtenidos:\nmedia: {mean}\nstd_dev: {std_dev}\nUbicacion: {path2png}")
 
