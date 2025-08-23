@@ -440,7 +440,6 @@ def plotNDRE_s2_png_v2(product, title, path, vmin, vmax):
         ndre = ndre_row if y == 0 else np.vstack([ndre, ndre_row])              # Stackeo vertical de producto NDVI
     
     # Antes de computar estadísticas seteo el valor 0 como np.nan para que no sea tomado en las estadísticas.
-    # ndvi = ndvi.astype(np.float32)  # Ensure the array can hold np.nan (float type)
 
     # Verificación si el array ndvi está lleno de numpy.nan o tiene información
     if np.all(np.isnan(ndre)):
@@ -469,10 +468,10 @@ def plotNDRE_s2_png_v2(product, title, path, vmin, vmax):
         # Cómputo de barras original
         # qty_bins = sturges_bins(ndvi)
         # Prueba para visualizar con el doble de barras
-        qty_bins = sturges_bins(ndvi)*2
+        qty_bins = sturges_bins(ndre)*2
 
         # Right plot: Histogram of all values
-        ax2.hist(ndvi.flatten(), bins=qty_bins, color='skyblue', 
+        ax2.hist(ndre.flatten(), bins=qty_bins, color='skyblue', 
                 edgecolor='black', density=False, range=(vmin, vmax))
         ax2.set_title("NDRE Distribution")
         ax2.set_xlabel("Values")
@@ -485,7 +484,7 @@ def plotNDRE_s2_png_v2(product, title, path, vmin, vmax):
         ax2.axvline(ndre_mean, color='red', linestyle='--', 
                 label=f'Mean: {ndre_mean:.2f}')
         ax2.axvline(ndre_mean + ndre_std_dev, color='orange', 
-                linestyle=':', label=f'±1σ: {ndvi_std_dev:.2f}')
+                linestyle=':', label=f'±1σ: {ndre_std_dev:.2f}')
         ax2.axvline(ndre_mean - ndre_std_dev, color='orange', linestyle=':')
         ax2.legend()
 
