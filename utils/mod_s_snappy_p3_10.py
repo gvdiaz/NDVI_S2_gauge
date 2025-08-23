@@ -249,14 +249,22 @@ def dict_reader(path2dict, verbose):
 def temp_series_2(df, folder2save, proc_type, verbose):
     out_path = os.path.join(folder2save, 'temporal_series.png')
     # Create a figure and axis
-    if proc_type == 'NDVI':
+    if proc_type in ('NDVI', 'NDRE'):
         fig, ax1 = plt.subplots(figsize=(10, 6))
 
-        ndvi_color = 'green'
-        ax1.errorbar(df['acq_date'], df['mean_value'], yerr = df['std_dev_value']/2, linestyle='-', marker='o', color=ndvi_color, label='mean_NDVI')
+        if proc_type == 'NDVI':
+            color_plot = 'green'
+            string_plot = 'NDVI'
+        elif proc_type == 'NDRE':
+            color_plot = 'olive'
+            string_plot = 'NDRE'
+
+        # color_plot = 'green'
+
+        ax1.errorbar(df['acq_date'], df['mean_value'], yerr = df['std_dev_value']/2, linestyle='-', marker='.', color=color_plot, label='mean_' + string_plot)
         ax1.set_xlabel('Date')
-        ax1.set_ylabel('NDVI [-]', color=ndvi_color)
-        ax1.tick_params(axis='y', labelcolor=ndvi_color)
+        ax1.set_ylabel(string_plot + ' [-]', color=color_plot)
+        ax1.tick_params(axis='y', labelcolor=color_plot)
         plt.legend(loc='lower right')
 
         # Create a secondary y-axis
@@ -282,7 +290,7 @@ def temp_series_2(df, folder2save, proc_type, verbose):
 
         for mean_name, std_name, color in mean_std_col_mesh:
         
-            # ndvi_color = 'green'
+            # color_plot = 'green'
             ax1.errorbar(df['acq_date'], df[mean_name], yerr = df[std_name]/2, linestyle='-', marker='o', color=color, label='mean_RGB', capsize=5)
 
             
@@ -336,7 +344,7 @@ def add_statistics(df_init, dict2add, proc_type, verbose):
         df_stats[['blue_mean', 'green_mean', 'red_mean']] = pd.DataFrame(df_stats['mean_value'].tolist(), index=df_stats.index)
         df_stats[['blue_std', 'green_std', 'red_std']] = pd.DataFrame(df_stats['std_dev_value'].tolist(), index=df_stats.index)
         df_stats.drop(['mean_value', 'std_dev_value'], axis=1, inplace=True)  # Drops first and third columns
-    elif proc_type == 'NDVI':
+    elif proc_type in ('NDVI', 'NDRE'):
         pass
     df_final = pd.merge(left=df_init, right=df_stats, how='left', left_on='Name', right_on='prod_name')
     df_final.drop(['prod_name'], axis=1, inplace=True)  # Drops first and third columns
