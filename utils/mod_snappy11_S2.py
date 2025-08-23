@@ -495,6 +495,9 @@ def plotNDRE_s2_png_v2(product, title, path, vmin, vmax):
         # print("Figure saved as 'array_histogram.png'")
     return ndre_mean, ndre_std_dev, png_path
 
+def plotNDVI_NDRE_s2_png_v2(product, title, path, vmin, vmax):
+    return mean_ndvi_ndre, std_ndvi_ndre, png_path
+
 # Función para guardar y computar estadísticas de producto NDVI del producto
 def plotNDVI_s2_png(product, title, path, vmin, vmax):
     band_list = ['B4','B8']
