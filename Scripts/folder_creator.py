@@ -55,7 +55,7 @@ def main(conf_dict, verbose2conf, development):
     elif flag_proc == 'NDRE':
         subfolder_name = 'NDRE' + '_' + subfolder_name
     elif flag_proc == 'NDRE+NDVI':
-        subfolder_name = 'NDRE+NDVI' + '_' + subfolder_name
+        subfolder_name = 'NDRE_NDVI' + '_' + subfolder_name
 
     cutted_masked_path = mfc.folder_creator_method(root_folder, subfolder_name, False)
 
