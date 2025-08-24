@@ -496,6 +496,148 @@ def plotNDRE_s2_png_v2(product, title, path, vmin, vmax):
     return ndre_mean, ndre_std_dev, png_path
 
 def plotNDVI_NDRE_s2_png_v2(product, title, path, vmin, vmax):
+    # Compute using B5 or B6
+    band_red_edge = 'B5'
+    # cmap for ndre
+    cmap_ndre = 'inferno'                   # Opciones posibles 'inferno', 'magma' y 'cividis'
+    # if band_test == 'B5':
+    band_list = ['B4',band_red_edge,'B8']
+
+    band_stack = []
+
+    width = product.getSceneRasterWidth()   # Obtención de ancho de producto
+    height = product.getSceneRasterHeight() # Obtención de alto de producto
+    name = product.getName()                # Obtención de nombre de producto
+    description = product.getDescription()  # Obtención de descripción de producto
+
+    b4 = product.getBand('B4')              # Lectura de banda (supongo que roja)
+    bre = product.getBand(band_red_edge)    # lectura de banda de borde rojo (puede ser la 5 o 6)
+    b8 = product.getBand('B8')              # Lectura de banda de rojo cercano (NIR)
+
+    r4 = np.zeros(width, dtype=np.float32)  # Creación de línea en numpy banda B4
+    rre = np.zeros(width, dtype=np.float32) # Creación de línea en numpy banda B5 o B6
+    r8 = np.zeros(width, dtype=np.float32)  # Creación de línea en numpy banda B8
+
+    v4  = np.zeros(width, dtype=np.uint8)   # Creación de línea, supongo para enmascarar B4
+    vre = np.zeros(width, dtype=np.uint8)   # Creación de línea, supongo para enmascarar B5 o B6
+    v8 = np.zeros(width, dtype=np.uint8)    # Creación de línea, supongo para enmascarar B8
+
+    for y in range(height):
+        b4.readPixels(0, y, width, 1, r4)   # Lectura de líneas de banda B4
+        bre.readPixels(0, y, width, 1, rre) # Lectura de líneas de banda B5 o B6
+        b8.readPixels(0, y, width, 1, r8)   # Lectura de línea de banda B8
+
+        b4.readValidMask(0, y, width, 1, v4)   # Lectura de máscara válida para B4
+        bre.readValidMask(0, y, width, 1, vre) # Lectura de máscara válida para B5 o B6
+        b8.readValidMask(0, y, width, 1, v8)   # Lectura de máscara válida para B8
+
+        invalidMask4 = np.where(v4 == 0, 1, 0)   # Lectura de valores inválidos B4
+        invalidMaskre = np.where(vre == 0, 1, 0) # Lectura de valores inválidos B5 o B6
+        invalidMask8 = np.where(v8 == 0, 1, 0)                             # Lectura de valores inválidos B4
+
+        ma4 = np.ma.array(r4, mask=invalidMask4, fill_value=np.nan)    # Enmascarado de línea en banda B4
+        mare = np.ma.array(rre, mask=invalidMaskre, fill_value=np.nan) # Enmascarado de línea en banda B5 o B6
+        ma8 = np.ma.array(r8, mask=invalidMask8, fill_value=np.nan)    # Enmascarado de línea en banda B8
+
+        print("processing line ", y, " of ", height)                   # Muestra de procesamiento de línea
+        ndvi_row = (ma8 - ma4) / (ma8 + ma4)                           # Cómputo de la línea para ndvi
+        ndre_row = (ma8 - mare) / (ma8 - mare)                         # Cómputo de la línea para ndre
+        
+        ndvi = ndvi_row if y == 0 else np.vstack([ndvi, ndvi_row])     # Stackeo vertical de producto NDVI
+        ndre = ndre_row if y == 0 else np.vstack([ndre, ndre_row])     # Stackeo vertical de producto NDVI
+    
+    # Antes de computar estadísticas seteo el valor 0 como np.nan para que no sea tomado en las estadísticas.
+    # ndvi = ndvi.astype(np.float32)  # Ensure the array can hold np.nan (float type)
+
+    # Verificación si el array ndvi está lleno de numpy.nan o tiene información
+    if np.all(np.isnan(ndvi)):
+        ndvi_mean = np.nan
+        ndre_mean = np.nan
+
+        ndvi_std_dev = np.nanstd(ndvi)
+        ndre_std_dev = np.nanstd(ndre)
+
+        # ORDEN DE CCOEFICIENTES PARA LEERLO EN 
+        mean_ndvi_ndre = [ndvi_mean, ndre_mean]
+        std_ndvi_ndre = [ndvi_std_dev, ndre_std_dev]
+    else:
+        ndvi = np.where(ndvi < 0, np.nan, ndvi)  # Replace -1 with NaN
+        ndre = np.where(ndre < 0, np.nan, ndre)
+        # ndvi[ndvi == 0.0] = np.nan   # seteo 0 como np.nan
+        ndvi_mean = np.nanmean(ndvi)
+        ndvi_std_dev = np.nanstd(ndvi)
+
+        ndre_mean = np.nanmean(ndre)
+        ndre_std_dev = np.nanstd(ndre)
+
+        mean_ndvi_ndre = [ndvi_mean, ndre_mean]
+        std_ndvi_ndre = [ndvi_std_dev, ndre_std_dev]
+
+        width=12
+        height=12
+        # rgb = np.dstack(band_stack)  # stacks 3 h x w arrays -> h x w x 3
+
+        # Create figure with two subplots
+        fig, ((ax1, ax2),(ax3, ax4)) = plt.subplots(2, 2, figsize=(12, 5), 
+                                gridspec_kw={'width_ratios': [2, 1]}, constrained_layout=True)
+        
+        # Left plot: 2D array visualization NDVI
+        im = ax1.imshow(ndvi, cmap='viridis', aspect='equal', vmin=vmin, vmax=vmax)
+        ax1.set_title('Producto de fecha: ' + 'NDVI ' + title)
+        cbar = fig.colorbar(im, ax=ax1, shrink=0.7)
+        cbar.set_label("NDVI Value")
+
+        # Cómputo de barras a utilizar en histograma
+        qty_bins = sturges_bins(ndvi)*2
+
+        # Right plot: Histogram of all values
+        ax2.hist(ndvi.flatten(), bins=qty_bins, color='skyblue', 
+                edgecolor='black', density=False, range=(vmin, vmax))
+        ax2.set_title("NDVI Distribution")
+        ax2.set_xlabel("Values")
+        ax2.set_ylabel("Frequency")
+        ax2.set_xlim(vmin, vmax)  # This sets the x-axis limits
+
+        # Add statistics to histogram
+        ax2.axvline(ndvi_mean, color='red', linestyle='--', 
+                label=f'Mean: {ndvi_mean:.2f}')
+        ax2.axvline(ndvi_mean + ndvi_std_dev, color='orange', 
+                linestyle=':', label=f'±1σ: {ndvi_std_dev:.2f}')
+        ax2.axvline(ndvi_mean - ndvi_std_dev, color='orange', linestyle=':')
+        ax2.legend()
+
+        # Left plot: 2D array visualization NDRE
+        im = ax3.imshow(ndre, cmap=cmap_ndre, aspect='equal', vmin=vmin, vmax=vmax)
+        ax3.set_title('Producto de fecha: ' + 'NDRE ' + title)
+        cbar = fig.colorbar(im, ax=ax3, shrink=0.7)
+        cbar.set_label("NDRE Value")
+
+        # Cómputo de barras a utilizar en histograma
+        qty_bins = sturges_bins(ndvi)*2
+
+        # Right plot: Histogram of all values
+        ax4.hist(ndre.flatten(), bins=qty_bins, color='skyblue', 
+                edgecolor='black', density=False, range=(vmin, vmax))
+        ax4.set_title("NDRE Distribution")
+        ax4.set_xlabel("Values")
+        ax4.set_ylabel("Frequency")
+        ax4.set_xlim(vmin, vmax)  # This sets the x-axis limits
+
+        # Add statistics to histogram
+        ax4.axvline(ndre_mean, color='red', linestyle='--', 
+                label=f'Mean: {ndre_mean:.2f}')
+        ax4.axvline(ndre_mean + ndre_std_dev, color='orange', 
+                linestyle=':', label=f'±1σ: {ndre_std_dev:.2f}')
+        ax4.axvline(ndre_mean - ndre_std_dev, color='orange', linestyle=':')
+        ax4.legend()
+
+        # Adjust layout and save as PNG
+        # plt.tight_layout()
+        png_path = path + '.png'
+        plt.savefig(png_path, dpi=300, bbox_inches='tight')
+        # print("Figure saved as 'array_histogram.png'")
+    
+    # return ndvi_mean, ndvi_std_dev, png_path
     return mean_ndvi_ndre, std_ndvi_ndre, png_path
 
 # Función para guardar y computar estadísticas de producto NDVI del producto
