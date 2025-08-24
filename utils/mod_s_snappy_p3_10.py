@@ -291,7 +291,7 @@ def temp_series_2(df, folder2save, proc_type, verbose):
         for mean_name, std_name, color in mean_std_col_mesh:
         
             # color_plot = 'green'
-            ax1.errorbar(df['acq_date'], df[mean_name], yerr = df[std_name]/2, linestyle='-', marker='o', color=color, label='mean_RGB', capsize=5)
+            ax1.errorbar(df['acq_date'], df[mean_name], yerr = df[std_name]/2, linestyle='-', marker='o', color=color, label=mean_name, capsize=5)
 
             
             # plt.legend(loc='lower right')
@@ -311,7 +311,38 @@ def temp_series_2(df, folder2save, proc_type, verbose):
         plt.grid()
         plt.legend()
         plt.savefig(out_path , bbox_inches='tight')
+    elif proc_type == 'NDRE+NDVI':
+        fig, ax1 = plt.subplots(figsize=(10, 6))
+        mean_name_list = [title for title in df.columns if title.endswith('mean')]
+        std_name_list = [title for title in df.columns if title.endswith('std')]
+        proc_name = [name.split('_')[0] for name in mean_name_list]
+        mean_std_col_mesh = zip(mean_name_list, mean_name_list, proc_name)
 
+        fig, ax1 = plt.subplots(figsize=(10, 6))
+
+        for mean_name, std_name, proc_name in mean_std_col_mesh:
+        
+            # color_plot = 'green'
+            ax1.errorbar(df['acq_date'], df[mean_name], yerr = df[std_name]/2, linestyle='-', marker='o', color=color, label=proc_name, capsize=5)
+
+            
+            # plt.legend(loc='lower right')
+        
+
+        ax1.set_ylabel(proc_type, color='black')
+        ax1.tick_params(axis='y', labelcolor='black')
+        plt.legend()
+        # Create a secondary y-axis
+        ax2 = ax1.twinx()
+        ax2.plot(df['acq_date'], df['cloudCover'], linestyle='', marker='D', color='blue', label='Product Cloud cover')
+        ax2.set_ylabel('Cloud cover (%)', color='blue')
+        ax2.tick_params(axis='y', labelcolor='blue')
+        # Add titles and grid
+        plt.title('Temporal series two axis')
+        fig.tight_layout()  # Adjust layout to prevent overlap
+        plt.grid()
+        plt.legend()
+        plt.savefig(out_path , bbox_inches='tight')
     
     if verbose:
         plt.show()
@@ -343,6 +374,10 @@ def add_statistics(df_init, dict2add, proc_type, verbose):
     if proc_type == 'RGB':
         df_stats[['blue_mean', 'green_mean', 'red_mean']] = pd.DataFrame(df_stats['mean_value'].tolist(), index=df_stats.index)
         df_stats[['blue_std', 'green_std', 'red_std']] = pd.DataFrame(df_stats['std_dev_value'].tolist(), index=df_stats.index)
+        df_stats.drop(['mean_value', 'std_dev_value'], axis=1, inplace=True)  # Drops first and third columns
+    elif proc_type == 'NDRE+NDVI':
+        df_stats[['ndvi_mean', 'ndre_mean']] = pd.DataFrame(df_stats['mean_value'].tolist(), index=df_stats.index)
+        df_stats[['ndvi_std', 'ndre_std']] = pd.DataFrame(df_stats['std_dev_value'].tolist(), index=df_stats.index)
         df_stats.drop(['mean_value', 'std_dev_value'], axis=1, inplace=True)  # Drops first and third columns
     elif proc_type in ('NDVI', 'NDRE'):
         pass
